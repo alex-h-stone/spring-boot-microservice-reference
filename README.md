@@ -1,4 +1,4 @@
-# spring-boot-template-service
+# Spring Boot Microservice Template
 
 Requirements:
 
@@ -38,17 +38,17 @@ and
 ---
 
 #### Request validation by a validator class
-See  
-`src/main/java/com/example/springboottemplateservice/controller/validation`  
-and
-`integration.cgi.example.petstore.ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`
+
+See `PetValidator.java`
+and `ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`
+
 ---
 
 #### Request validation defined by yaml
-See `/pets/{petId}` GET endpoint and the `petId schema` definition in  
-`src/main/resources/openapi/pet-store-api.yaml`  
-and the associated integration test  
-`integration.cgi.example.petstore.ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
+
+See `/pets/{petId}` GET endpoint and the `petId schema` definition in `src/main/resources/openapi/pet-store-api.yaml`
+and the associated integration
+test `ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
 
 ---
 

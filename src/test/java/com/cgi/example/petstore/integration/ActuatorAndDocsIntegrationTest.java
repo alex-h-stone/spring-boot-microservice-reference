@@ -66,7 +66,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 assertions.assertJSONContentType(response),
-                () -> assertEquals("Spring Boot Template Service modeled on an online Pet Store", description),
+                () -> assertEquals("Spring Boot Template Service modeled on an online Pet Store.", description),
                 () -> assertEquals("spring-boot-microservice-template", artifact),
                 () -> assertEquals("spring-boot-microservice-template", name),
                 () -> assertEquals("com.cgi.example", group)
