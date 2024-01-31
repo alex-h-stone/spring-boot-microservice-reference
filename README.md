@@ -1,25 +1,33 @@
 # spring-boot-template-service
 
-# This repository has now been moved to https://proactionuk.ent.cgi.com/gitlab/uka/SBUDCDADA/spring-boot-microservice-template
-# Repository: https://proactionuk.ent.cgi.com/gitlab/uka/SBUDCDADA/spring-boot-microservice-template.git
-
 Requirements:
 
 * Java 21 e.g. https://jdk.java.net/21/
+* Access to a running MongoDB instance or equivalent (e.g. Microsoft Azure CosmosDB
+  via https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx)
+* An IDE, Eclipse or IntelliJ (recommended)
 
 This is a bare-bones Spring Boot 3 based microservice with working examples of many common business requirements.
 
 The API of the microservice is defined by the API Specification `pet-store-api.yaml` and can be viewed by the online
 swagger editor https://editor.swagger.io/
 
-The microservice is structured with Controller and Service layers. Depending on the use case it may be desirable to
-also include a mapping layer to translate between one or more of the following:
+The microservice is structured with Controller and Service layers.
+Depending on the use case it may be desirable to also include a mapping layer
+to translate between one or more of the following:
 - API model types
 - 3rd Party - API model types
-- Datastore entity types
+- Datastore/Repository entity types
 - Internal data representation types (DTOs)
+- Queue/Messaging DTOs
 
-* Database integration
+---
+
+#### Database integration with MongoDB
+
+This service is integrated with a MongoDB NoSQL datastore/database using spring-boot-starter-data-mongodb
+and the MongoRepository.java interface. Connection details are defined in the application.yaml under
+'spring.data.mongodb'
 
 ---
 #### Exception handler
@@ -55,7 +63,9 @@ See JUnit tests in spring-boot-template-service\src\test\java which do not have 
 ---
 
 #### Integration tests
-See the package spring-boot-template-service\src\test\java\com\cgi\example\petstore\integration for examples of integration tests utilising WireMock and Embedded MongoDB.
+
+See the package src\test\java\com\cgi\example\petstore\integration for examples of integration tests utilising WireMock
+and Embedded MongoDB.
 
 ---
 
