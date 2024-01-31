@@ -1,0 +1,40 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+management:
+  server:
+    port: 8099
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,mappings
+  endpoint:
+    health:
+      show-details: always
+
+spring:
+  data:
+    mongodb:
+      host: alex-stone-cosmos-for-mongo-db.mongo.cosmos.azure.com
+      port: 59560
+      database: database1_as
+      maxIdleTimeMS: 30000
+      ssl:
+        enabled: false
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+
+thirdparty:
+  apis:
+    vaccinations:
+      path: "/vaccinations/{vaccinationId}"
+      scheme: "http"
+      host: "www.vaccinations.thirdparty.com"
+      port: 9999

@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Pet Store API
+  version: "1.0"
+  description:
+    This is an example Pet Store API to illustrate various microservice concepts.
+    The API allows consumers to search for pet(s), update pets and purchase pets.
+  contact:
+    email: alex.stone@cgi.com
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers: [
+  {
+    "url": "http://localhost:8080/api/v1",
+    "description": "Local development"
+  },
+  {
+    "url": "https://staging.cloud.com/api/v1",
+    "description": "Staging server"
+  },
+  {
+    "url": "https://production.cloud.com/api/v1",
+    "description": "Production server"
+  }
+]
+
+paths:
+  /pet-store/pets:
+    patch:
+      summary: Update an existing pet
+      description: Update an existing pet by Id
+      operationId: updatePet
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+    post:
+      summary: Add a new pet to the store
+      description: Add a new pet to the store
+      operationId: addPet
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '405':
+          description: Invalid input
+  /pet-store/pets/findByStatus:
+    get:
+      summary: Finds Pets by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findPetsByStatus
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PetStatus'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid status value
+  /pet-store/pets/{petId}:
+    get:
+      summary: Find pet by ID
+      description: Returns a single pet
+      operationId: getPetById
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+            maximum: 2000
+            example: 1546
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+    patch:
+      summary: Called when a customer purchases a pet.
+      description: Update the details for the pet to reflect the new owner.
+      operationId: purchasePet
+      parameters:
+        - name: petId
+          in: path
+          description: Id of the pet to purchase
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: The details of the purchasing customer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '400':
+          description: Invalid pet value
+components:
+  schemas:
+    PetStatus:
+      type: string
+      description: The status of the pet in the store
+      enum:
+        - Available For Purchase
+        - Pending Collection
+        - Sold
+    PetVaccinationId:
+      type: string
+      description: The unique Id used to identify all vaccination details for the specified pet.
+      example: AF54785412K
+    Vaccination:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Parainfluenza
+        dateOfAdminister:
+          type: string
+          format: date
+          example: 2017-07-21
+    PetType:
+      type: string
+      description: The type of animal the pet is.
+      example: Dog
+      enum:
+        - Dog
+        - Cat
+        - Guinea Pig
+        - Fish
+    Customer:
+      type: object
+      properties:
+        customerId:
+          type: integer
+          format: int64
+          example: 246879
+        username:
+          type: string
+          example: alex.stone
+        firstName:
+          type: string
+          example: Alex
+        lastName:
+          type: string
+          example: Stone
+        email:
+          type: string
+          example: alex.stone@cgi.com
+        address:
+          $ref: '#/components/schemas/Address'
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: 437 Lytton
+        city:
+          type: string
+          example: Palo Alto
+        state:
+          type: string
+          example: CA
+        zip:
+          type: string
+          example: '94301'
+    PetInformationItem:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Type of Coat
+        description:
+          type: string
+          example: Short Hair
+    NewPet:
+      description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        vaccinationId:
+          $ref: '#/components/schemas/PetVaccinationId'
+        name:
+          type: string
+          example: Fido
+        petType:
+          $ref: '#/components/schemas/PetType'
+        photoUrls:
+          type: array
+          items:
+            type: string
+            example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
+        additionalInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/PetInformationItem'
+    Pet:
+      allOf:
+        - $ref: '#/components/schemas/NewPet'
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        vaccinationId:
+          $ref: '#/components/schemas/PetVaccinationId'
+        vaccinations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vaccination'
+        name:
+          type: string
+          example: Doggie
+        petType:
+          $ref: '#/components/schemas/PetType'
+        photoUrls:
+          type: array
+          items:
+            type: string
+            example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
+        additionalInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/PetInformationItem'
+        petStatus:
+          $ref: '#/components/schemas/PetStatus'
