@@ -1,6 +1,13 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+### Compiled and generated ###
+build/
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+
 ### STS ###
 .apt_generated
 .classpath
@@ -9,16 +16,23 @@
 .settings
 .springBeans
 .sts4-cache
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
 ### Gradle ###
 .gradle/
-build/
+
+### Maven ###
+.mvn/
 
 ### IntelliJ IDEA ###
 .idea/
 *.iws
 *.iml
 *.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 ### NetBeans ###
 /nbproject/private/
