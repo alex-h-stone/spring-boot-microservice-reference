@@ -18,7 +18,7 @@ public class IntegrationTestRestTemplate {
         this.testRestTemplate = testRestTemplate;
     }
 
-    public ResponseEntity<String> execute(RequestEntity<String> requestEntity) {
+    public ResponseEntity<String> execute(RequestEntity<?> requestEntity) {
         ResponseEntity<String> response = testRestTemplate.exchange(requestEntity, String.class);
         LOG.info("Integration test ResponseEntity: [{}]", response);
         return response;

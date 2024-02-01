@@ -1,8 +1,6 @@
 package com.cgi.example.petstore.integration.utils;
 
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -10,35 +8,31 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Component
-public class RequestFactory {
+public class RequestURI {
 
     private final Environment environment;
 
-    public RequestFactory(Environment environment) {
+    public RequestURI(Environment environment) {
         this.environment = environment;
     }
 
-    public RequestEntity<String> createManagementRequest(HttpMethod httpMethod, String resource) {
-        return createRequestEntity(getManagementPort(), resource, httpMethod);
+    public URI getApplicationURIFor(String resource) {
+        return createURI(getApplicationPort(), resource);
     }
 
-    public RequestEntity<String> createApplicationRequest(HttpMethod httpMethod, String resource) {
-        return createRequestEntity(getApplicationPort(), resource, httpMethod);
+    public URI getManagementURIFor(String resource) {
+        return createURI(getManagementPort(), resource);
     }
 
-    private RequestEntity<String> createRequestEntity(int portNumber,
-                                                      String resource,
-                                                      HttpMethod httpMethod) {
+    private URI createURI(int portNumber, String resource) {
         String url = "http://localhost:" + portNumber + resource;
-        URI uri;
+
         try {
-            uri = new URI(url);
+            return new URI(url);
         } catch (URISyntaxException e) {
             String message = "Unable to create URI from [%s]".formatted(url);
             throw new RuntimeException(message, e);
         }
-
-        return new RequestEntity<>(httpMethod, uri);
     }
 
     private int getManagementPort() {

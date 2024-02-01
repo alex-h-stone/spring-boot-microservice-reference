@@ -1,5 +1,6 @@
-package com.cgi.example.petstore.integration.utils;
+package com.cgi.example.petstore.integration.config;
 
+import com.cgi.example.petstore.integration.utils.PetStoreWiremockServer;
 import de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

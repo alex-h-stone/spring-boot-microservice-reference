@@ -1,6 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.BaseIntegrationTest;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsApiClient;
 import com.cgi.example.thirdparty.animalvaccination.model.VaccinationsResponse;
 import com.github.tomakehurst.wiremock.client.WireMock;

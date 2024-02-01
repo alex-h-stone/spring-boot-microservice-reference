@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.utils;
 
+import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
@@ -43,5 +44,18 @@ public class TestData {
                 .createdAt(now)
                 .lastModified(now)
                 .build();
+    }
+
+    public NewPet createNewPet() {
+        NewPet pet = new NewPet();
+
+        pet.setId(ID);
+        pet.setVaccinationId(VACCINATION_ID);
+        pet.setName(NAME);
+        pet.setPetType(PET_TYPE);
+        pet.photoUrls(Collections.emptyList());
+        pet.setAdditionalInformation(Collections.emptyList());
+
+        return pet;
     }
 }

@@ -1,6 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.BaseIntegrationTest;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.service.persistence.DataStoreService;
 import com.cgi.example.petstore.service.persistence.PetDocument;

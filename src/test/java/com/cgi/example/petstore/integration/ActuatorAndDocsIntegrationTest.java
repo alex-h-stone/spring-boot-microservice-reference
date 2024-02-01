@@ -1,6 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.BaseIntegrationTest;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void actuatorEndpointShouldListResources() {
-        RequestEntity<String> requestEntity = requestFactory.createManagementRequest(HttpMethod.GET, "/actuator");
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getManagementURIFor("/actuator"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -37,7 +37,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void actuatorHealthEndpointShouldShowUp() {
-        RequestEntity<String> requestEntity = requestFactory.createManagementRequest(HttpMethod.GET, "/actuator/health");
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getManagementURIFor("/actuator/health"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -54,7 +55,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void actuatorInfoEndpointShouldIncludeDescriptionArtifactNameAndGroup() {
-        RequestEntity<String> requestEntity = requestFactory.createManagementRequest(HttpMethod.GET, "/actuator/info");
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getManagementURIFor("/actuator/info"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -75,7 +77,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void actuatorMappingsEndpointShouldListMultipleMappings() {
-        RequestEntity<String> requestEntity = requestFactory.createManagementRequest(HttpMethod.GET, "/actuator/mappings");
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getManagementURIFor("/actuator/mappings"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -94,7 +97,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
             "/v3/api-docs/springdoc,application/json"
     })
     void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints(String apiDocUrl, String expectedContentType) {
-        RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, apiDocUrl);
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getApplicationURIFor(apiDocUrl));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -108,7 +112,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints() {
-        RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, "/v3/api-docs/swagger-config");
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                requestURI.getApplicationURIFor("/v3/api-docs/swagger-config"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
