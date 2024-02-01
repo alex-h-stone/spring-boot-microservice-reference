@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.integration.utils.RequestURI;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -105,7 +106,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 assertions.assertContentType(response, expectedContentType),
-                () -> assertThat(response.getBody(), Matchers.containsString(PET_STORE_BASE_URL + "{petId}")),
+                () -> assertThat(response.getBody(), Matchers.containsString(RequestURI.PET_STORE_BASE_URL + "/{petId}")),
                 () -> assertThat(response.getBody(), Matchers.containsString("Find pet by ID"))
         );
     }

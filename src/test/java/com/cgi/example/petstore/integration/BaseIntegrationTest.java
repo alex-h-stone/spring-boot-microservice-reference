@@ -20,8 +20,6 @@ import java.util.Set;
 @Tag("integration")
 public class BaseIntegrationTest {
 
-    protected static final String PET_STORE_BASE_URL = "/api/v1/pet-store/pets/";
-
     protected final AssertionUtils assertions = new AssertionUtils();
     protected final ResourceFileUtils fileUtils = new ResourceFileUtils();
 

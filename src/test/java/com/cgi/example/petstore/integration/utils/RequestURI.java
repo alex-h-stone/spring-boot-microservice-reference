@@ -10,10 +10,20 @@ import java.util.Objects;
 @Component
 public class RequestURI {
 
+    public static final String PET_STORE_BASE_URL = "/api/v1/pet-store/pets";
+
     private final Environment environment;
 
     public RequestURI(Environment environment) {
         this.environment = environment;
+    }
+
+    public URI getPetStoreURIFor(String resource) {
+        return getApplicationURIFor(PET_STORE_BASE_URL + "/" + resource);
+    }
+
+    public URI getPetStoreBaseURI() {
+        return getApplicationURIFor(PET_STORE_BASE_URL);
     }
 
     public URI getApplicationURIFor(String resource) {

@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.integration.utils.RequestURI;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.service.persistence.PetDocument;
 import com.cgi.example.petstore.service.persistence.PetRepository;
@@ -37,7 +38,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd,
                 HttpMethod.POST,
-                requestURI.getApplicationURIFor(PET_STORE_BASE_URL));
+                requestURI.getPetStoreBaseURI());
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -62,7 +63,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals("gfdg", allPetDocument.getId());
+        assertEquals("10", allPetDocument.getId());
     }
 
     @Test
@@ -71,7 +72,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String petId = petDocument.getId();
         petRepository.save(petDocument);
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor(PET_STORE_BASE_URL + petId));
+                requestURI.getPetStoreURIFor(petId));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -97,7 +98,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldReturnNotFoundWhenCallingGetPetWithUnknownPetId() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor(PET_STORE_BASE_URL + 13));
+                requestURI.getPetStoreURIFor("13"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -123,7 +124,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor(PET_STORE_BASE_URL + "10000"));
+                requestURI.getPetStoreURIFor("10000"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -136,13 +137,13 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(500, status),
                 () -> assertEquals("Handled by GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
-                () -> assertEquals(PET_STORE_BASE_URL + "10000", instance));
+                () -> assertEquals(RequestURI.PET_STORE_BASE_URL + "/10000", instance));
     }
 
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor(PET_STORE_BASE_URL + "666"));
+                requestURI.getPetStoreURIFor("666"));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -155,7 +156,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
                 () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet ID: 666]", detail),
-                () -> assertEquals(PET_STORE_BASE_URL + "666", instance)
+                () -> assertEquals(RequestURI.PET_STORE_BASE_URL + "/666", instance)
         );
     }
 }
