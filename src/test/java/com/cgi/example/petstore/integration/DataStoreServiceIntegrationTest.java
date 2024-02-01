@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DataStoreServiceIntegrationTest extends BaseIntegrationTest {
 
@@ -28,12 +27,12 @@ public class DataStoreServiceIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldSavePetToMongoDB() {
-        Pet pet = testData.createPet();
-        String expectedPetId = String.valueOf(pet.getId());
+        Pet petToSave = testData.createPet();
+        String expectedPetId = String.valueOf(petToSave.getId());
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        dataStoreService.save(pet);
+        dataStoreService.save(petToSave);
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));

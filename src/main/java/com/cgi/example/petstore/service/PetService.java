@@ -45,7 +45,7 @@ public class PetService {
         return optionalPet.get();
     }
 
-    public List<Pet> retriecveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
+    public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
         return dataStoreService.findPetsByStatus(statuses);
     }
 }

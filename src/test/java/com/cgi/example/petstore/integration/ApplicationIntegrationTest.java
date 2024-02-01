@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.integration.utils.BaseIntegrationTest;
+import com.cgi.example.petstore.service.persistence.PetDocument;
 import com.cgi.example.petstore.service.persistence.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
@@ -26,8 +27,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnFidoWhenCallingGetPetEndpoint() {
-        petRepository.save(testData.createPetDocument());
-        RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, PET_STORE_BASE_URL + "10");
+        PetDocument petDocument = testData.createPetDocument();
+        String petId = petDocument.getId();
+        petRepository.save(petDocument);
+        RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, PET_STORE_BASE_URL + petId);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -51,6 +54,31 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    void shouldReturnNotFoundWhenCallingGetPetWithUnknownPetId() {
+        RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, PET_STORE_BASE_URL + 13);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                     {
+                       "type": "about:blank",
+                       "title": "Not Found",
+                       "status": 404,
+                       "detail": "Handled by GlobalExceptionHandler - [Unable to find the pet with Id: [13]]",
+                       "instance": "/api/v1/pet-store/pets/13"
+                     }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
+                assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
+    }
+
+    @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
         RequestEntity<String> requestEntity = requestFactory.createApplicationRequest(HttpMethod.GET, PET_STORE_BASE_URL + "10000");
 
@@ -64,7 +92,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(500, status),
-                () -> assertEquals("Handled by class com.cgi.example.petstore.handler.GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
+                () -> assertEquals("Handled by GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
                 () -> assertEquals(PET_STORE_BASE_URL + "10000", instance));
     }
 
@@ -79,10 +107,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String detail = JsonPath.read(response.getBody(), "$.detail");
 
         assertAll(
-                () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode()),
+                () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
-                () -> assertEquals(500, status),
-                () -> assertEquals("Handled by class com.cgi.example.petstore.handler.GlobalExceptionHandler - [Invalid Pet ID: 666]", detail),
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
+                () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet ID: 666]", detail),
                 () -> assertEquals(PET_STORE_BASE_URL + "666", instance)
         );
     }

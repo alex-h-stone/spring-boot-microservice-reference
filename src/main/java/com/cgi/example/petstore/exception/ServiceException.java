@@ -2,9 +2,20 @@ package com.cgi.example.petstore.exception;
 
 import org.springframework.http.HttpStatusCode;
 
-public interface ServiceException {
+public abstract class ServiceException extends RuntimeException {
 
-    HttpStatusCode getHttpResponseCode();
+    private final HttpStatusCode httpStatusCode;
 
-    String getResponseMessage();
+    public ServiceException(String message, HttpStatusCode httpStatusCode) {
+        super(message);
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public HttpStatusCode getHttpResponseCode() {
+        return httpStatusCode;
+    }
+
+    public String getResponseMessage() {
+        return getMessage();
+    }
 }

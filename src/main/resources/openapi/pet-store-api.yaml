@@ -91,9 +91,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/MultiplePetsResponse'
         '400':
           description: Invalid status value
   /pet-store/pets/{petId}:
@@ -283,3 +281,11 @@ components:
             $ref: '#/components/schemas/PetInformationItem'
         petStatus:
           $ref: '#/components/schemas/PetStatus'
+    MultiplePetsResponse:
+      type: object
+      description: The result of a request which may return 2 or more Pets.
+      properties:
+        pets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'

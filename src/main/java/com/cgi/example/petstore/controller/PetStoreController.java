@@ -3,12 +3,12 @@ package com.cgi.example.petstore.controller;
 import com.cgi.example.petstore.api.PetStoreApi;
 import com.cgi.example.petstore.controller.validation.PetValidator;
 import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.MultiplePetsResponse;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.PetService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,11 +28,13 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<List<Pet>> findPetsByStatus(List<PetStatus> statuses) {
-        // TODO add pets by status response object
-        petService.retriecveAllPetsWithAStatusMatching(statuses);
-        // TODO Find all pets from data store via PetRepository and a call to vac service
-        throw new NotImplementedException("TODO implement findPetsByStatus");
+    public ResponseEntity<MultiplePetsResponse> findPetsByStatus(List<PetStatus> statuses) {
+        List<Pet> pets = petService.retrieveAllPetsWithAStatusMatching(statuses);
+
+        MultiplePetsResponse petsResponse = new MultiplePetsResponse();
+        petsResponse.setPets(pets);
+
+        return ResponseEntity.ok(petsResponse);
     }
 
     @Override
