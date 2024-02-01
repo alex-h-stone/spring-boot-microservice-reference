@@ -99,13 +99,6 @@ TODO demonstrate with 3rd party API call
 
 ---
 
-#### Log tracing with Sleuth
-
-TODO Log tracing with Sleuth includes both the dep. and sample logging config with span file and logging of framework in
-use at startup.
-
----
-
 #### Actuator endpoints
 Determined by dependencies (see "OpenAPI/Swagger docs" section in build.gradle),
 application config (see application.yaml) and security config (see SecurityConfig.java)
