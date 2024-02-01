@@ -152,6 +152,7 @@ components:
         - Available For Purchase
         - Pending Collection
         - Sold
+      default: Available For Purchase
     PetVaccinationId:
       type: string
       description: The unique Id used to identify all vaccination details for the specified pet.

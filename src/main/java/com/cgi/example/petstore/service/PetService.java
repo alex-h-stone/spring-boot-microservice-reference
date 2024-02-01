@@ -24,12 +24,13 @@ public class PetService {
     private final DataStoreService dataStoreService;
 
     public Pet addToPetStore(NewPet newPet) {
-        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(newPet.getVaccinationId());
 
         Pet pet = newPetToPetMapper.map(newPet);
-        pet.setVaccinations(vaccinations);
 
         dataStoreService.save(pet);
+
+        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
+        pet.setVaccinations(vaccinations);
 
         return pet;
     }
@@ -42,7 +43,11 @@ public class PetService {
             throw new NotFoundException(message);
         }
 
-        return optionalPet.get();
+        Pet pet = optionalPet.get();
+        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
+        pet.setVaccinations(vaccinations);
+        
+        return pet;
     }
 
     public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {

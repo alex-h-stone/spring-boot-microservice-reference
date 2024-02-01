@@ -9,6 +9,5 @@ import org.mapstruct.Mapping;
 interface NewPetToPetMapper {
 
     @Mapping(target = "vaccinations", ignore = true)
-    @Mapping(target = "petStatus", ignore = true)
     Pet map(NewPet newPet);
 }

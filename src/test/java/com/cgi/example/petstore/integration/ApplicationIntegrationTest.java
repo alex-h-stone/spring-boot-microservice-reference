@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +35,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        RequestEntity<NewPet> requestEntity = new RequestEntity<>(new NewPet(),
+        RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd,
                 HttpMethod.POST,
                 requestURI.getApplicationURIFor(PET_STORE_BASE_URL));
 
@@ -56,6 +58,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertJSONContentType(response),
                 () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
         );
+
+        List<PetDocument> actualAllPetDocuments = petRepository.findAll();
+        assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
+        PetDocument allPetDocument = actualAllPetDocuments.getFirst();
+        assertEquals("gfdg", allPetDocument.getId());
     }
 
     @Test

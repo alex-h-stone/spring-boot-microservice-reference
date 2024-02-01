@@ -8,6 +8,7 @@ import com.cgi.example.petstore.service.persistence.PetDocument;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 public class TestData {
 
@@ -15,6 +16,7 @@ public class TestData {
     private static final String NAME = "Fido";
     private static final PetType PET_TYPE = PetType.DOG;
     private static final String VACCINATION_ID = "AF54785412K";
+    private static final List<String> PHOTO_URLS = List.of("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6");
 
     public Pet createPet() {
         Pet pet = new Pet();
@@ -24,7 +26,7 @@ public class TestData {
         pet.setVaccinations(Collections.emptyList());
         pet.setName(NAME);
         pet.setPetType(PET_TYPE);
-        pet.photoUrls(Collections.emptyList());
+        pet.photoUrls(PHOTO_URLS);
         pet.setPetStatus(PetStatus.AVAILABLE_FOR_PURCHASE);
         pet.setAdditionalInformation(Collections.emptyList());
 
@@ -38,7 +40,7 @@ public class TestData {
                 .vaccinationId(VACCINATION_ID)
                 .name(NAME)
                 .petType(PET_TYPE.getValue())
-                .photoUrls(Collections.emptyList())
+                .photoUrls(PHOTO_URLS)
                 .additionalInformation(Collections.emptyList())
                 .petStatus(PetStatus.AVAILABLE_FOR_PURCHASE.getValue())
                 .createdAt(now)
@@ -53,7 +55,7 @@ public class TestData {
         pet.setVaccinationId(VACCINATION_ID);
         pet.setName(NAME);
         pet.setPetType(PET_TYPE);
-        pet.photoUrls(Collections.emptyList());
+        pet.photoUrls(PHOTO_URLS);
         pet.setAdditionalInformation(Collections.emptyList());
 
         return pet;

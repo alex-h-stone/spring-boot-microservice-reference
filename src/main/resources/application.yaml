@@ -27,9 +27,8 @@ logging:
   level:
     org:
       springframework:
-        web:
-          filter:
-            CommonsRequestLoggingFilter: DEBUG
+        security: DEBUG
+        web: DEBUG
 
 thirdparty:
   apis:
