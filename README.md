@@ -100,15 +100,11 @@ TODO demonstrate with 3rd party API call
 ---
 
 #### Log tracing with Sleuth
-TODO Includes both the dep. and sample logging config with span file and logging of framework in use at startup.
+
+TODO Log tracing with Sleuth includes both the dep. and sample logging config with span file and logging of framework in
+use at startup.
 
 ---
-
-#### Integrate Docker
-TODO maybe?
-To start the service
-gradle clean build
-bootRun
 
 #### Actuator endpoints
 Determined by dependencies (see "OpenAPI/Swagger docs" section in build.gradle),
