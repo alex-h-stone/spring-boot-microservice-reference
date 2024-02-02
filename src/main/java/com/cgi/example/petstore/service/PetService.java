@@ -3,12 +3,14 @@ package com.cgi.example.petstore.service;
 import com.cgi.example.petstore.exception.NotFoundException;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
+import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.Vaccination;
 import com.cgi.example.petstore.service.persistence.DataStoreService;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,5 +54,10 @@ public class PetService {
 
     public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
         return dataStoreService.findPetsByStatus(statuses);
+    }
+
+    public ResponseEntity<Pet> patch(PetPatch pet) {
+        //dataStoreService.
+        return null;
     }
 }

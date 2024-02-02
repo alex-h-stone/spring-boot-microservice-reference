@@ -6,6 +6,7 @@ import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.MultiplePetsResponse;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
+import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.PetService;
 import lombok.AllArgsConstructor;
@@ -53,8 +54,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Pet> updatePet(Pet pet) {
+    public ResponseEntity<Pet> updatePet(PetPatch pet) {
         // TODO Implement update
-        return null;
+        return petService.patch(pet);
     }
 }

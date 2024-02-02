@@ -37,7 +37,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/PetPatch'
       responses:
         '200':
           description: Successful operation
@@ -145,6 +145,15 @@ paths:
           description: Invalid pet value
 components:
   schemas:
+    PetId:
+      type: integer
+      format: int64
+      description: The unique Pet Shop Id for the pet.
+      example: 1089
+    PetName:
+      type: string
+      description: The pet answers to this name.
+      example: Fido
     PetStatus:
       type: string
       description: The status of the pet in the store
@@ -176,6 +185,12 @@ components:
         - Cat
         - Guinea Pig
         - Fish
+    PhotoUrls:
+      type: array
+      description: The URLs to a selection of petty pictures.
+      items:
+        type: string
+        example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
     Customer:
       type: object
       required:
@@ -246,23 +261,15 @@ components:
         - petType
       properties:
         id:
-          type: integer
-          format: int64
-          description: The unique Pet Shop Id for the pet.
-          example: 1089
+          $ref: '#/components/schemas/PetId'
         vaccinationId:
           $ref: '#/components/schemas/PetVaccinationId'
         name:
-          type: string
-          description: The pet answers to this name.
-          example: Fido
+          $ref: '#/components/schemas/PetName'
         petType:
           $ref: '#/components/schemas/PetType'
         photoUrls:
-          type: array
-          items:
-            type: string
-            example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
+          $ref: '#/components/schemas/PhotoUrls'
         additionalInformation:
           type: array
           items:
@@ -282,6 +289,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Vaccination'
+        petStatus:
+          $ref: '#/components/schemas/PetStatus'
+    PetPatch:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/PetId'
+        vaccinationId:
+          $ref: '#/components/schemas/PetVaccinationId'
+        name:
+          $ref: '#/components/schemas/PetName'
+        petType:
+          $ref: '#/components/schemas/PetType'
+        photoUrls:
+          $ref: '#/components/schemas/PhotoUrls'
+        additionalInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/PetInformationItem'
         petStatus:
           $ref: '#/components/schemas/PetStatus'
     MultiplePetsResponse:
