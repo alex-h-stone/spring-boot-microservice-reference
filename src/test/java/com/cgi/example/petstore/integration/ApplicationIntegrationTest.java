@@ -63,16 +63,16 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals("10", allPetDocument.getId());
+        assertEquals(10L, allPetDocument.getId());
     }
 
     @Test
     void shouldReturnFidoWhenCallingGetPetEndpoint() {
         PetDocument petDocument = testData.createPetDocument();
-        String petId = petDocument.getId();
+        Long petId = petDocument.getId();
         petRepository.save(petDocument);
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getPetStoreURIFor(petId));
+                requestURI.getPetStoreURIFor(String.valueOf(petId)));
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 

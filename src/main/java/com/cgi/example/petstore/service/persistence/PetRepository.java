@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface PetRepository extends MongoRepository<PetDocument, String> {
+public interface PetRepository extends MongoRepository<PetDocument, Long> {
 
     List<PetDocument> findByPetStatusIn(Collection<PetStatus> statuses);
 }

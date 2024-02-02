@@ -54,8 +54,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Pet> updatePet(PetPatch pet) {
-        // TODO Implement update
-        return petService.patch(pet);
+    public ResponseEntity<Pet> patchPet(PetPatch petPatch) {
+        Pet patchedPet = petService.patch(petPatch);
+        return ResponseEntity.ok().body(patchedPet);
     }
 }

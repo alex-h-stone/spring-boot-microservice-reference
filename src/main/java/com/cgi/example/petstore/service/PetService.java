@@ -10,7 +10,6 @@ import com.cgi.example.petstore.service.persistence.DataStoreService;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,8 +36,8 @@ public class PetService {
         return pet;
     }
 
-    public Pet retrievePetDetails(long petId) {
-        Optional<Pet> optionalPet = dataStoreService.findPetById(String.valueOf(petId));
+    public Pet retrievePetDetails(Long petId) {
+        Optional<Pet> optionalPet = dataStoreService.findPetById(petId);
 
         if (optionalPet.isEmpty()) {
             String message = "Unable to find the pet with Id: [%d]".formatted(petId);
@@ -48,7 +47,7 @@ public class PetService {
         Pet pet = optionalPet.get();
         List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
         pet.setVaccinations(vaccinations);
-        
+
         return pet;
     }
 
@@ -56,8 +55,9 @@ public class PetService {
         return dataStoreService.findPetsByStatus(statuses);
     }
 
-    public ResponseEntity<Pet> patch(PetPatch pet) {
-        //dataStoreService.
-        return null;
+    public Pet patch(PetPatch pet) {
+        Pet patchedPet = dataStoreService.patch(pet);
+        log.debug("Successfully patched the pet with petId [{}]", patchedPet.getId());
+        return patchedPet;
     }
 }

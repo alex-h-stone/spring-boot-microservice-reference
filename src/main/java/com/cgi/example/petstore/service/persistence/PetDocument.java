@@ -18,7 +18,7 @@ public class PetDocument {
 
     @Id
     @Indexed(unique = true)
-    private String id;
+    private Long id;
 
     private String vaccinationId;
 

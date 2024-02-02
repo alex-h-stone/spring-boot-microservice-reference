@@ -27,7 +27,7 @@ public class DataStoreServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldSavePetToMongoDB() {
         Pet petToSave = testData.createPet();
-        String expectedPetId = String.valueOf(petToSave.getId());
+        Long expectedPetId = petToSave.getId();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 

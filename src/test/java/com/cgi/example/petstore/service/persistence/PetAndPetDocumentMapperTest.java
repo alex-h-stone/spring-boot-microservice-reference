@@ -46,6 +46,7 @@ class PetAndPetDocumentMapperTest {
 
         String actualPetDocumentToString = petDocument.toString();
         assertNotNull(actualPetDocumentToString);
+        // TODO replace with with assertAll and remove assertEqualsWithNormalisedSpaces
         assertionUtils.assertEqualsWithNormalisedSpaces("""
                 PetDocument(id=10,
                   vaccinationId=AF54785412K,

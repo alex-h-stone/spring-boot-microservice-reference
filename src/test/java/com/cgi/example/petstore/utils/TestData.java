@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TestData {
 
-    private static final long ID = 10L;
+    private static final long PET_ID = 10L;
     private static final String NAME = "Fido";
     private static final PetType PET_TYPE = PetType.DOG;
     private static final String VACCINATION_ID = "AF54785412K";
@@ -21,7 +21,7 @@ public class TestData {
     public Pet createPet() {
         Pet pet = new Pet();
 
-        pet.setId(ID);
+        pet.setId(PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setVaccinations(Collections.emptyList());
         pet.setName(NAME);
@@ -36,7 +36,7 @@ public class TestData {
     public PetDocument createPetDocument() {
         LocalDateTime now = LocalDateTime.now();
         return PetDocument.builder()
-                .id(String.valueOf(ID))
+                .id(PET_ID)
                 .vaccinationId(VACCINATION_ID)
                 .name(NAME)
                 .petType(PET_TYPE.getValue())
@@ -51,7 +51,7 @@ public class TestData {
     public NewPet createNewPet() {
         NewPet pet = new NewPet();
 
-        pet.setId(ID);
+        pet.setId(PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setName(NAME);
         pet.setPetType(PET_TYPE);
