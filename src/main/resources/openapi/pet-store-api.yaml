@@ -33,11 +33,11 @@ paths:
       operationId: updatePet
       requestBody:
         description: Update an existent pet in the store
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Pet'
-        required: true
       responses:
         '200':
           description: Successful operation
@@ -57,11 +57,11 @@ paths:
       operationId: addPet
       requestBody:
         description: Create a new pet in the store
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/NewPet'
-        required: true
       responses:
         '200':
           description: Successful operation
@@ -178,6 +178,11 @@ components:
         - Fish
     Customer:
       type: object
+      required:
+        - customerId
+        - firstName
+        - lastName
+        - address
       properties:
         customerId:
           type: integer
@@ -199,43 +204,57 @@ components:
           $ref: '#/components/schemas/Address'
     Address:
       type: object
+      required:
+        - street
+        - city
+        - postCode
+        - country
       properties:
         street:
           type: string
-          example: 437 Lytton
+          example: 40 Princes Street
         city:
           type: string
-          example: Palo Alto
-        state:
+          example: Edinburgh
+        postCode:
           type: string
-          example: CA
-        zip:
+          example: EH2 2BY
+        country:
           type: string
-          example: '94301'
+          example: 'United Kingdom'
     PetInformationItem:
       type: object
+      required:
+        - name
+        - description
       properties:
         name:
           type: string
+          description: The name/type of additional information.
           example: Type of Coat
         description:
           type: string
+          description: The actual additional information content.
           example: Short Hair
     NewPet:
       description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
-      required:
-        - name
-        - photoUrls
       type: object
+      required:
+        - id
+        - vaccinationId
+        - name
+        - petType
       properties:
         id:
           type: integer
           format: int64
-          example: 10
+          description: The unique Pet Shop Id for the pet.
+          example: 1089
         vaccinationId:
           $ref: '#/components/schemas/PetVaccinationId'
         name:
           type: string
+          description: The pet answers to this name.
           example: Fido
         petType:
           $ref: '#/components/schemas/PetType'
@@ -251,35 +270,18 @@ components:
     Pet:
       allOf:
         - $ref: '#/components/schemas/NewPet'
-      required:
-        - name
-        - photoUrls
       type: object
+      required:
+        - id
+        - vaccinationId
+        - name
+        - petType
+        - petStatus
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
-        vaccinationId:
-          $ref: '#/components/schemas/PetVaccinationId'
         vaccinations:
           type: array
           items:
             $ref: '#/components/schemas/Vaccination'
-        name:
-          type: string
-          example: Doggie
-        petType:
-          $ref: '#/components/schemas/PetType'
-        photoUrls:
-          type: array
-          items:
-            type: string
-            example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
-        additionalInformation:
-          type: array
-          items:
-            $ref: '#/components/schemas/PetInformationItem'
         petStatus:
           $ref: '#/components/schemas/PetStatus'
     MultiplePetsResponse:

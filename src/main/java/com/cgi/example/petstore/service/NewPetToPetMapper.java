@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 interface NewPetToPetMapper {
 
     @Mapping(target = "vaccinations", ignore = true)
+    @Mapping(target = "petStatus", constant = "AVAILABLE_FOR_PURCHASE")
     Pet map(NewPet newPet);
 }
