@@ -1,8 +1,8 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.IntegrationTestRestTemplate;
+import com.cgi.example.petstore.integration.utils.LoggingTestRestTemplate;
 import com.cgi.example.petstore.integration.utils.PetStoreWiremockServer;
-import com.cgi.example.petstore.integration.utils.RequestURI;
+import com.cgi.example.petstore.integration.utils.URIBuilder;
 import com.cgi.example.petstore.utils.AssertionUtils;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -27,10 +27,10 @@ public class BaseIntegrationTest {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    protected IntegrationTestRestTemplate testRestTemplate;
+    protected LoggingTestRestTemplate testRestTemplate;
 
     @Autowired
-    protected RequestURI requestURI;
+    protected URIBuilder uriBuilder;
 
     @Autowired
     protected PetStoreWiremockServer stubServer;

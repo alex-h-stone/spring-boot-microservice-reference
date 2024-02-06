@@ -1,6 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.RequestURI;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +22,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     @Test
     public void actuatorEndpointShouldListResources() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getManagementURIFor("/actuator"));
+                uriBuilder.getManagementURIFor("actuator").build().toUri());
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -39,7 +39,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     @Test
     void actuatorHealthEndpointShouldShowUp() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getManagementURIFor("/actuator/health"));
+                uriBuilder.getManagementURIFor("actuator/health").build().toUri());
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -57,7 +57,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     @Test
     void actuatorInfoEndpointShouldIncludeDescriptionArtifactNameAndGroup() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getManagementURIFor("/actuator/info"));
+                uriBuilder.getManagementURIFor("actuator/info").build().toUri());
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -79,7 +79,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     @Test
     void actuatorMappingsEndpointShouldListMultipleMappings() {
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getManagementURIFor("/actuator/mappings"));
+                uriBuilder.getManagementURIFor("actuator/mappings").build().toUri());
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -93,28 +93,29 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"/v3/api-docs,application/json",
-            "/v3/api-docs.yaml,application/vnd.oai.openapi",
-            "/v3/api-docs/springdoc,application/json"
+    @CsvSource({"v3/api-docs,application/json",
+            "v3/api-docs.yaml,application/vnd.oai.openapi",
+            "v3/api-docs/springdoc,application/json"
     })
     void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints(String apiDocUrl, String expectedContentType) {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor(apiDocUrl));
+        URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
+
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 assertions.assertContentType(response, expectedContentType),
-                () -> assertThat(response.getBody(), Matchers.containsString(RequestURI.PET_STORE_BASE_URL + "/{petId}")),
+                () -> assertThat(response.getBody(), Matchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/{petId}")),
                 () -> assertThat(response.getBody(), Matchers.containsString("Find pet by ID"))
         );
     }
 
     @Test
     void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getApplicationURIFor("/v3/api-docs/swagger-config"));
+        URI requestUri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config").build().toUri();
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 

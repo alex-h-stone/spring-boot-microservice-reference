@@ -3,7 +3,6 @@ package com.cgi.example.petstore.service.persistence;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
-import com.cgi.example.petstore.utils.AssertionUtils;
 import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -18,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PetAndPetDocumentMapperTest {
 
     private final TestData testData = new TestData();
-    private final AssertionUtils assertionUtils = new AssertionUtils();
 
     private final PetAndPetDocumentMapper mapper = Mappers.getMapper(PetAndPetDocumentMapper.class);
 
@@ -42,21 +40,19 @@ class PetAndPetDocumentMapperTest {
 
     @Test
     void shouldSuccessfullyMapFromAPetToPetDocument() {
-        PetDocument petDocument = mapper.map(testData.createPet());
+        Pet pet = testData.createPet();
 
-        String actualPetDocumentToString = petDocument.toString();
-        assertNotNull(actualPetDocumentToString);
-        // TODO replace with with assertAll and remove assertEqualsWithNormalisedSpaces
-        assertionUtils.assertEqualsWithNormalisedSpaces("""
-                PetDocument(id=10,
-                  vaccinationId=AF54785412K,
-                  name=Fido,
-                  petType=DOG,
-                  photoUrls=[https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6],
-                  additionalInformation=[],
-                  petStatus=AVAILABLE_FOR_PURCHASE,
-                  createdAt=null,
-                  lastModified=null)
-                  """, actualPetDocumentToString);
+        PetDocument actualPetDocument = mapper.map(pet);
+
+        assertAll(
+                () -> assertNotNull(actualPetDocument),
+                () -> assertEquals(10, actualPetDocument.getId()),
+                () -> assertEquals("AF54785412K", actualPetDocument.getVaccinationId()),
+                () -> assertEquals("Fido", actualPetDocument.getName()),
+                () -> assertEquals(PetType.DOG.name(), actualPetDocument.getPetType()),
+                () -> assertEquals(PetStatus.AVAILABLE_FOR_PURCHASE.getValue(), actualPetDocument.getPetStatus()),
+                () -> assertThat(actualPetDocument.getPhotoUrls(), Matchers.contains("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6")),
+                () -> assertThat(actualPetDocument.getAdditionalInformation(), Matchers.empty())
+        );
     }
 }

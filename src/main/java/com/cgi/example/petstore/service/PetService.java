@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.service;
 
 import com.cgi.example.petstore.exception.NotFoundException;
+import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
@@ -59,5 +60,9 @@ public class PetService {
         Pet patchedPet = dataStoreService.patch(pet);
         log.debug("Successfully patched the pet with petId [{}]", patchedPet.getId());
         return patchedPet;
+    }
+
+    public Pet purchase(long petId, Customer customer) {
+        return null;
     }
 }

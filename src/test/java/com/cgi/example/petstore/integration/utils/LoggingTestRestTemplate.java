@@ -8,20 +8,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IntegrationTestRestTemplate {
+public class LoggingTestRestTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestRestTemplate.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingTestRestTemplate.class);
 
     private final TestRestTemplate testRestTemplate;
 
-    public IntegrationTestRestTemplate(TestRestTemplate testRestTemplate) {
+    public LoggingTestRestTemplate(TestRestTemplate testRestTemplate) {
         this.testRestTemplate = testRestTemplate;
     }
 
     public ResponseEntity<String> execute(RequestEntity<?> requestEntity) {
+        LOG.info("Integration test RequestEntity: [{}]", requestEntity);
         ResponseEntity<String> response = testRestTemplate.exchange(requestEntity, String.class);
         LOG.info("Integration test ResponseEntity: [{}]", response);
         return response;
-
     }
 }

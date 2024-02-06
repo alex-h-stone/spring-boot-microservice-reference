@@ -39,22 +39,11 @@ public class DataStoreService {
     }
 
     public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
-     /*   List<Pet> examples = statuses.stream().map(new Function<PetStatus, Pet>() {
-            @Override
-            public Pet apply(PetStatus petStatus) {
-                Pet pet = new Pet();
-                pet.setPetStatus(petStatus);
-                return pet;
-            }
-        }).collect(Collectors.toList());
+        List<String> petDocumentStatuses = petAndPetDocumentMapper.mapPetStatuses(statuses);
 
+        List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
 
-        ExampleMatcher.matchingAny();
-        Example.of()*/
-
-        List<PetDocument> byPetStatusIn = petRepository.findByPetStatusIn(statuses);
-        List<Pet> map = petAndPetDocumentMapper.map(byPetStatusIn);
-        return map;
+        return petAndPetDocumentMapper.mapPetDocuments(petDocumentsWithMatchingStatus);
     }
 
     public Pet patch(PetPatch petPatch) {

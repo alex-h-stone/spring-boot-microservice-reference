@@ -2,47 +2,38 @@ package com.cgi.example.petstore.integration.utils;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Component
-public class RequestURI {
+public class URIBuilder {
 
-    public static final String PET_STORE_BASE_URL = "/api/v1/pet-store/pets";
+    public static final String PET_STORE_BASE_URL = "api/v1/pet-store/pets";
 
     private final Environment environment;
 
-    public RequestURI(Environment environment) {
+    public URIBuilder(Environment environment) {
         this.environment = environment;
     }
 
-    public URI getPetStoreURIFor(String resource) {
-        return getApplicationURIFor(PET_STORE_BASE_URL + "/" + resource);
+    public UriComponentsBuilder getPetStoreURIFor(String resource) {
+        return getApplicationURIFor(PET_STORE_BASE_URL)
+                .pathSegment(resource);
     }
 
-    public URI getPetStoreBaseURI() {
+    public UriComponentsBuilder getPetStoreBaseURI() {
         return getApplicationURIFor(PET_STORE_BASE_URL);
     }
 
-    public URI getApplicationURIFor(String resource) {
-        return createURI(getApplicationPort(), resource);
+    public UriComponentsBuilder getApplicationURIFor(String resource) {
+        return getUriComponentsBuilder(getApplicationPort())
+                .pathSegment(resource);
     }
 
-    public URI getManagementURIFor(String resource) {
-        return createURI(getManagementPort(), resource);
-    }
-
-    private URI createURI(int portNumber, String resource) {
-        String url = "http://localhost:" + portNumber + resource;
-
-        try {
-            return new URI(url);
-        } catch (URISyntaxException e) {
-            String message = "Unable to create URI from [%s]".formatted(url);
-            throw new RuntimeException(message, e);
-        }
+    public UriComponentsBuilder getManagementURIFor(String resource) {
+        return getUriComponentsBuilder(getManagementPort())
+                .pathSegment(resource);
     }
 
     private int getManagementPort() {
@@ -63,5 +54,14 @@ public class RequestURI {
         }
 
         return integerEnvironmentProperty;
+    }
+
+    private UriComponentsBuilder getUriComponentsBuilder(int port) {
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance();
+        uriComponentsBuilder.scheme("http")
+                .host("localhost")
+                .port(port);
+
+        return uriComponentsBuilder;
     }
 }

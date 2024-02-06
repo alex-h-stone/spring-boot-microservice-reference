@@ -25,6 +25,7 @@ public class PetStoreController implements PetStoreApi {
     @Override
     public ResponseEntity<Pet> addPet(NewPet newPet) {
         Pet pet = petService.addToPetStore(newPet);
+        
         return ResponseEntity.ok(pet);
     }
 
@@ -48,14 +49,18 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Void> purchasePet(Long petId, Customer customer) {
-        // TODO Update status of pet to purchased
-        return null;
+    public ResponseEntity<Pet> purchasePet(Long petId, Customer customer) {
+        petValidator.validatePetId(petId);
+
+        Pet purchasedPet = petService.purchase(petId, customer);
+
+        return ResponseEntity.ok().body(purchasedPet);
     }
 
     @Override
     public ResponseEntity<Pet> patchPet(PetPatch petPatch) {
         Pet patchedPet = petService.patch(petPatch);
+
         return ResponseEntity.ok().body(patchedPet);
     }
 }

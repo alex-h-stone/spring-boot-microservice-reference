@@ -1,11 +1,12 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.RequestURI;
 import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.persistence.PetDocument;
 import com.cgi.example.petstore.service.persistence.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,9 +39,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd,
-                HttpMethod.POST,
-                requestURI.getPetStoreBaseURI());
+        URI uri = uriBuilder.getPetStoreBaseURI()
+                .build()
+                .toUri();
+        RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -71,8 +75,12 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         PetDocument petDocument = testData.createPetDocument();
         Long petId = petDocument.getId();
         petRepository.save(petDocument);
+
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(petId))
+                .build()
+                .toUri();
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getPetStoreURIFor(String.valueOf(petId)));
+                uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -97,8 +105,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnNotFoundWhenCallingGetPetWithUnknownPetId() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getPetStoreURIFor("13"));
+        URI uri = uriBuilder.getPetStoreURIFor("13")
+                .build()
+                .toUri();
+
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -123,8 +134,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getPetStoreURIFor("10000"));
+        URI uri = uriBuilder.getPetStoreURIFor("10000")
+                .build()
+                .toUri();
+
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -137,13 +151,15 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(500, status),
                 () -> assertEquals("Handled by GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
-                () -> assertEquals(RequestURI.PET_STORE_BASE_URL + "/10000", instance));
+                () -> assertThat(instance, CoreMatchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/10000")));
     }
 
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                requestURI.getPetStoreURIFor("666"));
+        URI uri = uriBuilder.getPetStoreURIFor("666")
+                .build()
+                .toUri();
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -155,8 +171,74 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
-                () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet ID: 666]", detail),
-                () -> assertEquals(RequestURI.PET_STORE_BASE_URL + "/666", instance)
+                () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet Id, the Id 666 is not permitted, found: 666]", detail),
+                () -> assertThat(instance, CoreMatchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/666"))
         );
+    }
+
+    @Test
+    void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() {
+        PetDocument petDocumentLassie = createPetDocument(10L,
+                "Lassie",
+                PetStatus.PENDING_COLLECTION);
+        PetDocument petDocumentAstro = createPetDocument(11L,
+                "Astro",
+                PetStatus.SOLD);
+        PetDocument petDocumentBeethoven = createPetDocument(12L,
+                "Beethoven",
+                PetStatus.AVAILABLE_FOR_PURCHASE);
+
+        petRepository.saveAll(Arrays.asList(petDocumentLassie,
+                petDocumentAstro,
+                petDocumentBeethoven));
+
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(3));
+
+        URI uri = uriBuilder.getPetStoreBaseURI()
+                .pathSegment("findByStatus")
+                .queryParam("statuses", PetStatus.AVAILABLE_FOR_PURCHASE.name())
+                .build()
+                .toUri();
+
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                    {
+                      "pets": [
+                        {
+                          "petStatus": "Available For Purchase",
+                          "id": 12,
+                          "vaccinationId": "AF54785412K",
+                          "name": "Beethoven",
+                          "petType": "Dog",
+                          "photoUrls": [
+                            "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                          ]
+                        }
+                      ]
+                    }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
+    }
+
+    private PetDocument createPetDocument(long id,
+                                          String name,
+                                          PetStatus petStatus) {
+        PetDocument petDocumentBeethoven = testData.createPetDocument();
+
+        petDocumentBeethoven.setId(id);
+        petDocumentBeethoven.setName(name);
+        petDocumentBeethoven.setPetStatus(petStatus.getValue());
+
+        return petDocumentBeethoven;
     }
 }
