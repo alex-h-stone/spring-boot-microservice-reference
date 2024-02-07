@@ -19,12 +19,13 @@ public class DataStoreService {
     private final PetAndPetDocumentMapper petAndPetDocumentMapper;
     private final PetRepository petRepository;
 
-    public void save(Pet pet) {
+    public Pet save(Pet pet) {
         PetDocument petDocument = petAndPetDocumentMapper.map(pet);
 
         PetDocument insertedPet = petRepository.insert(petDocument);
 
         log.debug("Successfully saved Pet with Id: [{}]", insertedPet.getId());
+        return pet;
     }
 
     public Optional<Pet> findPetById(Long id) {
@@ -54,11 +55,10 @@ public class DataStoreService {
             String message = "Unable to patch as cannot find the pet with Id: [%d]".formatted(petId);
             throw new NotFoundException(message);
         }
-        PetDocument petToPatch = petDocument.get();
-        // TODO patch petToPatch with petPatch
+        Pet petToBePatched = petAndPetDocumentMapper.map(petDocument.get());
 
-        PetDocument patchedAndSavedPet = petRepository.save(petToPatch);
+        petAndPetDocumentMapper.updateTargetObjectFromSourceObject(petPatch, petToBePatched);
 
-        return petAndPetDocumentMapper.map(patchedAndSavedPet);
+        return save(petToBePatched);
     }
 }

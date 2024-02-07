@@ -2,6 +2,7 @@ package com.cgi.example.petstore.utils;
 
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
+import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
 import com.cgi.example.petstore.service.persistence.PetDocument;
@@ -59,5 +60,14 @@ public class TestData {
         pet.setAdditionalInformation(Collections.emptyList());
 
         return pet;
+    }
+
+    public PetInformationItem createPetInformationItem(String name, String description) {
+        PetInformationItem petInformationItem = new PetInformationItem();
+
+        petInformationItem.setName(name);
+        petInformationItem.setDescription(description);
+
+        return petInformationItem;
     }
 }

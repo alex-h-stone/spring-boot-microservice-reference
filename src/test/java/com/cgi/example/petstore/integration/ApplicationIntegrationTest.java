@@ -1,11 +1,14 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.PetInformationItem;
+import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.persistence.PetDocument;
 import com.cgi.example.petstore.service.persistence.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
+import jakarta.validation.Valid;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -201,6 +205,57 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 .toUri();
 
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                    {
+                      "pets": [
+                        {
+                          "petStatus": "Available For Purchase",
+                          "id": 12,
+                          "vaccinationId": "AF54785412K",
+                          "name": "Beethoven",
+                          "petType": "Dog",
+                          "photoUrls": [
+                            "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                          ]
+                        }
+                      ]
+                    }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
+    }
+
+    @Test
+    void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() {
+        PetDocument petDocumentBeethoven = createPetDocument(12L,
+                "Beethoven",
+                PetStatus.AVAILABLE_FOR_PURCHASE);
+
+        petRepository.save(petDocumentBeethoven);
+
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+
+        URI uri = uriBuilder.getPetStoreBaseURI()
+                .build()
+                .toUri();
+
+        PetPatch petPatch = new PetPatch();
+        petPatch.setId(12L);
+        petPatch.setName("Astro");
+        List<@Valid PetInformationItem> additionalInformation =
+                Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
+        petPatch.setAdditionalInformation(additionalInformation);
+
+        RequestEntity<PetPatch> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
