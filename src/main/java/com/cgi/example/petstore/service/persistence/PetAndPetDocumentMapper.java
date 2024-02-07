@@ -18,6 +18,7 @@ import java.util.Objects;
 @Mapper(componentModel = "spring")
 interface PetAndPetDocumentMapper {
 
+    // TODO tidy up mappings
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateTargetObjectFromSourceObject(PetPatch patchToApply, @MappingTarget Pet targetPet);
 

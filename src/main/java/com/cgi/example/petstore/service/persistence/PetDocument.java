@@ -13,7 +13,7 @@ import java.util.List;
 
 @Builder
 @Data
-@Document(collection = "collection1_as")
+@Document(collection = "pets")
 public class PetDocument {
 
     @Id

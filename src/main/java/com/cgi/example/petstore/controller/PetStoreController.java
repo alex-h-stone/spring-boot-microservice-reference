@@ -24,9 +24,9 @@ public class PetStoreController implements PetStoreApi {
 
     @Override
     public ResponseEntity<Pet> addPet(NewPet newPet) {
-        Pet pet = petService.addToPetStore(newPet);
-        
-        return ResponseEntity.ok(pet);
+        Pet addedPet = petService.addToPetStore(newPet);
+
+        return ResponseEntity.ok(addedPet);
     }
 
     @Override

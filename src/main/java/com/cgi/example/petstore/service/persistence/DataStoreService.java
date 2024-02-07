@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.service.persistence;
 
 import com.cgi.example.petstore.exception.NotFoundException;
+import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
@@ -18,14 +19,16 @@ public class DataStoreService {
 
     private final PetAndPetDocumentMapper petAndPetDocumentMapper;
     private final PetRepository petRepository;
+    private final CustomerRepository customerRepository;
 
     public Pet save(Pet pet) {
         PetDocument petDocument = petAndPetDocumentMapper.map(pet);
 
-        PetDocument insertedPet = petRepository.insert(petDocument);
+        PetDocument insertedPetDocument = petRepository.insert(petDocument);
 
+        Pet insertedPet = petAndPetDocumentMapper.map(insertedPetDocument);
         log.debug("Successfully saved Pet with Id: [{}]", insertedPet.getId());
-        return pet;
+        return insertedPet;
     }
 
     public Optional<Pet> findPetById(Long id) {
@@ -49,19 +52,32 @@ public class DataStoreService {
 
     public Pet patch(PetPatch petPatch) {
         Long petId = petPatch.getId();
-        Optional<PetDocument> petDocument = petRepository.findById(petId);
 
-        if (petDocument.isEmpty()) {
+        Optional<Pet> optionalPetToBePatched = findPetById(petId);
+
+        if (optionalPetToBePatched.isEmpty()) {
             String message = "Unable to patch as cannot find the pet with Id: [%d]".formatted(petId);
             throw new NotFoundException(message);
         }
-        Pet petToBePatched = petAndPetDocumentMapper.map(petDocument.get());
+
+        Pet petToBePatched = optionalPetToBePatched.get();
 
         petAndPetDocumentMapper.updateTargetObjectFromSourceObject(petPatch, petToBePatched);
         PetDocument petDocumentToSave = petAndPetDocumentMapper.map(petToBePatched);
 
-        PetDocument insertedPet = petRepository.save(petDocumentToSave);
+        PetDocument insertedPetDocument = petRepository.save(petDocumentToSave);
 
-        return petAndPetDocumentMapper.map(insertedPet);
+        return petAndPetDocumentMapper.map(insertedPetDocument);
+    }
+
+    public void saveIfAbsent(Customer customer) {
+        Long customerId = customer.getCustomerId();
+
+        Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
+        if (optionalCustomerDocument.isEmpty()) {
+            // TODO complete mapping logic
+            //customerRepository.insert()
+        }
+
     }
 }

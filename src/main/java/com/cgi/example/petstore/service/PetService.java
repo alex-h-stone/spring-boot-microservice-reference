@@ -26,15 +26,14 @@ public class PetService {
     private final DataStoreService dataStoreService;
 
     public Pet addToPetStore(NewPet newPet) {
-
         Pet pet = newPetToPetMapper.map(newPet);
 
-        dataStoreService.save(pet);
+        Pet savedPet = dataStoreService.save(pet);
 
         List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
-        pet.setVaccinations(vaccinations);
+        savedPet.setVaccinations(vaccinations);
 
-        return pet;
+        return savedPet;
     }
 
     public Pet retrievePetDetails(Long petId) {
@@ -63,6 +62,8 @@ public class PetService {
     }
 
     public Pet purchase(long petId, Customer customer) {
+        dataStoreService.saveIfAbsent(customer);
+        // TODO
         return null;
     }
 }
