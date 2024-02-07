@@ -261,16 +261,18 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                     {
-                      "pets": [
+                      "petStatus": "Available For Purchase",
+                      "id": 12,
+                      "vaccinationId": "AF54785412K",
+                      "name": "Astro",
+                      "petType": "Dog",
+                      "photoUrls": [
+                        "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                      ],
+                      "additionalInformation": [
                         {
-                          "petStatus": "Available For Purchase",
-                          "id": 12,
-                          "vaccinationId": "AF54785412K",
-                          "name": "Beethoven",
-                          "petType": "Dog",
-                          "photoUrls": [
-                            "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                          ]
+                          "name": "Eye colour",
+                          "description": "Green"
                         }
                       ]
                     }

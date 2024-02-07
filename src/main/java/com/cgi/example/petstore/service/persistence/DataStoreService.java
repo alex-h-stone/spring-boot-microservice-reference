@@ -58,7 +58,10 @@ public class DataStoreService {
         Pet petToBePatched = petAndPetDocumentMapper.map(petDocument.get());
 
         petAndPetDocumentMapper.updateTargetObjectFromSourceObject(petPatch, petToBePatched);
+        PetDocument petDocumentToSave = petAndPetDocumentMapper.map(petToBePatched);
 
-        return save(petToBePatched);
+        PetDocument insertedPet = petRepository.save(petDocumentToSave);
+
+        return petAndPetDocumentMapper.map(insertedPet);
     }
 }
