@@ -17,12 +17,12 @@ import java.util.List;
 public class PetDocument {
 
     @Id
-    @Indexed(unique = true)
+    @Indexed(unique = true, name = "petIdIndex")
     private Long id;
 
     private String vaccinationId;
 
-    @Indexed
+    @Indexed(unique = false, name = "petNameIndex")
     private String name;
 
     private String petType;
@@ -31,7 +31,7 @@ public class PetDocument {
 
     private List<PetInformationItemPersistenceType> additionalInformation;
 
-    @Indexed
+    @Indexed(unique = false, name = "petStatusIndex")
     private String petStatus;
 
     @CreatedDate

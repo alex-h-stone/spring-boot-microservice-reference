@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -23,19 +23,16 @@ import java.util.Optional;
 public class VaccinationsApiClient {
 
     private final WebClient webClient;
-    private final VaccinationsApiConfig config;
+    private final UriBuilder vaccinationsUriBuilder;
 
     public Optional<List<Vaccination>> getVaccinations(String vaccinationId) {
-        URI uri = UriComponentsBuilder
-                .fromPath(config.getPath())
-                .scheme(config.getScheme())
-                .host(config.getHost())
-                .port(config.getPort())
+        URI uri = vaccinationsUriBuilder
                 .build(Map.of("vaccinationId", vaccinationId));
 
         log.debug("About to get vaccinations for URI: [{}]", uri);
 
         try {
+
             ResponseEntity<VaccinationsResponse> vaccinationsResponse = webClient.get()
                     .uri(uri)
                     .retrieve()

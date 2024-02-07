@@ -16,14 +16,8 @@ management:
 spring:
   data:
     mongodb:
-      host: alex-stone-cosmos-for-mongo-db.mongo.cosmos.azure.com
-      port: 10255
-      database: database1_as
-      username: alex-stone-cosmos-for-mongo-db
-      password: e7dxmlYipYh4UQopl1CY6fCWEFesIJkTAWicDtjDQQ1xu548TEheQ08apuQ1WxQuufKAYX9PlUPBACDbtFokyQ==
-      maxIdleTimeMS: 30000
-      ssl:
-        enabled: true
+      uri: ${MONGO_DB_URI}
+      database: petStoreDatabase
 
 logging:
   level:
@@ -35,7 +29,5 @@ logging:
 thirdparty:
   apis:
     vaccinations:
-      path: "/vaccinations/{vaccinationId}"
-      scheme: "http"
-      host: "www.vaccinations.thirdparty.com"
-      port: 9999
+      baseUrl: "https://www.vaccinations.thirdparty.com:9999"
+      path: "vaccinations/{vaccinationId}"
