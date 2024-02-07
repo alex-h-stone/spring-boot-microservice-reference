@@ -26,29 +26,20 @@ public class VaccinationsApiClient {
     private final UriBuilder vaccinationsUriBuilder;
 
     public Optional<List<Vaccination>> getVaccinations(String vaccinationId) {
-        URI uri = vaccinationsUriBuilder
-                .build(Map.of("vaccinationId", vaccinationId));
+        URI uri = vaccinationsUriBuilder.build(Map.of("vaccinationId", vaccinationId));
 
-        log.debug("About to get vaccinations for URI: [{}]", uri);
+        log.debug("About to get vaccinations with URI: [{}]", uri);
 
         try {
+            ResponseEntity<VaccinationsResponse> vaccinationsResponse = getVaccinationsResponse(uri);
 
-            ResponseEntity<VaccinationsResponse> vaccinationsResponse = webClient.get()
-                    .uri(uri)
-                    .retrieve()
-                    .toEntity(VaccinationsResponse.class)
-                    .block();
-
-            if (Objects.isNull(vaccinationsResponse) ||
-                    !vaccinationsResponse.getStatusCode().is2xxSuccessful() ||
-                    Objects.isNull(vaccinationsResponse.getBody()) ||
-                    Objects.isNull(vaccinationsResponse.getBody().getVaccinations())) {
+            if (invalid(vaccinationsResponse)) {
                 log.info("Unable to determine vaccinations for vaccinationId: [{}]", vaccinationId);
                 return Optional.empty();
             }
 
             List<@Valid Vaccination> vaccinations = vaccinationsResponse.getBody().getVaccinations();
-            log.debug("Retrieved {} vaccinations for URI: [{}]", vaccinations.size(), uri);
+            log.debug("Retrieved {} vaccinations with URI: [{}]", vaccinations.size(), uri);
             return Optional.of(vaccinations);
 
         } catch (WebClientResponseException e) {
@@ -56,5 +47,20 @@ public class VaccinationsApiClient {
                     vaccinationId, e.getMessage(), e);
             return Optional.empty();
         }
+    }
+
+    private boolean invalid(ResponseEntity<VaccinationsResponse> vaccinationsResponse) {
+        return Objects.isNull(vaccinationsResponse) ||
+                !vaccinationsResponse.getStatusCode().is2xxSuccessful() ||
+                Objects.isNull(vaccinationsResponse.getBody()) ||
+                Objects.isNull(vaccinationsResponse.getBody().getVaccinations());
+    }
+
+    private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) {
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .toEntity(VaccinationsResponse.class)
+                .block();
     }
 }
