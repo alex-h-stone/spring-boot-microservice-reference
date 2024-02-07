@@ -17,11 +17,13 @@ spring:
   data:
     mongodb:
       host: alex-stone-cosmos-for-mongo-db.mongo.cosmos.azure.com
-      port: 59560
+      port: 10255
       database: database1_as
+      username: alex-stone-cosmos-for-mongo-db
+      password: e7dxmlYipYh4UQopl1CY6fCWEFesIJkTAWicDtjDQQ1xu548TEheQ08apuQ1WxQuufKAYX9PlUPBACDbtFokyQ==
       maxIdleTimeMS: 30000
       ssl:
-        enabled: false
+        enabled: true
 
 logging:
   level:

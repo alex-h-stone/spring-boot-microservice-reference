@@ -21,12 +21,17 @@ class DataStoreServiceTest {
     @Mock
     private PetRepository mockPetRepository;
 
+    @Mock
+    private CustomerRepository mockCustomerRepository;
+
     private DataStoreService dataStoreService;
 
     @BeforeEach
     void setUp() {
         PetAndPetDocumentMapper mapper = Mappers.getMapper(PetAndPetDocumentMapper.class);
-        dataStoreService = new DataStoreService(mapper, mockPetRepository);
+        dataStoreService = new DataStoreService(mapper,
+                mockPetRepository,
+                mockCustomerRepository);
     }
 
     @Test
