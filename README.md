@@ -15,12 +15,18 @@ swagger editor https://editor.swagger.io/
 The microservice is structured with Controller and Service layers.
 Depending on the use case it may be desirable to also include a mapping layer
 to translate between one or more of the following:
-- API model types
-- 3rd Party - API model types
-- Datastore/Repository entity types
-- Internal data representation types (DTOs)
-- Queue/Messaging DTOs
 
+- API model types (pet store)
+- 3rd Party - API model types (vaccinations)
+- Datastore/Repository entity types (MongoDB)
+
+The API provides the following functionality:
+
+- New pets can be added to the pet store.
+- Customers can search for a pet.
+- Pets can be updated when details change.
+- Customers can purchase a pet.
+- Pet vaccination details are provided via a 3rd party API call.
 ---
 
 #### Database integration with MongoDB

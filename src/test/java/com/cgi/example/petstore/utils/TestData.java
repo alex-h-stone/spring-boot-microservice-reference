@@ -59,7 +59,7 @@ public class TestData {
         pet.setName(FIDO_NAME);
         pet.setPetType(DOG_PET_TYPE);
         pet.photoUrls(DEFAULT_PHOTO_URLS);
-        pet.setAdditionalInformation(Collections.emptyList());
+        pet.setAdditionalInformation(List.of(createPetInformationItem("Personality", "Energetic")));
 
         return pet;
     }
