@@ -1,11 +1,12 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
-import com.cgi.example.petstore.service.persistence.PetDocument;
-import com.cgi.example.petstore.service.persistence.PetRepository;
+import com.cgi.example.petstore.service.persistence.pet.PetDocument;
+import com.cgi.example.petstore.service.persistence.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
@@ -80,6 +81,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         Long petId = petDocument.getId();
         petRepository.save(petDocument);
 
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+
         URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(petId))
                 .build()
                 .toUri();
@@ -109,6 +112,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnNotFoundWhenCallingGetPetWithUnknownPetId() {
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+
         URI uri = uriBuilder.getPetStoreURIFor("13")
                 .build()
                 .toUri();
@@ -138,6 +143,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+
         URI uri = uriBuilder.getPetStoreURIFor("10000")
                 .build()
                 .toUri();
@@ -160,6 +167,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation() {
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+
         URI uri = uriBuilder.getPetStoreURIFor("666")
                 .build()
                 .toUri();
@@ -285,6 +294,45 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertJSONContentType(response),
                 () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
         );
+    }
+
+    @Test
+    void shouldSuccessfullyPurchaseAPet() {
+        PetDocument savedPetDocument = petRepository.save(testData.createPetDocument());
+
+        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(savedPetDocument.getId()))
+                .build()
+                .toUri();
+        RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
+                HttpMethod.POST,
+                uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                      {
+                        "id": 10,
+                        "vaccinationId": "AF54785412K",
+                        "name": "Fido",
+                        "petType": "Dog",
+                        "petStatus": "Available For Purchase"
+                      }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
+
+        List<PetDocument> actualAllPetDocuments = petRepository.findAll();
+        assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
+        PetDocument allPetDocument = actualAllPetDocuments.getFirst();
+        assertEquals(10L, allPetDocument.getId());
     }
 
     private PetDocument createPetDocument(long id,

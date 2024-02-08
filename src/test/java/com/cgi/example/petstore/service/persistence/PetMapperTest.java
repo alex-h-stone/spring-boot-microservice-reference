@@ -3,6 +3,8 @@ package com.cgi.example.petstore.service.persistence;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
+import com.cgi.example.petstore.service.persistence.pet.PetDocument;
+import com.cgi.example.petstore.service.persistence.pet.PetMapper;
 import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -14,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class PetAndPetDocumentMapperTest {
+class PetMapperTest {
 
     private final TestData testData = new TestData();
 
-    private final PetAndPetDocumentMapper mapper = Mappers.getMapper(PetAndPetDocumentMapper.class);
+    private final PetMapper mapper = Mappers.getMapper(PetMapper.class);
 
     @Test
     void shouldSuccessfullyMapFromAPetDocumentToPet() {
-        Pet actualPet = mapper.map(testData.createPetDocument());
+        Pet actualPet = mapper.mapPetDocument(testData.createPetDocument());
 
         assertNotNull(actualPet);
         assertAll(
@@ -42,7 +44,7 @@ class PetAndPetDocumentMapperTest {
     void shouldSuccessfullyMapFromAPetToPetDocument() {
         Pet pet = testData.createPet();
 
-        PetDocument actualPetDocument = mapper.map(pet);
+        PetDocument actualPetDocument = mapper.mapPet(pet);
 
         assertAll(
                 () -> assertNotNull(actualPetDocument),
@@ -53,6 +55,24 @@ class PetAndPetDocumentMapperTest {
                 () -> assertEquals(PetStatus.AVAILABLE_FOR_PURCHASE.getValue(), actualPetDocument.getPetStatus()),
                 () -> assertThat(actualPetDocument.getPhotoUrls(), Matchers.contains("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6")),
                 () -> assertThat(actualPetDocument.getAdditionalInformation(), Matchers.empty())
+        );
+    }
+
+    @Test
+    void shouldSuccessfullyMapFromANewPetToPet() {
+        Pet actualPet = mapper.mapNewPet(testData.createNewPet());
+
+        assertNotNull(actualPet);
+        assertAll(
+                () -> assertNotNull(actualPet),
+                () -> assertEquals(10, actualPet.getId()),
+                () -> assertEquals("AF54785412K", actualPet.getVaccinationId()),
+                () -> assertEquals("Fido", actualPet.getName()),
+                () -> assertEquals(PetType.DOG, actualPet.getPetType()),
+                () -> assertEquals(PetStatus.AVAILABLE_FOR_PURCHASE, actualPet.getPetStatus()),
+                () -> assertThat(actualPet.getPhotoUrls(), Matchers.contains("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6")),
+                () -> assertThat(actualPet.getVaccinations(), CoreMatchers.nullValue()),
+                () -> assertThat(actualPet.getAdditionalInformation(), Matchers.empty())
         );
     }
 }

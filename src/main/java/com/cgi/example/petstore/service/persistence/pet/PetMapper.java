@@ -1,5 +1,6 @@
-package com.cgi.example.petstore.service.persistence;
+package com.cgi.example.petstore.service.persistence.pet;
 
+import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
@@ -16,7 +17,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = "spring")
-interface PetAndPetDocumentMapper {
+public interface PetMapper {
+
+    @Mapping(target = "vaccinations", ignore = true)
+    @Mapping(target = "petStatus", constant = "AVAILABLE_FOR_PURCHASE")
+    Pet mapNewPet(NewPet newPetToMap);
 
     // TODO tidy up mappings
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -24,10 +29,10 @@ interface PetAndPetDocumentMapper {
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModified", ignore = true)
-    PetDocument map(Pet petToMap);
+    PetDocument mapPet(Pet petToMap);
 
     @Mapping(target = "vaccinations", ignore = true)
-    Pet map(PetDocument petDocumentToMap);
+    Pet mapPetDocument(PetDocument petDocumentToMap);
 
     List<Pet> mapPetDocuments(List<PetDocument> petDocuments);
 

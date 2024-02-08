@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.service.persistence;
+package com.cgi.example.petstore.service.persistence.pet;
 
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +19,9 @@ public class PetDocument {
     @Id
     @Indexed(unique = true, name = "petIdIndex")
     private Long id;
+
+    @Indexed(unique = false, name = "ownerCustomerIdIndex")
+    private Long ownerCustomerId;
 
     private String vaccinationId;
 

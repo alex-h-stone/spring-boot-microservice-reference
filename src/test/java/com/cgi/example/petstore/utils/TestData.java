@@ -1,11 +1,13 @@
 package com.cgi.example.petstore.utils;
 
+import com.cgi.example.petstore.model.Address;
+import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
-import com.cgi.example.petstore.service.persistence.PetDocument;
+import com.cgi.example.petstore.service.persistence.pet.PetDocument;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -69,5 +71,26 @@ public class TestData {
         petInformationItem.setDescription(description);
 
         return petInformationItem;
+    }
+
+    public Customer createCustomer() {
+        Customer customer = new Customer();
+        customer.setCustomerId(246879L);
+        customer.setUsername("alex.stone");
+        customer.setFirstName("Alex");
+        customer.setLastName("Stone");
+        customer.email("alex.stone@cgi.com");
+        customer.setAddress(createAddress());
+
+        return customer;
+    }
+
+    private Address createAddress() {
+        Address address = new Address();
+        address.setStreet("40 Princes Street");
+        address.setCity("Edinburgh");
+        address.setPostCode("EH2 2BY");
+        address.setCountry("United Kingdom");
+        return address;
     }
 }

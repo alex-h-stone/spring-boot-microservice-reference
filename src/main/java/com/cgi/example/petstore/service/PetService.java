@@ -1,13 +1,13 @@
 package com.cgi.example.petstore.service;
 
-import com.cgi.example.petstore.exception.NotFoundException;
 import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.Vaccination;
-import com.cgi.example.petstore.service.persistence.DataStoreService;
+import com.cgi.example.petstore.service.persistence.customer.CustomerDataStoreService;
+import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,48 +22,45 @@ import java.util.Optional;
 public class PetService {
 
     private final VaccinationsService vaccinationsService;
-    private final NewPetToPetMapper newPetToPetMapper;
-    private final DataStoreService dataStoreService;
+    private final PetDataStoreService petDataStoreService;
+    private final CustomerDataStoreService customerDataStoreService;
 
     public Pet addToPetStore(NewPet newPet) {
-        Pet pet = newPetToPetMapper.map(newPet);
+        Pet savedPet = petDataStoreService.insertNewPet(newPet);
 
-        Pet savedPet = dataStoreService.save(pet);
-
-        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
-        savedPet.setVaccinations(vaccinations);
-
-        return savedPet;
+        return retrievePetDetails(savedPet.getId());
     }
 
-    public Pet retrievePetDetails(Long petId) {
-        Optional<Pet> optionalPet = dataStoreService.findPetById(petId);
-
-        if (optionalPet.isEmpty()) {
-            String message = "Unable to find the pet with Id: [%d]".formatted(petId);
-            throw new NotFoundException(message);
-        }
-
-        Pet pet = optionalPet.get();
+    public Pet retrievePetDetails(long petId) {
+        Pet pet = petDataStoreService.findPetById(petId);
         List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
+
         pet.setVaccinations(vaccinations);
+
+        Optional<Long> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(petId);
+        if (optionalCustomerId.isPresent()) {
+            Customer customer = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
+            pet.setOwner(customer);
+        }
 
         return pet;
     }
 
     public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
-        return dataStoreService.findPetsByStatus(statuses);
+        return petDataStoreService.findPetsByStatus(statuses);
     }
 
     public Pet patch(PetPatch pet) {
-        Pet patchedPet = dataStoreService.patch(pet);
+        Pet patchedPet = petDataStoreService.patch(pet);
         log.debug("Successfully patched the pet with petId [{}]", patchedPet.getId());
-        return patchedPet;
+        return retrievePetDetails(patchedPet.getId());
     }
 
     public Pet purchase(long petId, Customer customer) {
-        dataStoreService.saveIfAbsent(customer);
-        // TODO
-        return null;
+        Customer savedCustomer = customerDataStoreService.insertIfAbsent(customer);
+
+        Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
+
+        return retrievePetDetails(purchasedPet.getId());
     }
 }

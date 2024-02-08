@@ -2,9 +2,15 @@ openapi: 3.0.3
 info:
   title: Pet Store API
   version: "1.0"
-  description:
+  description: |
     This is an example Pet Store API to illustrate various microservice concepts.
-    The API allows consumers to search for pet(s), update pets and purchase pets.
+    The API provides the following functionality:
+
+    - New pets can be added to the pet store.
+    - Customers can search for a pet.
+    - Pets can be updated when details change.
+    - Customers can purchase a pet.
+    - Pet vaccination details are provided via a 3rd party API call.
   contact:
     email: alex.stone@cgi.com
 externalDocs:
@@ -12,16 +18,16 @@ externalDocs:
   url: http://swagger.io
 servers: [
   {
-    "url": "http://localhost:8080/api/v1",
-    "description": "Local development"
+    url: "http://localhost:8080/api/v1",
+    description: "Local development"
   },
   {
-    "url": "https://staging.cloud.com/api/v1",
-    "description": "Staging server"
+    url: "https://staging.cloud.com/api/v1",
+    description: "Staging server"
   },
   {
-    "url": "https://production.cloud.com/api/v1",
-    "description": "Production server"
+    url: "https://production.cloud.com/api/v1",
+    description: "Production server"
   }
 ]
 
@@ -242,7 +248,7 @@ components:
           example: EH2 2BY
         country:
           type: string
-          example: 'United Kingdom'
+          example: United Kingdom
     PetInformationItem:
       type: object
       required:
@@ -297,6 +303,8 @@ components:
             $ref: '#/components/schemas/Vaccination'
         petStatus:
           $ref: '#/components/schemas/PetStatus'
+        owner:
+          $ref: '#/components/schemas/Customer'
     PetPatch:
       type: object
       required:

@@ -1,9 +1,9 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.model.Pet;
-import com.cgi.example.petstore.service.persistence.DataStoreService;
-import com.cgi.example.petstore.service.persistence.PetDocument;
-import com.cgi.example.petstore.service.persistence.PetRepository;
+import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
+import com.cgi.example.petstore.service.persistence.pet.PetDocument;
+import com.cgi.example.petstore.service.persistence.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -14,24 +14,24 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DataStoreServiceIntegrationTest extends BaseIntegrationTest {
+public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
 
     private final TestData testData = new TestData();
 
     @Autowired
-    private DataStoreService dataStoreService;
+    private PetDataStoreService petDataStoreService;
 
     @Autowired
     private PetRepository petRepository;
 
     @Test
     void shouldSavePetToMongoDB() {
-        Pet petToSave = testData.createPet();
+        NewPet petToSave = testData.createNewPet();
         Long expectedPetId = petToSave.getId();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        dataStoreService.save(petToSave);
+        petDataStoreService.insertNewPet(petToSave);
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
