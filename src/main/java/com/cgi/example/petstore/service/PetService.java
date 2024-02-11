@@ -28,7 +28,7 @@ public class PetService {
     public Pet addToPetStore(NewPet newPet) {
         Pet savedPet = petDataStoreService.insertNewPet(newPet);
 
-        return retrievePetDetails(savedPet.getId());
+        return retrievePetDetails(savedPet.getPetId());
     }
 
     public Pet retrievePetDetails(long petId) {
@@ -52,8 +52,8 @@ public class PetService {
 
     public Pet patch(PetPatch pet) {
         Pet patchedPet = petDataStoreService.patch(pet);
-        log.debug("Successfully patched the pet with petId [{}]", patchedPet.getId());
-        return retrievePetDetails(patchedPet.getId());
+        log.debug("Successfully patched the pet with petId [{}]", patchedPet.getPetId());
+        return retrievePetDetails(patchedPet.getPetId());
     }
 
     public Pet purchase(long petId, Customer customer) {
@@ -61,6 +61,6 @@ public class PetService {
 
         Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
 
-        return retrievePetDetails(purchasedPet.getId());
+        return retrievePetDetails(purchasedPet.getPetId());
     }
 }

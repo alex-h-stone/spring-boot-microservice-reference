@@ -27,7 +27,7 @@ public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldSavePetToMongoDB() {
         NewPet petToSave = testData.createNewPet();
-        Long expectedPetId = petToSave.getId();
+        Long expectedPetId = petToSave.getPetId();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
@@ -35,7 +35,7 @@ public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
-        PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(expectedPetId, allPetDocument.getId());
+        PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
+        assertEquals(expectedPetId, actualPetDocument.getPetId());
     }
 }

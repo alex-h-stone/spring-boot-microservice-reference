@@ -27,7 +27,7 @@ public class PetDataStoreService {
         PetDocument insertedPetDocument = petRepository.insert(petDocument);
 
         Pet insertedPet = petMapper.mapPetDocument(insertedPetDocument);
-        log.debug("Successfully inserted Pet with Id: [{}]", insertedPet.getId());
+        log.debug("Successfully inserted Pet with Id: [{}]", insertedPet.getPetId());
         return insertedPet;
     }
 
@@ -81,6 +81,6 @@ public class PetDataStoreService {
         petDocument.setOwnerCustomerId(customerId);
 
         PetDocument savedPetDocument = petRepository.save(petDocument);
-        return findPetById(savedPetDocument.getId());
+        return findPetById(savedPetDocument.getPetId());
     }
 }

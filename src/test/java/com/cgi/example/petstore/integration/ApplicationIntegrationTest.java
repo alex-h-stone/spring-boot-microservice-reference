@@ -53,7 +53,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                       {
-                        "id": 10,
+                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -71,14 +71,14 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
-        PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(10L, allPetDocument.getId());
+        PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
+        assertEquals(10L, actualPetDocument.getPetId());
     }
 
     @Test
     void shouldReturnFidoWhenCallingGetPetEndpoint() {
         PetDocument petDocument = testData.createPetDocument();
-        Long petId = petDocument.getId();
+        Long petId = petDocument.getPetId();
         petRepository.save(petDocument);
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
@@ -93,7 +93,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                       {
-                        "id": 10,
+                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -222,7 +222,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                       "pets": [
                         {
                           "petStatus": "Available For Purchase",
-                          "id": 12,
+                          "petId": 12,
                           "vaccinationId": "AF54785412K",
                           "name": "Beethoven",
                           "petType": "Dog",
@@ -271,7 +271,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String expectedJsonBody = """
                     {
                       "petStatus": "Available For Purchase",
-                      "id": 12,
+                      "petId": 12,
                       "vaccinationId": "AF54785412K",
                       "name": "Astro",
                       "petType": "Dog",
@@ -302,7 +302,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(savedPetDocument.getId()))
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(savedPetDocument.getPetId()))
                 .build()
                 .toUri();
         RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
@@ -313,7 +313,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                       {
-                        "id": 10,
+                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -332,7 +332,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(10L, allPetDocument.getId());
+        assertEquals(10L, allPetDocument.getPetId());
     }
 
     private PetDocument createPetDocument(long id,
@@ -340,7 +340,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                           PetStatus petStatus) {
         PetDocument petDocumentBeethoven = testData.createPetDocument();
 
-        petDocumentBeethoven.setId(id);
+        petDocumentBeethoven.setPetId(id);
         petDocumentBeethoven.setName(name);
         petDocumentBeethoven.setPetStatus(petStatus.getValue());
 

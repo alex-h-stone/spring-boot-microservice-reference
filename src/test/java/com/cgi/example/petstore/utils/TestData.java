@@ -24,7 +24,7 @@ public class TestData {
     public Pet createPet() {
         Pet pet = new Pet();
 
-        pet.setId(TEN_PET_ID);
+        pet.setPetId(TEN_PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setVaccinations(Collections.emptyList());
         pet.setName(FIDO_NAME);
@@ -39,7 +39,7 @@ public class TestData {
     public PetDocument createPetDocument() {
         LocalDateTime now = LocalDateTime.now();
         return PetDocument.builder()
-                .id(TEN_PET_ID)
+                .petId(TEN_PET_ID)
                 .vaccinationId(VACCINATION_ID)
                 .name(FIDO_NAME)
                 .petType(DOG_PET_TYPE.getValue())
@@ -54,7 +54,7 @@ public class TestData {
     public NewPet createNewPet() {
         NewPet pet = new NewPet();
 
-        pet.setId(TEN_PET_ID);
+        pet.petId(TEN_PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setName(FIDO_NAME);
         pet.setPetType(DOG_PET_TYPE);

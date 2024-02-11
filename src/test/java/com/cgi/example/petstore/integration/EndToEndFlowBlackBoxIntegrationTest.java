@@ -32,12 +32,12 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
     private final TestData testData = new TestData();
 
     @Test
-    void shouldBeABleToAddAPet() {
-        String body = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+    void shouldSuccessfullyAddModifyFindUpdateAndPurchaseAPet() {
+        String vaccinations = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
         stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(body)
+                        .withBody(vaccinations)
                         .withStatus(HttpStatus.OK.value())));
 
         verifyNotPetsOfAnyStatusesAreAlreadyPresent();

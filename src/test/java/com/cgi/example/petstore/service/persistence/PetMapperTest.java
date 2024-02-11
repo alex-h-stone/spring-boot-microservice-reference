@@ -29,7 +29,7 @@ class PetMapperTest {
         assertNotNull(actualPet);
         assertAll(
                 () -> assertNotNull(actualPet),
-                () -> assertEquals(10, actualPet.getId()),
+                () -> assertEquals(10, actualPet.getPetId()),
                 () -> assertEquals("AF54785412K", actualPet.getVaccinationId()),
                 () -> assertEquals("Fido", actualPet.getName()),
                 () -> assertEquals(PetType.DOG, actualPet.getPetType()),
@@ -48,7 +48,7 @@ class PetMapperTest {
 
         assertAll(
                 () -> assertNotNull(actualPetDocument),
-                () -> assertEquals(10, actualPetDocument.getId()),
+                () -> assertEquals(10, actualPetDocument.getPetId()),
                 () -> assertEquals("AF54785412K", actualPetDocument.getVaccinationId()),
                 () -> assertEquals("Fido", actualPetDocument.getName()),
                 () -> assertEquals(PetType.DOG.name(), actualPetDocument.getPetType()),
@@ -65,14 +65,15 @@ class PetMapperTest {
         assertNotNull(actualPet);
         assertAll(
                 () -> assertNotNull(actualPet),
-                () -> assertEquals(10, actualPet.getId()),
+                () -> assertEquals(10, actualPet.getPetId()),
                 () -> assertEquals("AF54785412K", actualPet.getVaccinationId()),
                 () -> assertEquals("Fido", actualPet.getName()),
                 () -> assertEquals(PetType.DOG, actualPet.getPetType()),
                 () -> assertEquals(PetStatus.AVAILABLE_FOR_PURCHASE, actualPet.getPetStatus()),
                 () -> assertThat(actualPet.getPhotoUrls(), Matchers.contains("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6")),
                 () -> assertThat(actualPet.getVaccinations(), CoreMatchers.nullValue()),
-                () -> assertThat(actualPet.getAdditionalInformation(), Matchers.empty())
+                () -> assertThat(actualPet.getAdditionalInformation(), Matchers.hasSize(1)),
+                () -> assertThat(actualPet.getAdditionalInformation(), Matchers.contains(testData.createPetInformationItem("Personality", "Energetic")))
         );
     }
 }

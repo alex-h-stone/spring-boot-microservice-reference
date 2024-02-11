@@ -18,7 +18,7 @@ public class PetDocument {
 
     @Id
     @Indexed(unique = true, name = "petIdIndex")
-    private Long id;
+    private Long petId;
 
     @Indexed(unique = false, name = "ownerCustomerIdIndex")
     private Long ownerCustomerId;

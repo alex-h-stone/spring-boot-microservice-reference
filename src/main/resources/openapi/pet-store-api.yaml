@@ -75,8 +75,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
-        '405':
-          description: Invalid input
   /pet-store/pets/findByStatus:
     get:
       summary: Finds Pets by status
@@ -111,11 +109,7 @@ paths:
           description: ID of pet to return
           required: true
           schema:
-            type: integer
-            format: int64
-            minimum: 1
-            maximum: 2000
-            example: 1546
+            $ref: '#/components/schemas/PetId'
       responses:
         '200':
           description: successful operation
@@ -137,8 +131,7 @@ paths:
           description: Id of the pet to purchase
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/PetId'
       requestBody:
         description: The details of the purchasing customer
         required: true
@@ -160,8 +153,10 @@ components:
     PetId:
       type: integer
       format: int64
-      description: The unique Pet Shop Id for the pet.
-      example: 1089
+      description: The unique Id for the pet in the Pet Shop.
+      minimum: 1
+      maximum: 2000
+      example: 1546
     PetName:
       type: string
       description: The pet answers to this name.
@@ -267,12 +262,12 @@ components:
       description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
       type: object
       required:
-        - id
+        - petId
         - vaccinationId
         - name
         - petType
       properties:
-        id:
+        petId:
           $ref: '#/components/schemas/PetId'
         vaccinationId:
           $ref: '#/components/schemas/PetVaccinationId'
