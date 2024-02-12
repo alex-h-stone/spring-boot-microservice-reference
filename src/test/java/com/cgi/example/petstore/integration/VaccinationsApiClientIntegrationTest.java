@@ -2,9 +2,9 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsApiClient;
 import com.cgi.example.thirdparty.animalvaccination.model.Vaccination;
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,18 +23,15 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private VaccinationsApiClient apiClient;
 
-    @BeforeEach
-    void beforeEach() {
+    @Test
+    void shouldReturnVaccinationDetailsForValidVaccinationId() {
         String body = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
         stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(body)
                         .withStatus(HttpStatus.OK.value())));
-    }
 
-    @Test
-    void shouldReturnVaccinationDetailsForValidVaccinationId() {
         String validVaccinationId = "AF54785412K";
 
         Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations(validVaccinationId);
@@ -49,5 +46,25 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
         Optional<List<Vaccination>> optionalVaccinations = apiClient.getVaccinations("Z6456INVALID");
 
         assertTrue(optionalVaccinations.isEmpty());
+    }
+
+    @Test
+    void shouldRetryIfTheFirstRequestFails() {
+        // TODO verify this works correctly
+        String body = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+        ResponseDefinitionBuilder responseDefBuilder = aResponse()
+                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .withBody(body)
+                .withStatus(HttpStatus.OK.value());
+
+        stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value()))
+                .willReturn(responseDefBuilder));
+
+        Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
+
+        assertTrue(actualResponse.isPresent());
+        List<Vaccination> vaccinations = actualResponse.get();
+        assertThat(vaccinations, Matchers.iterableWithSize(3));
     }
 }

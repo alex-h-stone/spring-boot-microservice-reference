@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -56,6 +58,7 @@ public class VaccinationsApiClient {
                 Objects.isNull(vaccinationsResponse.getBody().getVaccinations());
     }
 
+    @Retryable(retryFor = {Exception.class}, maxAttempts = 2, backoff = @Backoff(delay = 1_000))
     private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) {
         return webClient.get()
                 .uri(uri)
