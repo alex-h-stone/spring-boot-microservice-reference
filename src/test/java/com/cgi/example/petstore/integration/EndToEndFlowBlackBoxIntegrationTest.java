@@ -1,9 +1,13 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.PetInformationItem;
+import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -15,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,35 +55,306 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         updatePetDetails();
 
-        verifyThePetHasBeenUpdated();
-
         purchaseThePet();
 
         verifyThePetHasBeenPurchased();
     }
 
     private void verifyThePetHasBeenPurchased() {
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+                .build()
+                .toUri();
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                      {
+                        "vaccinations": [
+                          {
+                            "name": "Parainfluenza",
+                            "dateOfAdminister": "2017-07-21"
+                          },
+                          {
+                            "name": "Bordetella bronchiseptica",
+                            "dateOfAdminister": "2017-09-05"
+                          },
+                          {
+                            "name": "Canine Adenovirus",
+                            "dateOfAdminister": "2016-01-25"
+                          }
+                        ],
+                        "petStatus": "Pending Collection",
+                        "owner": {
+                          "customerId": 246879,
+                          "username": "alex.stone",
+                          "firstName": "Alex",
+                          "lastName": "Stone",
+                          "email": "alex.stone@cgi.com",
+                          "address": {
+                            "street": "40 Princes Street",
+                            "city": "Edinburgh",
+                            "postCode": "EH2 2BY",
+                            "country": "United Kingdom"
+                          }
+                        },
+                        "petId": 10,
+                        "vaccinationId": "AF54785412K",
+                        "name": "Astro",
+                        "petType": "Dog",
+                        "photoUrls": [
+                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                        ],
+                        "additionalInformation": [
+                          {
+                            "name": "Eye colour",
+                            "description": "Green"
+                          }
+                        ]
+                      }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
+
 
     }
 
     private void purchaseThePet() {
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+                .build()
+                .toUri();
+        RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
+                HttpMethod.POST,
+                uri);
 
-    }
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-    private void verifyThePetHasBeenUpdated() {
+        String expectedJsonBody = """
+                      {
+                        "vaccinations": [
+                          {
+                            "name": "Parainfluenza",
+                            "dateOfAdminister": "2017-07-21"
+                          },
+                          {
+                            "name": "Bordetella bronchiseptica",
+                            "dateOfAdminister": "2017-09-05"
+                          },
+                          {
+                            "name": "Canine Adenovirus",
+                            "dateOfAdminister": "2016-01-25"
+                          }
+                        ],
+                        "petStatus": "Pending Collection",
+                        "owner": {
+                          "customerId": 246879,
+                          "username": "alex.stone",
+                          "firstName": "Alex",
+                          "lastName": "Stone",
+                          "email": "alex.stone@cgi.com",
+                          "address": {
+                            "street": "40 Princes Street",
+                            "city": "Edinburgh",
+                            "postCode": "EH2 2BY",
+                            "country": "United Kingdom"
+                          }
+                        },
+                        "petId": 10,
+                        "vaccinationId": "AF54785412K",
+                        "name": "Astro",
+                        "petType": "Dog",
+                        "photoUrls": [
+                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                        ],
+                        "additionalInformation": [
+                          {
+                            "name": "Eye colour",
+                            "description": "Green"
+                          }
+                        ]
+                      }
+                """;
 
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
     }
 
     private void updatePetDetails() {
-        // TODO i nclude extra information and changfe somehting
+        URI uri = uriBuilder.getPetStoreBaseURI()
+                .build()
+                .toUri();
+
+        PetPatch petPatch = new PetPatch();
+        petPatch.setId(10L);
+        petPatch.setName("Astro");
+        List<@Valid PetInformationItem> additionalInformation =
+                Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
+        petPatch.setAdditionalInformation(additionalInformation);
+
+        RequestEntity<PetPatch> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                 {
+                   "vaccinations": [
+                     {
+                       "name": "Parainfluenza",
+                       "dateOfAdminister": "2017-07-21"
+                     },
+                     {
+                       "name": "Bordetella bronchiseptica",
+                       "dateOfAdminister": "2017-09-05"
+                     },
+                     {
+                       "name": "Canine Adenovirus",
+                       "dateOfAdminister": "2016-01-25"
+                     }
+                   ],
+                   "petStatus": "Available For Purchase",
+                   "petId": 10,
+                   "vaccinationId": "AF54785412K",
+                   "name": "Astro",
+                   "petType": "Dog",
+                   "photoUrls": [
+                     "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                   ],
+                   "additionalInformation": [
+                     {
+                       "name": "Eye colour",
+                       "description": "Green"
+                     }
+                   ]
+                 }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
     }
 
     private void retrieveNewlyAddedPetByStatus() {
-        // TODO
+        URI uri = uriBuilder.getPetStoreBaseURI()
+                .pathSegment("findByStatus")
+                .queryParam("statuses", PetStatus.AVAILABLE_FOR_PURCHASE.name())
+                .build()
+                .toUri();
+
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                   {
+                     "pets": [
+                       {
+                         "vaccinations": [
+                           {
+                             "name": "Parainfluenza",
+                             "dateOfAdminister": "2017-07-21"
+                           },
+                           {
+                             "name": "Bordetella bronchiseptica",
+                             "dateOfAdminister": "2017-09-05"
+                           },
+                           {
+                             "name": "Canine Adenovirus",
+                             "dateOfAdminister": "2016-01-25"
+                           }
+                         ],
+                         "petStatus": "Available For Purchase",
+                         "petId": 10,
+                         "vaccinationId": "AF54785412K",
+                         "name": "Fido",
+                         "petType": "Dog",
+                         "photoUrls": [
+                           "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                         ],
+                         "additionalInformation": [
+                           {
+                             "name": "Personality",
+                             "description": "Energetic"
+                           }
+                         ]
+                       }
+                     ]
+                   }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
     }
 
     private void retrieveNewlyAddedPetById() {
-        // TODO
+        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+                .build()
+                .toUri();
+        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
+                uri);
+
+        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+        String expectedJsonBody = """
+                      {
+                        "vaccinations": [
+                          {
+                            "name": "Parainfluenza",
+                            "dateOfAdminister": "2017-07-21"
+                          },
+                          {
+                            "name": "Bordetella bronchiseptica",
+                            "dateOfAdminister": "2017-09-05"
+                          },
+                          {
+                            "name": "Canine Adenovirus",
+                            "dateOfAdminister": "2016-01-25"
+                          }
+                        ],
+                        "petStatus": "Available For Purchase",
+                        "petId": 10,
+                        "vaccinationId": "AF54785412K",
+                        "name": "Fido",
+                        "petType": "Dog",
+                        "photoUrls": [
+                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                        ],
+                        "additionalInformation": [
+                          {
+                            "name": "Personality",
+                            "description": "Energetic"
+                          }
+                        ]
+                      }
+                """;
+
+        String actualJsonBody = response.getBody();
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
+                assertions.assertJSONContentType(response),
+                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
+        );
     }
 
     private void addANewPet() {
@@ -107,7 +383,7 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                          }
                        ],
                        "petStatus": "Available For Purchase",
-                       "id": 10,
+                       "petId": 10,
                        "vaccinationId": "AF54785412K",
                        "name": "Fido",
                        "petType": "Dog",

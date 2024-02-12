@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,21 +34,30 @@ public class PetService {
 
     public Pet retrievePetDetails(long petId) {
         Pet pet = petDataStoreService.findPetById(petId);
+
+        return enrichWithAdditionalInformation(pet);
+    }
+
+    private Pet enrichWithAdditionalInformation(Pet pet) {
         List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
 
         pet.setVaccinations(vaccinations);
 
-        Optional<Long> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(petId);
+        Optional<Long> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(pet.getPetId());
         if (optionalCustomerId.isPresent()) {
             Customer customer = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
             pet.setOwner(customer);
         }
-
         return pet;
     }
 
     public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
-        return petDataStoreService.findPetsByStatus(statuses);
+        List<Pet> petsMatchingStatus = petDataStoreService.findPetsByStatus(statuses);
+
+        return petsMatchingStatus
+                .stream()
+                .map(this::enrichWithAdditionalInformation)
+                .collect(Collectors.toList());
     }
 
     public Pet patch(PetPatch pet) {
@@ -61,6 +71,6 @@ public class PetService {
 
         Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
 
-        return retrievePetDetails(purchasedPet.getPetId());
+        return enrichWithAdditionalInformation(purchasedPet);
     }
 }

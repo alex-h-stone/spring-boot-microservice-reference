@@ -48,7 +48,6 @@ public class PetDataStoreService {
 
     public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
         List<String> petDocumentStatuses = petMapper.mapPetStatuses(statuses);
-
         List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
 
         return petMapper.mapPetDocuments(petDocumentsWithMatchingStatus);
@@ -79,6 +78,7 @@ public class PetDataStoreService {
     public Pet updatePetWithNewOwner(long petId, long customerId) {
         PetDocument petDocument = retrievePetDocument(petId);
         petDocument.setOwnerCustomerId(customerId);
+        petDocument.setPetStatus(PetStatus.PENDING_COLLECTION.getValue());
 
         PetDocument savedPetDocument = petRepository.save(petDocument);
         return findPetById(savedPetDocument.getPetId());

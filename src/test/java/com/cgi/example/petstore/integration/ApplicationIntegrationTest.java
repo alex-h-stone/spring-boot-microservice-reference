@@ -312,13 +312,29 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
         String expectedJsonBody = """
-                      {
-                        "petId": 10,
-                        "vaccinationId": "AF54785412K",
-                        "name": "Fido",
-                        "petType": "Dog",
-                        "petStatus": "Available For Purchase"
-                      }
+                    {
+                      "petStatus": "Pending Collection",
+                      "owner": {
+                        "customerId": 246879,
+                        "username": "alex.stone",
+                        "firstName": "Alex",
+                        "lastName": "Stone",
+                        "email": "alex.stone@cgi.com",
+                        "address": {
+                          "street": "40 Princes Street",
+                          "city": "Edinburgh",
+                          "postCode": "EH2 2BY",
+                          "country": "United Kingdom"
+                        }
+                      },
+                      "petId": 10,
+                      "vaccinationId": "AF54785412K",
+                      "name": "Fido",
+                      "petType": "Dog",
+                      "photoUrls": [
+                        "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                      ]
+                    }
                 """;
 
         String actualJsonBody = response.getBody();
