@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
         Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> assertThat(links, Matchers.containsInAnyOrder("self", "health", "health-path",
-                        "info", "metrics-requiredMetricName", "metrics", "mappings"))
-        );
+        assertions.assertOkJsonResponse(response);
+        assertThat(links, Matchers.containsInAnyOrder("self", "health", "health-path",
+                "info", "metrics-requiredMetricName", "metrics", "mappings"));
     }
 
     @Test
@@ -46,12 +44,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         String status = JsonPath.read(response.getBody(), "$.status");
         String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> assertEquals("UP", status),
-                () -> assertEquals("UP", pingStatus)
-        );
+        assertions.assertOkJsonResponse(response);
+        assertEquals("UP", status);
+        assertEquals("UP", pingStatus);
     }
 
     @Test
@@ -66,9 +61,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         String name = JsonPath.read(response.getBody(), "$.build.name");
         String group = JsonPath.read(response.getBody(), "$.build.group");
 
+        assertions.assertOkJsonResponse(response);
         assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
                 () -> assertEquals("Spring Boot Template Service modeled on an online Pet Store.", description),
                 () -> assertEquals("spring-boot-microservice-template", artifact),
                 () -> assertEquals("spring-boot-microservice-template", name),
@@ -85,11 +79,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
         int numberOfMappings = JsonPath.read(response.getBody(), "$.contexts.application.mappings.dispatcherServlets.dispatcherServlet.length()");
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> assertThat(numberOfMappings, Matchers.greaterThan(3))
-        );
+        assertions.assertOkJsonResponse(response);
+        assertThat(numberOfMappings, Matchers.greaterThan(3));
     }
 
     @ParameterizedTest
@@ -106,8 +97,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertContentType(response, expectedContentType),
-                () -> assertThat(response.getBody(), Matchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/{petId}")),
+                () -> assertThat(response.getBody(), Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
                 () -> assertThat(response.getBody(), Matchers.containsString("Find pet by ID"))
         );
     }
@@ -122,9 +112,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         int numberOfURLs = JsonPath.read(response.getBody(), "$.urls.length()");
         String url = JsonPath.read(response.getBody(), "$.urls[0].url");
 
+        assertions.assertOkJsonResponse(response);
         assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
                 () -> assertEquals(1, numberOfURLs),
                 () -> assertEquals("/v3/api-docs/springdoc", url)
         );

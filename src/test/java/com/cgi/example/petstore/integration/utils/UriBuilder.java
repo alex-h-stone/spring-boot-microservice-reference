@@ -7,13 +7,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Objects;
 
 @Component
-public class URIBuilder {
+public class UriBuilder {
 
     public static final String PET_STORE_BASE_URL = "api/v1/pet-store/pets";
 
     private final Environment environment;
 
-    public URIBuilder(Environment environment) {
+    public UriBuilder(Environment environment) {
         this.environment = environment;
     }
 

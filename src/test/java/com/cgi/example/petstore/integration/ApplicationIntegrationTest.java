@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.integration;
 
+import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.model.Customer;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.PetInformationItem;
@@ -12,6 +13,7 @@ import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -39,7 +41,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     private PetRepository petRepository;
 
     @Test
-    void shouldSuccessfullyAddPet() {
+    void shouldSuccessfullyAddPet() throws JSONException {
         NewPet petToAdd = testData.createNewPet();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
@@ -63,11 +65,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
-        );
+        assertions.assertOkJsonResponse(response);
+        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
@@ -76,7 +75,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldReturnFidoWhenCallingGetPetEndpoint() {
+    void shouldReturnFidoWhenCallingGetPetEndpoint() throws JSONException {
         PetDocument petDocument = testData.createPetDocument();
         Long petId = petDocument.getPetId();
         petRepository.save(petDocument);
@@ -103,11 +102,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
-        );
+        assertions.assertOkJsonResponse(response);
+        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
     }
 
     @Test
@@ -160,9 +156,9 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         assertAll(
                 () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
-                () -> assertEquals(500, status),
+                () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), status),
                 () -> assertEquals("Handled by GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
-                () -> assertThat(instance, CoreMatchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/10000")));
+                () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/10000")));
     }
 
     @Test
@@ -185,12 +181,12 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
                 () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet Id, the Id 666 is not permitted, found: 666]", detail),
-                () -> assertThat(instance, CoreMatchers.containsString(uriBuilder.PET_STORE_BASE_URL + "/666"))
+                () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/666"))
         );
     }
 
     @Test
-    void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() {
+    void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() throws JSONException {
         PetDocument petDocumentLassie = createPetDocument(10L,
                 "Lassie",
                 PetStatus.PENDING_COLLECTION);
@@ -236,15 +232,12 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
-        );
+        assertions.assertOkJsonResponse(response);
+        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
     }
 
     @Test
-    void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() {
+    void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() throws JSONException {
         PetDocument petDocumentBeethoven = createPetDocument(12L,
                 "Beethoven",
                 PetStatus.AVAILABLE_FOR_PURCHASE);
@@ -289,15 +282,12 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
-        );
+        assertions.assertOkJsonResponse(response);
+        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
     }
 
     @Test
-    void shouldSuccessfullyPurchaseAPet() {
+    void shouldSuccessfullyPurchaseAPet() throws JSONException {
         PetDocument savedPetDocument = petRepository.save(testData.createPetDocument());
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
@@ -339,11 +329,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                assertions.assertJSONContentType(response),
-                () -> JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT)
-        );
+        assertions.assertOkJsonResponse(response);
+        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));

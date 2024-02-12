@@ -2,7 +2,7 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.integration.utils.LoggingTestRestTemplate;
 import com.cgi.example.petstore.integration.utils.PetStoreWiremockServer;
-import com.cgi.example.petstore.integration.utils.URIBuilder;
+import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.utils.AssertionUtils;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +30,7 @@ public class BaseIntegrationTest {
     protected LoggingTestRestTemplate testRestTemplate;
 
     @Autowired
-    protected URIBuilder uriBuilder;
+    protected UriBuilder uriBuilder;
 
     @Autowired
     protected PetStoreWiremockServer stubServer;
