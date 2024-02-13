@@ -1,7 +1,7 @@
 # Spring Boot Microservice Template
 
-Spring Boot 3 based microservice template with a number of integrated features to address a majority of common
-requirements.
+Spring Boot 3 based microservice template with a number of integrated features which address a majority of common
+business requirements.
 
 ## Table of Contents
 
