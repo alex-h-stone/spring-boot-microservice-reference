@@ -1,20 +1,22 @@
 # Spring Boot Microservice Template
 
-Requirements:
+Spring Boot 3 based microservice template with a number of integrated features to address a majority of common
+requirements.
+
+Requirements to run locally:
 
 * Java 21 e.g. https://jdk.java.net/21/
-* Access to a running MongoDB instance or equivalent (e.g. Microsoft Azure CosmosDB
-  via https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx)
-* An IDE, Eclipse or IntelliJ (recommended)
+* MongoDB or equivalent (e.g. Microsoft Azure CosmosDB
+  via CGI
+  Sandbox https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx)
+* An IDE, IntelliJ (recommended), or Eclipse
 
-This is a bare-bones Spring Boot 3 based microservice with working examples of many common business requirements.
-
-The API of the microservice is defined by the API Specification `pet-store-api.yaml` and can be viewed by the online
-swagger editor https://editor.swagger.io/
+The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
+Editor https://editor.swagger.io/
 
 The microservice is structured with Controller and Service layers.
-Depending on the use case it may be desirable to also include a mapping layer
-to translate between one or more of the following:
+Depending on the use case it may be desirable to also include a mapping layer to translate between one or more of the
+following:
 
 - API model types (pet store)
 - 3rd Party - API model types (vaccinations)
@@ -27,39 +29,51 @@ The API provides the following functionality:
 - Pets can be updated when details change.
 - Customers can purchase a pet.
 - Pet vaccination details are provided via a 3rd party API call.
+
 ---
 
-#### Database integration with MongoDB
+#### OpenAPI/Interface driven API (including support for multiple OpenAPI schemas)
 
-This service is integrated with a MongoDB NoSQL datastore/database using spring-boot-starter-data-mongodb
+See build.gradle for an example of using OpenAPI schemas (pet-store-api.yaml and animal-vaccination-api.yaml)
+to generate model classes and the Java interfaces for the APIs.  
+By having a controller implement the Java interface for the API, when the OpenAPI schema is updated some
+breaking changes will force a compile time error.
+
+---
+
+#### Data persistence using MongoDB
+
+This service is integrated with a MongoDB NoSQL database using spring-boot-starter-data-mongodb
 and the MongoRepository.java interface. Connection details are defined in the application.yaml under
 'spring.data.mongodb'
 
 ---
-#### Exception handler
-See
-`integration.cgi.example.petstore.ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`  
-and  
-`src/main/java/com/example/springboottemplateservice/handler/GlobalExceptionHandler.java`
----
 
-#### Request validation by a validator class
+#### Exception handling
 
-See `PetValidator.java`
-and `ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`
+See the integration test `shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
+and the implementation `GlobalExceptionHandler`
 
 ---
 
-#### Request validation defined by yaml
+#### Custom request validation by a validator class
 
-See `/pets/{petId}` GET endpoint and the `petId schema` definition in `src/main/resources/openapi/pet-store-api.yaml`
+See `PetValidator` and the integration test
+`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`
+
+---
+
+#### Request validation via OpenAPI specification
+
+See `/pets/{petId}` GET endpoint and the `petId schema` definition in `pet-store-api.yaml`
 and the associated integration
-test `ApplicationIntegrationTests.shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
+test `shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
 
 ---
 
 #### Custom Enum serialisation/deserialisation logic
-See PetAndPetDocumentMapper.java for an example of how to handle custom Enum serialisation logic using MapStruct.
+
+See PetMapper for an example of how to define Enum/String serialisation/deserialisation using MapStruct.
 
 ---
 
@@ -70,8 +84,8 @@ See JUnit tests in spring-boot-template-service\src\test\java which do not have 
 
 #### Integration tests
 
-See the package src\test\java\com\cgi\example\petstore\integration for examples of integration tests utilising WireMock
-and Embedded MongoDB.
+See the test package integration for examples of integration tests utilising WireMock and de.flapdoodle embedded
+MongoDB.
 
 ---
 
@@ -81,33 +95,30 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 ---
 
-#### OpenAPI/Interface driven API (including support for multiple OpenAPI schemas)
-See build.gradle for an example of using OpenAPI schemas (pet-store-api.yaml and animal-vaccination-api.yaml)
-to generate model classes and the Java interface for the API.  
-By having a controller implement the Java interface for the API, when the OpenAPI schema is updated some
-breaking changes will force a compile time error.
-
----
-
-#### Calling another REST API using flux
+#### Making 3rd party REST API calls using Spring WebFlux
 See VaccinationsApiClient for an example of calling another REST API using Spring Flux.
 
 ---
 
 #### Logging of requests and responses with configurable filter to avoid logging of 'typical' sensitive field names
-TODO maybe use aspectJ and PII/truffle hog style filter?
-Request logging via AOP
+
+See RequestLoggingFilterConfig for the required config to log requests
+
+TODO stonal use aspectJ and PII/truffle hog style filter? Or request logging via AOP?
 
 ---
 
 #### Spring Retry
-TODO demonstrate with 3rd party API call
+
+See VaccinationsApiClient and SpringRetryConfig for an example of how Spring Retry can be used to retry failed external
+API calls.
 
 ---
 
 #### Actuator endpoints
-Determined by dependencies (see "OpenAPI/Swagger docs" section in build.gradle),
-application config (see application.yaml) and security config (see SecurityConfig.java)
+
+Determined by dependencies ("OpenAPI/Swagger docs" in build.gradle),
+application config (see application.yaml) and security config (see SecurityConfig)
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 
@@ -121,7 +132,8 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#act
 Where 8099 is the Management Server Port 'management.server.port'
 
 #### OpenAPI/Swagger documentation endpoint
-OpenAPI endpoints
+
+OpenAPI endpoints to provide live up-to-date API documentation.
 
 - http://localhost:8080/v3/api-docs
 - http://localhost:8080/v3/api-docs.yaml
