@@ -19,7 +19,8 @@ public class PetStoreWiremockServer {
     private static final WireMockServer mockWebServer;
 
     static {
-        try (var serverSocket = new ServerSocket(0)) {
+        final int nextAvailablePort = 0;
+        try (var serverSocket = new ServerSocket(nextAvailablePort)) {
             WIREMOCK_PORT = serverSocket.getLocalPort();
         } catch (IOException e) {
             String message = "Unable to establish a WireMock port: [%s]".formatted(e.getMessage());

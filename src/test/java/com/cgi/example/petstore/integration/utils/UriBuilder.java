@@ -37,23 +37,23 @@ public class UriBuilder {
     }
 
     private int getManagementPort() {
-        return getPositiveIntegerEnvironmentProperty("local.management.port",
-                "Unable to determine the management port [local.management.port] this should have been set as the next available port, but instead found [%d]");
+        return getPortNumberFromEnvironmentProperty("local.management.port");
     }
 
     private int getApplicationPort() {
-        return getPositiveIntegerEnvironmentProperty("local.server.port",
-                "Unable to determine the application port [local.server.port] this should have been set as the next available port, but instead found [%d]");
+        return getPortNumberFromEnvironmentProperty("local.server.port");
     }
 
-    private int getPositiveIntegerEnvironmentProperty(String environmentPropertyKey, String message) {
-        Integer integerEnvironmentProperty = environment.getProperty(environmentPropertyKey, Integer.class);
+    private int getPortNumberFromEnvironmentProperty(String environmentPropertyKey) {
+        Integer portNumber = environment.getProperty(environmentPropertyKey, Integer.class);
 
-        if (Objects.isNull(integerEnvironmentProperty) || integerEnvironmentProperty <= 0) {
-            throw new IllegalStateException(message.formatted(integerEnvironmentProperty));
+        if (Objects.isNull(portNumber) || portNumber <= 0) {
+            String message = "Unable to determine the port number from [%s] this should have been set, but instead found [%d]"
+                    .formatted(environmentPropertyKey, portNumber);
+            throw new IllegalStateException(message);
         }
 
-        return integerEnvironmentProperty;
+        return portNumber;
     }
 
     private UriComponentsBuilder getUriComponentsBuilder(int port) {

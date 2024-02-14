@@ -73,7 +73,7 @@ public class EmbeddedMongoDB implements SmartLifecycle {
 
     @Override
     public void stop() {
-
+        // Do nothing
     }
 
     @Override
