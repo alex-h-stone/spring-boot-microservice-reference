@@ -14,6 +14,7 @@ Spring Boot 3 based microservice template integrating features which address a m
 - [Integration tests](#integration-tests)
 - [Metrics endpoint](#metrics-endpoint)
 - [External REST API calls via Spring WebFlux](#external-rest-api-calls-via-spring-webflux)
+- [Stubbing of external API calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
 - [Logging of requests and responses](#logging-of-requests-and-responses)
 - [Failure recovery via Spring Retry](#failure-recovery-via-spring-retry)
 - [Actuator endpoints](#actuator-endpoints)
@@ -22,10 +23,16 @@ Spring Boot 3 based microservice template integrating features which address a m
 Requirements to run locally:
 
 * Java 21 e.g. https://jdk.java.net/21/
-* MongoDB or equivalent (e.g. Microsoft Azure CosmosDB
-  via CGI
-  Sandbox https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx)
+* MongoDB or equivalent (e.g. Microsoft Azure CosmosDB via [CGI
+  Sandbox](https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx))
 * An IDE, IntelliJ (recommended), or Eclipse
+
+When the above have been satisfied, to start the microservice:
+
+1. Start the local stub server on a port via './gradlew startVaccinationsWireMockServer -PportNumber=8081'
+2. Update the environment variables defined in 'cleanBuildTestAndRun.ps1' with your MongoDB URI (MONGO_DB_URI) and stub
+   server URL (VACCINATIONS_URL).
+3. Start the microservice via '.\cleanBuildTestAndRun.ps1  '
 
 The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
 Editor https://editor.swagger.io/
@@ -114,6 +121,17 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 #### External REST API calls via Spring WebFlux
 
 See VaccinationsApiClient for an example of calling an external REST API using Spring Flux.
+
+---
+
+#### Stubbing of external API calls via WireMock
+
+See https://wiremock.org/docs/stubbing/ for additional guidance with WireMock.
+
+Also see 'VaccinationsWireMockServer' for how to define a stub server for running a microservice locally with external
+API dependencies.
+
+In addition, 'WiremockServerForIntegrationTests' for how to utilise WireMock for automated integration tests.
 
 ---
 

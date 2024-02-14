@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.integration.config;
 
-import com.cgi.example.petstore.integration.utils.PetStoreWiremockServer;
+import com.cgi.example.petstore.integration.utils.WiremockServerForIntegrationTests;
 import de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -26,7 +26,7 @@ public class IntegrationTestConfig {
 
     private static final class IntegrationTestPropertySource extends MapPropertySource {
         private static final Map<String, Object> PROPERTIES =
-                Map.of("thirdparty.apis.vaccinations.baseUrl", "http://localhost:" + PetStoreWiremockServer.getPort());
+                Map.of("thirdparty.apis.vaccinations.baseUrl", "http://localhost:" + WiremockServerForIntegrationTests.getPort());
 
         public IntegrationTestPropertySource() {
             super(IntegrationTestPropertySource.class.getSimpleName(),

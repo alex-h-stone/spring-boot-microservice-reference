@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 @Component
-public class PetStoreWiremockServer {
+public class WiremockServerForIntegrationTests {
     private static final int WIREMOCK_PORT;
     private static final WireMockServer mockWebServer;
 
@@ -33,7 +33,7 @@ public class PetStoreWiremockServer {
     }
 
     @Bean(destroyMethod = "shutdown")
-    public PetStoreWiremockServer stubServer() {
+    public WiremockServerForIntegrationTests stubServer() {
         return this;
     }
 

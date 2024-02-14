@@ -16,7 +16,7 @@ management:
 spring:
   data:
     mongodb:
-      uri: ${MONGO_DB_URI}
+      uri: ${MONGO_DB_URI:mongodb://localhost:27017}
       database: petStoreDatabase
 
 logging:
@@ -29,5 +29,5 @@ logging:
 thirdparty:
   apis:
     vaccinations:
-      baseUrl: "https://www.vaccinations.thirdparty.com:9999"
+      baseUrl: ${VACCINATIONS_URL:https://www.vaccinations.thirdparty.com:9999}
       path: "vaccinations/{vaccinationId}"
