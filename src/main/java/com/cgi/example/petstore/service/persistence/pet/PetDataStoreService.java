@@ -21,19 +21,19 @@ public class PetDataStoreService {
     private final PetRepository petRepository;
 
     public Pet insertNewPet(NewPet newPet) {
-        Pet pet = petMapper.mapNewPet(newPet);
+        Pet pet = petMapper.mapToPet(newPet);
         PetDocument petDocument = petMapper.mapToPetDocument(pet);
 
         PetDocument insertedPetDocument = petRepository.insert(petDocument);
 
-        Pet insertedPet = petMapper.mapPetDocument(insertedPetDocument);
+        Pet insertedPet = petMapper.mapToPet(insertedPetDocument);
         log.debug("Successfully inserted Pet with Id: [{}]", insertedPet.getPetId());
         return insertedPet;
     }
 
     public Pet findPetById(long id) {
         PetDocument petDocument = retrievePetDocument(id);
-        return petMapper.mapPetDocument(petDocument);
+        return petMapper.mapToPet(petDocument);
     }
 
     private PetDocument retrievePetDocument(long petId) {
@@ -47,10 +47,10 @@ public class PetDataStoreService {
     }
 
     public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
-        List<String> petDocumentStatuses = petMapper.mapPetStatuses(statuses);
+        List<String> petDocumentStatuses = petMapper.mapToPetStatusStrings(statuses);
         List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
 
-        return petMapper.mapPetDocuments(petDocumentsWithMatchingStatus);
+        return petMapper.mapToPets(petDocumentsWithMatchingStatus);
     }
 
     public Pet patch(PetPatch petPatch) {
@@ -61,7 +61,7 @@ public class PetDataStoreService {
 
         PetDocument insertedPetDocument = petRepository.save(petDocumentToSave);
 
-        return petMapper.mapPetDocument(insertedPetDocument);
+        return petMapper.mapToPet(insertedPetDocument);
     }
 
     public Optional<Long> findOwnerCustomerIdForPet(long petId) {

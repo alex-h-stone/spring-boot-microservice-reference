@@ -21,7 +21,7 @@ public interface PetMapper {
 
     @Mapping(target = "vaccinations", ignore = true)
     @Mapping(target = "petStatus", constant = "AVAILABLE_FOR_PURCHASE")
-    Pet mapNewPet(NewPet newPetToMap);
+    Pet mapToPet(NewPet newPetToMap);
 
     // TODO tidy up mappings
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -32,20 +32,20 @@ public interface PetMapper {
     PetDocument mapToPetDocument(Pet petToMap);
 
     @Mapping(target = "vaccinations", ignore = true)
-    Pet mapPetDocument(PetDocument petDocumentToMap);
+    Pet mapToPet(PetDocument petDocumentToMap);
 
-    List<Pet> mapPetDocuments(List<PetDocument> petDocuments);
+    List<Pet> mapToPets(List<PetDocument> petDocuments);
 
-    List<String> mapPetStatuses(List<PetStatus> petStatuses);
+    List<String> mapToPetStatusStrings(List<PetStatus> petStatuses);
 
-    default String mapPetStatusToString(PetStatus petStatus) {
+    default String mapToString(PetStatus petStatus) {
         if (Objects.isNull(petStatus)) {
             return null;
         }
         return petStatus.getValue();
     }
 
-    default PetType mapStringToPetType(String petTypeString) {
+    default PetType mapToPetType(String petTypeString) {
         if (Objects.isNull(petTypeString)) {
             return null;
         }
@@ -53,7 +53,7 @@ public interface PetMapper {
                 petTypeString.replace(StringUtils.SPACE, "_"));
     }
 
-    default PetStatus mapStringToPetStatus(String petStatusString) {
+    default PetStatus mapToPetStatus(String petStatusString) {
         if (Objects.isNull(petStatusString)) {
             return null;
         }
