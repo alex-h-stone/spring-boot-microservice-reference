@@ -9,7 +9,7 @@ import com.cgi.example.petstore.model.Vaccination;
 import com.cgi.example.petstore.service.persistence.customer.CustomerDataStoreService;
 import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PetService {
 
     private final VaccinationsService vaccinationsService;

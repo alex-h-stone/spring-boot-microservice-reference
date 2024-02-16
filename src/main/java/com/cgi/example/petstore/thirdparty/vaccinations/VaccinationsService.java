@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.thirdparty.vaccinations;
 
 import com.cgi.example.petstore.model.Vaccination;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VaccinationsService {
 
     private final ThirdPartyVaccinationsToPetVaccinationsMapper mapper;

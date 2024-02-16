@@ -3,7 +3,7 @@ package com.cgi.example.petstore.thirdparty.vaccinations;
 import com.cgi.example.thirdparty.animalvaccination.model.Vaccination;
 import com.cgi.example.thirdparty.animalvaccination.model.VaccinationsResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VaccinationsApiClient {
 
     private final WebClient webClient;

@@ -2,7 +2,7 @@ package com.cgi.example.petstore.service.persistence.customer;
 
 import com.cgi.example.petstore.exception.NotFoundException;
 import com.cgi.example.petstore.model.Customer;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomerDataStoreService {
 
     private final CustomerMapper customerMapper;

@@ -9,14 +9,14 @@ import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.PetService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PetStoreController implements PetStoreApi {
 
     private final PetValidator petValidator;

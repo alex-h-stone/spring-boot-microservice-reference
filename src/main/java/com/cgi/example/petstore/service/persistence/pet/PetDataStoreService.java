@@ -5,7 +5,7 @@ import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PetDataStoreService {
 
     private final PetMapper petMapper;
