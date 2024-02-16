@@ -21,12 +21,12 @@ public class CustomerDataStoreService {
 
         Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
         if (optionalCustomerDocument.isPresent()) {
-            return customerMapper.map(optionalCustomerDocument.get());
+            return customerMapper.mapToCustomer(optionalCustomerDocument.get());
         }
 
-        CustomerDocument customerDocument = customerMapper.map(customer);
+        CustomerDocument customerDocument = customerMapper.mapToCustomer(customer);
         CustomerDocument savedCustomerDocument = customerRepository.insert(customerDocument);
-        return customerMapper.map(savedCustomerDocument);
+        return customerMapper.mapToCustomer(savedCustomerDocument);
     }
 
     public Customer retrieveCustomer(long customerId) {
@@ -37,6 +37,6 @@ public class CustomerDataStoreService {
         }
 
         CustomerDocument customerDocument = optionalCustomerDocument.get();
-        return customerMapper.map(customerDocument);
+        return customerMapper.mapToCustomer(customerDocument);
     }
 }

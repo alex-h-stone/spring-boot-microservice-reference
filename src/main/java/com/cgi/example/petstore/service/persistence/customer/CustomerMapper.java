@@ -9,9 +9,9 @@ public interface CustomerMapper {
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModified", ignore = true)
-    CustomerDocument map(Customer customerToMap);
+    CustomerDocument mapToCustomer(Customer customerToMap);
 
     /*    @Mapping(target =
                 "vaccinations", ignore = true)*/
-    Customer map(CustomerDocument customerDocumentToMap);
+    Customer mapToCustomer(CustomerDocument customerDocumentToMap);
 }

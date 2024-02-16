@@ -22,7 +22,7 @@ public class PetDataStoreService {
 
     public Pet insertNewPet(NewPet newPet) {
         Pet pet = petMapper.mapNewPet(newPet);
-        PetDocument petDocument = petMapper.mapPet(pet);
+        PetDocument petDocument = petMapper.mapToPetDocument(pet);
 
         PetDocument insertedPetDocument = petRepository.insert(petDocument);
 
@@ -57,7 +57,7 @@ public class PetDataStoreService {
         Pet petToBePatched = findPetById(petPatch.getId());
 
         petMapper.updateTargetObjectFromSourceObject(petPatch, petToBePatched);
-        PetDocument petDocumentToSave = petMapper.mapPet(petToBePatched);
+        PetDocument petDocumentToSave = petMapper.mapToPetDocument(petToBePatched);
 
         PetDocument insertedPetDocument = petRepository.save(petDocumentToSave);
 

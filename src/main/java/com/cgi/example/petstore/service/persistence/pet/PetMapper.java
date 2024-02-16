@@ -29,7 +29,7 @@ public interface PetMapper {
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModified", ignore = true)
-    PetDocument mapPet(Pet petToMap);
+    PetDocument mapToPetDocument(Pet petToMap);
 
     @Mapping(target = "vaccinations", ignore = true)
     Pet mapPetDocument(PetDocument petDocumentToMap);

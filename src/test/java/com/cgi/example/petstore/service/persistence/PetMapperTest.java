@@ -44,7 +44,7 @@ class PetMapperTest {
     void shouldSuccessfullyMapFromAPetToPetDocument() {
         Pet pet = testData.createPet();
 
-        PetDocument actualPetDocument = mapper.mapPet(pet);
+        PetDocument actualPetDocument = mapper.mapToPetDocument(pet);
 
         assertAll(
                 () -> assertNotNull(actualPetDocument),
