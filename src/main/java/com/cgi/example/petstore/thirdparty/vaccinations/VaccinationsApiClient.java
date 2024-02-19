@@ -64,7 +64,7 @@ public class VaccinationsApiClient {
                 .uri(uri)
                 .retrieve()
                 .toEntity(VaccinationsResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.of(200, ChronoUnit.MILLIS)))
+                .retryWhen(Retry.backoff(2, Duration.of(200, ChronoUnit.MILLIS)))
                 .block();
     }
 }

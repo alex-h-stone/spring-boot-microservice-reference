@@ -3,6 +3,7 @@ package com.cgi.example.petstore.integration.utils;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -62,5 +63,9 @@ public class WiremockServerForIntegrationTests {
             // Loop until complete or timeout is reached
         }
         stopWatch.stop();
+    }
+
+    public void verify(int numberOfTimes, RequestPatternBuilder request) {
+        mockWebServer.verify(numberOfTimes, request);
     }
 }
