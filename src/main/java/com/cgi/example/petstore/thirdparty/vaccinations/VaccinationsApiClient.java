@@ -10,10 +10,14 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriBuilder;
+import reactor.util.retry.Retry;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,11 +63,12 @@ public class VaccinationsApiClient {
     }
 
     @Retryable(retryFor = {Exception.class}, maxAttempts = 2, backoff = @Backoff(delay = 1_000))
-    private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) {
+    private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) throws WebClientException {
         return webClient.get()
                 .uri(uri)
                 .retrieve()
                 .toEntity(VaccinationsResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.of(200, ChronoUnit.MILLIS)))
                 .block();
     }
 }

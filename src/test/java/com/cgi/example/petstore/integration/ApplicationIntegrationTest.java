@@ -77,7 +77,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldReturnFidoWhenCallingGetPetEndpoint() throws JSONException {
         PetDocument petDocument = testData.createPetDocument();
-        Long petId = petDocument.getPetId();
+        String petId = petDocument.getPetId();
         petRepository.save(petDocument);
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
@@ -187,14 +187,14 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() throws JSONException {
-        PetDocument petDocumentLassie = createPetDocument(10L,
-                "Lassie",
+        PetDocument petDocumentLassie = createPetDocument(
+                String.valueOf(10L), "Lassie",
                 PetStatus.PENDING_COLLECTION);
-        PetDocument petDocumentAstro = createPetDocument(11L,
-                "Astro",
+        PetDocument petDocumentAstro = createPetDocument(
+                String.valueOf(11L), "Astro",
                 PetStatus.SOLD);
-        PetDocument petDocumentBeethoven = createPetDocument(12L,
-                "Beethoven",
+        PetDocument petDocumentBeethoven = createPetDocument(
+                String.valueOf(12L), "Beethoven",
                 PetStatus.AVAILABLE_FOR_PURCHASE);
 
         petRepository.saveAll(Arrays.asList(petDocumentLassie,
@@ -238,8 +238,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() throws JSONException {
-        PetDocument petDocumentBeethoven = createPetDocument(12L,
-                "Beethoven",
+        PetDocument petDocumentBeethoven = createPetDocument(
+                String.valueOf(12L), "Beethoven",
                 PetStatus.AVAILABLE_FOR_PURCHASE);
 
         petRepository.save(petDocumentBeethoven);
@@ -251,7 +251,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 .toUri();
 
         PetPatch petPatch = new PetPatch();
-        petPatch.setId(12L);
+        petPatch.setId(String.valueOf(12));
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
@@ -335,18 +335,18 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(10L, allPetDocument.getPetId());
+        assertEquals("10", allPetDocument.getPetId());
     }
 
-    private PetDocument createPetDocument(long id,
+    private PetDocument createPetDocument(String petId,
                                           String name,
                                           PetStatus petStatus) {
-        PetDocument petDocumentBeethoven = testData.createPetDocument();
+        PetDocument petDocument = testData.createPetDocument();
 
-        petDocumentBeethoven.setPetId(id);
-        petDocumentBeethoven.setName(name);
-        petDocumentBeethoven.setPetStatus(petStatus.getValue());
+        petDocument.setPetId(petId);
+        petDocument.setName(name);
+        petDocument.setPetStatus(petStatus.getValue());
 
-        return petDocumentBeethoven;
+        return petDocument;
     }
 }

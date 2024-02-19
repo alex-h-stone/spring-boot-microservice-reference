@@ -188,7 +188,7 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                 .toUri();
 
         PetPatch petPatch = new PetPatch();
-        petPatch.setId(10L);
+        petPatch.setId("10");
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));

@@ -40,7 +40,7 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Pet> getPetById(Long petId) {
+    public ResponseEntity<Pet> getPetById(String petId) {
         petValidator.validatePetId(petId);
 
         Pet pet = petService.retrievePetDetails(petId);
@@ -49,7 +49,7 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Pet> purchasePet(Long petId, Customer customer) {
+    public ResponseEntity<Pet> purchasePet(String petId, Customer customer) {
         petValidator.validatePetId(petId);
 
         Pet purchasedPet = petService.purchase(petId, customer);

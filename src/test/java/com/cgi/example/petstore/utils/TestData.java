@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TestData {
 
-    private static final long TEN_PET_ID = 10L;
+    private static final String TEN_PET_ID = "10";
     private static final String FIDO_NAME = "Fido";
     private static final PetType DOG_PET_TYPE = PetType.DOG;
     private static final String VACCINATION_ID = "AF54785412K";
@@ -54,7 +54,6 @@ public class TestData {
     public NewPet createNewPet() {
         NewPet pet = new NewPet();
 
-        pet.petId(TEN_PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setName(FIDO_NAME);
         pet.setPetType(DOG_PET_TYPE);

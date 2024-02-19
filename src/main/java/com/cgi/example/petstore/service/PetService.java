@@ -32,7 +32,7 @@ public class PetService {
         return retrievePetDetails(savedPet.getPetId());
     }
 
-    public Pet retrievePetDetails(long petId) {
+    public Pet retrievePetDetails(String petId) {
         Pet pet = petDataStoreService.findPetById(petId);
 
         return enrichWithAdditionalInformation(pet);
@@ -66,7 +66,7 @@ public class PetService {
         return retrievePetDetails(patchedPet.getPetId());
     }
 
-    public Pet purchase(long petId, Customer customer) {
+    public Pet purchase(String petId, Customer customer) {
         Customer savedCustomer = customerDataStoreService.insertIfAbsent(customer);
 
         Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());

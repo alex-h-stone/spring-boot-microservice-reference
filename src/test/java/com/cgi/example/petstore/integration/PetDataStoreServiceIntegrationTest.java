@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
 import com.cgi.example.petstore.service.persistence.pet.PetDocument;
 import com.cgi.example.petstore.service.persistence.pet.PetRepository;
@@ -27,15 +28,14 @@ public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldSavePetToMongoDB() {
         NewPet petToSave = testData.createNewPet();
-        Long expectedPetId = petToSave.getPetId();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        petDataStoreService.insertNewPet(petToSave);
+        Pet insertedPet = petDataStoreService.insertNewPet(petToSave);
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(expectedPetId, actualPetDocument.getPetId());
+        assertEquals(insertedPet.getPetId(), actualPetDocument.getPetId());
     }
 }

@@ -151,12 +151,9 @@ paths:
 components:
   schemas:
     PetId:
-      type: integer
-      format: int64
+      type: String
       description: The unique Id for the pet in the Pet Shop.
-      minimum: 1
-      maximum: 2000
-      example: 1546
+      example: KT1546
     PetName:
       type: string
       description: The pet answers to this name.
@@ -262,13 +259,10 @@ components:
       description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
       type: object
       required:
-        - petId
         - vaccinationId
         - name
         - petType
       properties:
-        petId:
-          $ref: '#/components/schemas/PetId'
         vaccinationId:
           $ref: '#/components/schemas/PetVaccinationId'
         name:
@@ -292,6 +286,8 @@ components:
         - petType
         - petStatus
       properties:
+        petId:
+          $ref: '#/components/schemas/PetId'
         vaccinations:
           type: array
           items:

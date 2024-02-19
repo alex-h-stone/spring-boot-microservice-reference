@@ -31,15 +31,15 @@ public class PetDataStoreService {
         return insertedPet;
     }
 
-    public Pet findPetById(long id) {
+    public Pet findPetById(String id) {
         PetDocument petDocument = retrievePetDocument(id);
         return petMapper.mapToPet(petDocument);
     }
 
-    private PetDocument retrievePetDocument(long petId) {
+    private PetDocument retrievePetDocument(String petId) {
         Optional<PetDocument> petDocumentOptional = petRepository.findById(petId);
         if (petDocumentOptional.isEmpty()) {
-            String message = "Unable to find the pet with Id: [%d]".formatted(petId);
+            String message = "Unable to find the pet with Id: [%s]".formatted(petId);
             throw new NotFoundException(message);
         }
 
@@ -64,7 +64,7 @@ public class PetDataStoreService {
         return petMapper.mapToPet(insertedPetDocument);
     }
 
-    public Optional<Long> findOwnerCustomerIdForPet(long petId) {
+    public Optional<Long> findOwnerCustomerIdForPet(String petId) {
         Optional<PetDocument> optionalPetDocument = petRepository.findById(petId);
         if (optionalPetDocument.isEmpty()) {
             return Optional.empty();
@@ -75,7 +75,7 @@ public class PetDataStoreService {
         return Optional.ofNullable(petDocument.getOwnerCustomerId());
     }
 
-    public Pet updatePetWithNewOwner(long petId, long customerId) {
+    public Pet updatePetWithNewOwner(String petId, long customerId) {
         PetDocument petDocument = retrievePetDocument(petId);
         petDocument.setOwnerCustomerId(customerId);
         petDocument.setPetStatus(PetStatus.PENDING_COLLECTION.getValue());
