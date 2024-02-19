@@ -42,7 +42,20 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void shouldReturnEmptyOptionalForInvalidVaccinationId() {
+    void shouldReturnEmptyOptionalForUnknownVaccinationId() {
+        stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/Z6456INVALID"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+                        .withBody("""
+                                {
+                                  "type": "about:blank",
+                                  "title": "Not Found",
+                                  "status": 404,
+                                  "detail": "Unable to find vaccinations for Id [Z6456INVALID]"
+                                }
+                                """)
+                        .withStatus(HttpStatus.NOT_FOUND.value())));
+
         Optional<List<Vaccination>> optionalVaccinations = apiClient.getVaccinations("Z6456INVALID");
 
         assertTrue(optionalVaccinations.isEmpty());

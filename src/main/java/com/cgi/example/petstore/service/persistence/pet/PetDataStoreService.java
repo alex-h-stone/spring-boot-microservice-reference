@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.service.persistence.pet;
 
-import com.cgi.example.petstore.exception.NotFoundException;
+import com.cgi.example.petstore.exception.NotFoundExceptionAbstract;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
@@ -40,7 +40,7 @@ public class PetDataStoreService {
         Optional<PetDocument> petDocumentOptional = petRepository.findById(petId);
         if (petDocumentOptional.isEmpty()) {
             String message = "Unable to find the pet with Id: [%s]".formatted(petId);
-            throw new NotFoundException(message);
+            throw new NotFoundExceptionAbstract(message);
         }
 
         return petDocumentOptional.get();

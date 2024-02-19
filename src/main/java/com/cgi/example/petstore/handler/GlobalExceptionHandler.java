@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.handler;
 
-import com.cgi.example.petstore.exception.ServiceException;
+import com.cgi.example.petstore.exception.AbstractApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,28 +13,27 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ServiceException.class)
-    public ProblemDetail onApplicationException(ServiceException serviceException) {
-        return logAndCreateProblemDetail(serviceException.getResponseMessage(),
-                serviceException.getHttpResponseCode());
-    }
+    @ExceptionHandler(AbstractApplicationException.class)
+    public ProblemDetail onApplicationException(AbstractApplicationException exception) {
+        ProblemDetail problemDetail = createProblemDetail(exception.getResponseMessage(), exception.getHttpResponseCode());
 
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail onException(Exception exception) {
-        return logAndCreateProblemDetail(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(Error.class)
-    public ProblemDetail onError(Error error) {
-        return logAndCreateProblemDetail(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private ProblemDetail logAndCreateProblemDetail(String detail, HttpStatusCode httpStatus) {
-        String className = getClass().getSimpleName();
-        String detailedMessage = "Handled by %s - [%s]".formatted(className, detail);
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, detailedMessage);
-
-        log.info("ProblemDetail: [{}]", problemDetail);
+        log.info("An exception occurred: [{}]", exception.getMessage(), exception);
         return problemDetail;
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ProblemDetail onThrowable(Throwable throwable) {
+        ProblemDetail problemDetail = createProblemDetail("An internal server error occurred.",
+                HttpStatus.INTERNAL_SERVER_ERROR);
+
+        log.info("An exception occurred: [{}]", throwable.getMessage(), throwable);
+        return problemDetail;
+    }
+
+    private ProblemDetail createProblemDetail(String detail, HttpStatusCode httpStatus) {
+        String simpleClassName = getClass().getSimpleName();
+        String detailedMessage = "Handled by %s - [%s]".formatted(simpleClassName, detail);
+
+        return ProblemDetail.forStatusAndDetail(httpStatus, detailedMessage);
     }
 }

@@ -6,12 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriBuilder;
 import reactor.util.retry.Retry;
 
@@ -48,7 +45,7 @@ public class VaccinationsApiClient {
             log.debug("Retrieved {} vaccinations with URI: [{}]", vaccinations.size(), uri);
             return Optional.of(vaccinations);
 
-        } catch (WebClientResponseException e) {
+        } catch (RuntimeException e) {
             log.info("Unable to determine the vaccinations for vaccinationId: [{}] due to error [{}]",
                     vaccinationId, e.getMessage(), e);
             return Optional.empty();
@@ -62,7 +59,6 @@ public class VaccinationsApiClient {
                 Objects.isNull(vaccinationsResponse.getBody().getVaccinations());
     }
 
-    @Retryable(retryFor = {Exception.class}, maxAttempts = 2, backoff = @Backoff(delay = 1_000))
     private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) throws WebClientException {
         return webClient.get()
                 .uri(uri)
