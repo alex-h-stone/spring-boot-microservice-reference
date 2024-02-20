@@ -27,6 +27,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
@@ -117,10 +118,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertEquals(petId, extractPetId(actualJsonBody));
-        assertEquals(customerId, actualCustomerId);
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertEquals(petId, extractPetId(actualJsonBody)),
+                () -> assertEquals(customerId, actualCustomerId)
+        );
     }
 
     private String purchaseThePet(String petId) {
@@ -180,10 +183,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertEquals(petId, extractPetId(actualJsonBody));
-        assertThat(actualCustomerId, not(isEmptyOrNullString()));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertEquals(petId, extractPetId(actualJsonBody)),
+                () -> assertThat(actualCustomerId, not(isEmptyOrNullString()))
+        );
 
         return actualCustomerId;
     }
@@ -238,9 +243,11 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertEquals(petId, extractPetId(actualJsonBody));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertEquals(petId, extractPetId(actualJsonBody))
+        );
     }
 
     private void retrieveNewlyAddedPetByStatus(String petId) {
@@ -292,9 +299,11 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertEquals(petId, JsonPath.read(actualJsonBody, "$.pets[0].petId"));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertEquals(petId, JsonPath.read(actualJsonBody, "$.pets[0].petId"))
+        );
     }
 
     private void retrieveNewlyAddedPetById(String petId) {
@@ -340,9 +349,11 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertEquals(petId, extractPetId(actualJsonBody));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertEquals(petId, extractPetId(actualJsonBody))
+        );
     }
 
     private String addANewPet() {
@@ -389,9 +400,11 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualPetId = extractPetId(actualJsonBody);
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertThat(actualPetId, not(isEmptyOrNullString()));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertThat(actualPetId, not(isEmptyOrNullString()))
+        );
 
         return actualPetId;
     }
@@ -409,8 +422,10 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String expectedJsonBody = "{ }";
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody)
+        );
     }
 
     private String extractPetId(String actualJsonBody) {

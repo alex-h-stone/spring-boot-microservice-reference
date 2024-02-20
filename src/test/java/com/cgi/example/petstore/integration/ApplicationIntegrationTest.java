@@ -64,9 +64,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualGeneratedPetId = JsonPath.read(actualJsonBody, "$.petId");
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertThat(actualGeneratedPetId, not(isEmptyOrNullString()));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertThat(actualGeneratedPetId, not(isEmptyOrNullString()))
+        );
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
@@ -102,8 +104,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody)
+        );
     }
 
     @Test
@@ -132,8 +136,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()),
-                assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
-                () -> assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody)
+                assertions.assertProblemJsonContentType(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody)
         );
     }
 
@@ -178,7 +182,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
-                assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
+                assertions.assertProblemJsonContentType(response),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
                 () -> assertEquals("Handled by GlobalExceptionHandler: [Invalid Pet Id, the Id [666] is not permitted, found: [666]]", detail),
                 () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/666"))
@@ -232,8 +236,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody)
+        );
     }
 
     @Test
@@ -282,8 +288,10 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody)
+        );
     }
 
     @Test
@@ -329,9 +337,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertions.assertOkJSONResponse(response);
-        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
-        assertThat(actualCustomerId, not(isEmptyOrNullString()));
+        assertAll(
+                assertions.assertOkJsonResponse(response),
+                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+                () -> assertThat(actualCustomerId, not(isEmptyOrNullString()))
+        );
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));

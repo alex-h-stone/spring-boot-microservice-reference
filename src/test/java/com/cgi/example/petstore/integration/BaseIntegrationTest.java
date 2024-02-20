@@ -3,7 +3,7 @@ package com.cgi.example.petstore.integration;
 import com.cgi.example.petstore.integration.utils.LoggingTestRestTemplate;
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.integration.utils.WiremockServerForIntegrationTests;
-import com.cgi.example.petstore.utils.AssertionUtils;
+import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import java.util.Set;
 @Tag("integration")
 public class BaseIntegrationTest {
 
-    protected final AssertionUtils assertions = new AssertionUtils();
+    protected final AssertionExecutables assertions = new AssertionExecutables();
     protected final ResourceFileUtils fileUtils = new ResourceFileUtils();
 
     @Autowired
