@@ -2,7 +2,7 @@ package com.cgi.example.petstore.controller;
 
 import com.cgi.example.petstore.api.PetStoreApi;
 import com.cgi.example.petstore.controller.validation.PetValidator;
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.MultiplePetsResponse;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
@@ -49,7 +49,7 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
-    public ResponseEntity<Pet> purchasePet(String petId, Customer customer) {
+    public ResponseEntity<Pet> purchasePet(String petId, CustomerRequest customer) {
         petValidator.validatePetId(petId);
 
         Pet purchasedPet = petService.purchase(petId, customer);

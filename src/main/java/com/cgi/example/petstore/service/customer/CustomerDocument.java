@@ -17,7 +17,7 @@ public class CustomerDocument {
 
     @Id
     @Indexed(unique = true, name = "customerIdIndex")
-    private Long customerId;
+    private String customerId;
 
     @Indexed(unique = true, name = "usernameIndex")
     private String username;

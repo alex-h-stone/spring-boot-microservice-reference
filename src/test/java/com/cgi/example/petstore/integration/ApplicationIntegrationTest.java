@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.integration.utils.UriBuilder;
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetPatch;
@@ -298,7 +298,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         URI uri = uriBuilder.getPetStoreURIFor(savedPetDocument.getPetId())
                 .build()
                 .toUri();
-        RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
+        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomer(),
                 HttpMethod.POST,
                 uri);
 
@@ -308,7 +308,6 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                     {
                       "petStatus": "Pending Collection",
                       "owner": {
-                        "customerId": 246879,
                         "username": "alex.stone",
                         "firstName": "Alex",
                         "lastName": "Stone",
@@ -334,6 +333,8 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
+        assertThat(actualCustomerId, not(isEmptyOrNullString()));
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));

@@ -1,11 +1,13 @@
 package com.cgi.example.petstore.service.customer;
 
 import com.cgi.example.petstore.exception.NotFoundExceptionAbstract;
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
+import com.cgi.example.petstore.model.CustomerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -16,27 +18,28 @@ public class CustomerDataStoreService {
     private final CustomerMapper customerMapper;
     private final CustomerRepository customerRepository;
 
-    public Customer insertIfAbsent(Customer customer) {
-        Long customerId = customer.getCustomerId();
-
-        Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
-        if (optionalCustomerDocument.isPresent()) {
-            return customerMapper.mapToCustomer(optionalCustomerDocument.get());
+    public CustomerResponse insertIfAbsent(CustomerRequest customerRequest) {
+        String customerId = customerRequest.getCustomerId();
+        if (Objects.nonNull(customerId)) {
+            Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
+            if (optionalCustomerDocument.isPresent()) {
+                return customerMapper.mapToCustomerResponse(optionalCustomerDocument.get());
+            }
         }
 
-        CustomerDocument customerDocument = customerMapper.mapToCustomer(customer);
+        CustomerDocument customerDocument = customerMapper.mapToCustomerDocument(customerRequest);
         CustomerDocument savedCustomerDocument = customerRepository.insert(customerDocument);
-        return customerMapper.mapToCustomer(savedCustomerDocument);
+        return customerMapper.mapToCustomerResponse(savedCustomerDocument);
     }
 
-    public Customer retrieveCustomer(long customerId) {
+    public CustomerResponse retrieveCustomer(String customerId) {
         Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
         if (optionalCustomerDocument.isEmpty()) {
-            String message = "Unable to find the Customer with customerId: [%d]".formatted(customerId);
+            String message = "Unable to find the Customer with customerId: [%s]".formatted(customerId);
             throw new NotFoundExceptionAbstract(message);
         }
 
         CustomerDocument customerDocument = optionalCustomerDocument.get();
-        return customerMapper.mapToCustomer(customerDocument);
+        return customerMapper.mapToCustomerResponse(customerDocument);
     }
 }

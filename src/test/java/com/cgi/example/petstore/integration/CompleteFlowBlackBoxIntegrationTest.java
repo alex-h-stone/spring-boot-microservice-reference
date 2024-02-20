@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetPatch;
@@ -129,7 +129,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
-        RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
+        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomer(),
                 HttpMethod.POST,
                 uri);
 

@@ -64,7 +64,7 @@ public class PetDataStoreService {
         return petMapper.mapToPet(insertedPetDocument);
     }
 
-    public Optional<Long> findOwnerCustomerIdForPet(String petId) {
+    public Optional<String> findOwnerCustomerIdForPet(String petId) {
         Optional<PetDocument> optionalPetDocument = petRepository.findById(petId);
         if (optionalPetDocument.isEmpty()) {
             return Optional.empty();
@@ -75,7 +75,7 @@ public class PetDataStoreService {
         return Optional.ofNullable(petDocument.getOwnerCustomerId());
     }
 
-    public Pet updatePetWithNewOwner(String petId, long customerId) {
+    public Pet updatePetWithNewOwner(String petId, String customerId) {
         PetDocument petDocument = retrievePetDocument(petId);
         petDocument.setOwnerCustomerId(customerId);
         petDocument.setPetStatus(PetStatus.PENDING_COLLECTION.getValue());

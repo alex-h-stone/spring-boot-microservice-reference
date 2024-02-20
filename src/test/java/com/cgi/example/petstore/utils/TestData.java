@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.utils;
 
 import com.cgi.example.petstore.model.Address;
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetInformationItem;
@@ -77,10 +77,9 @@ public class TestData {
         return petInformationItem;
     }
 
-    public Customer createCustomer() {
-        Customer customer = new Customer();
+    public CustomerRequest createCustomer() {
+        CustomerRequest customer = new CustomerRequest();
 
-        customer.setCustomerId(246879L);
         customer.setUsername("alex.stone");
         customer.setFirstName("Alex");
         customer.setLastName("Stone");

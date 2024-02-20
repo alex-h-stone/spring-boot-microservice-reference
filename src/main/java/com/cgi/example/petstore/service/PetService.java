@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.service;
 
-import com.cgi.example.petstore.model.Customer;
+import com.cgi.example.petstore.model.CustomerRequest;
+import com.cgi.example.petstore.model.CustomerResponse;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
@@ -43,10 +44,10 @@ public class PetService {
 
         pet.setVaccinations(vaccinations);
 
-        Optional<Long> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(pet.getPetId());
+        Optional<String> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(pet.getPetId());
         if (optionalCustomerId.isPresent()) {
-            Customer customer = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
-            pet.setOwner(customer);
+            CustomerResponse customerResponse = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
+            pet.setOwner(customerResponse);
         }
         return pet;
     }
@@ -66,8 +67,8 @@ public class PetService {
         return retrievePetDetails(patchedPet.getPetId());
     }
 
-    public Pet purchase(String petId, Customer customer) {
-        Customer savedCustomer = customerDataStoreService.insertIfAbsent(customer);
+    public Pet purchase(String petId, CustomerRequest customer) {
+        CustomerResponse savedCustomer = customerDataStoreService.insertIfAbsent(customer);
 
         Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
 

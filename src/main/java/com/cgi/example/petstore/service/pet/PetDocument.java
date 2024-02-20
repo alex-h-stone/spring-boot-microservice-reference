@@ -21,7 +21,7 @@ public class PetDocument {
     private String petId;
 
     @Indexed(unique = false, name = "ownerCustomerIdIndex")
-    private Long ownerCustomerId;
+    private String ownerCustomerId;
 
     private String vaccinationId;
 

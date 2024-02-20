@@ -138,7 +138,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              $ref: '#/components/schemas/CustomerRequest'
       responses:
         '200':
           description: successful operation
@@ -196,18 +196,16 @@ components:
       items:
         type: string
         example: https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6
-    Customer:
+    CustomerRequest:
       type: object
       required:
-        - customerId
         - firstName
         - lastName
         - address
       properties:
         customerId:
-          type: integer
-          format: int64
-          example: 246879
+          type: string
+          example: C246879
         username:
           type: string
           example: alex.stone
@@ -222,6 +220,15 @@ components:
           example: alex.stone@cgi.com
         address:
           $ref: '#/components/schemas/Address'
+    CustomerResponse:
+      allOf:
+        - $ref: '#/components/schemas/CustomerRequest'
+      type: object
+      required:
+        - customerId
+        - firstName
+        - lastName
+        - address
     Address:
       type: object
       required:
@@ -296,7 +303,7 @@ components:
         petStatus:
           $ref: '#/components/schemas/PetStatus'
         owner:
-          $ref: '#/components/schemas/Customer'
+          $ref: '#/components/schemas/CustomerResponse'
     PetPatch:
       type: object
       required:
