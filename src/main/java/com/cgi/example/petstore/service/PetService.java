@@ -33,9 +33,9 @@ public class PetService {
     }
 
     public Pet retrievePetDetails(String petId) {
-        Pet pet = petDataStoreService.findPetById(petId);
+        Pet foundPet = petDataStoreService.findPetById(petId);
 
-        return enrichWithAdditionalInformation(pet);
+        return enrichWithAdditionalInformation(foundPet);
     }
 
     private Pet enrichWithAdditionalInformation(Pet pet) {

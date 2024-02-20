@@ -365,7 +365,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                          }
                        ],
                        "petStatus": "Available For Purchase",
-                       "petId": 10,
                        "vaccinationId": "AF54785412K",
                        "name": "Fido",
                        "petType": "Dog",
