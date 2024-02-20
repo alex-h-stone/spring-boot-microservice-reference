@@ -85,7 +85,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(petId))
+        URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
@@ -295,7 +295,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(savedPetDocument.getPetId()))
+        URI uri = uriBuilder.getPetStoreURIFor(savedPetDocument.getPetId())
                 .build()
                 .toUri();
         RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),

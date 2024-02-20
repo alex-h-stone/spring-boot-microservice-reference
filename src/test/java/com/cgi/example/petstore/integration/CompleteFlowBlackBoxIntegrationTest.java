@@ -7,6 +7,7 @@ import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,12 @@ import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
+public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     private static final List<String> ALL_PET_STATUSES = Arrays.stream(PetStatus.values())
             .map(Enum::name)
@@ -46,21 +51,21 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         verifyNotPetsOfAnyStatusesAreAlreadyPresent();
 
-        addANewPet();
+        String newPetId = addANewPet();
 
-        retrieveNewlyAddedPetById();
+        retrieveNewlyAddedPetById(newPetId);
 
-        retrieveNewlyAddedPetByStatus();
+        retrieveNewlyAddedPetByStatus(newPetId);
 
-        updatePetDetails();
+        updatePetDetails(newPetId);
 
-        purchaseThePet();
+        purchaseThePet(newPetId);
 
-        verifyThePetHasBeenPurchased();
+        verifyThePetHasBeenPurchased(newPetId);
     }
 
-    private void verifyThePetHasBeenPurchased() throws JSONException {
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+    private void verifyThePetHasBeenPurchased(String petId) throws JSONException {
+        URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
@@ -98,7 +103,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                             "country": "United Kingdom"
                           }
                         },
-                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Astro",
                         "petType": "Dog",
@@ -118,10 +122,11 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private void purchaseThePet() throws JSONException {
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+    private void purchaseThePet(String petId) throws JSONException {
+        URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
         RequestEntity<Customer> requestEntity = new RequestEntity<>(testData.createCustomer(),
@@ -160,7 +165,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                             "country": "United Kingdom"
                           }
                         },
-                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Astro",
                         "petType": "Dog",
@@ -180,15 +184,16 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private void updatePetDetails() throws JSONException {
+    private void updatePetDetails(String petId) throws JSONException {
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
                 .toUri();
 
         PetPatch petPatch = new PetPatch();
-        petPatch.setId("10");
+        petPatch.setId(petId);
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
@@ -215,7 +220,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                      }
                    ],
                    "petStatus": "Available For Purchase",
-                   "petId": 10,
                    "vaccinationId": "AF54785412K",
                    "name": "Astro",
                    "petType": "Dog",
@@ -235,9 +239,10 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private void retrieveNewlyAddedPetByStatus() throws JSONException {
+    private void retrieveNewlyAddedPetByStatus(String petId) throws JSONException {
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .pathSegment("findByStatus")
                 .queryParam("statuses", PetStatus.AVAILABLE_FOR_PURCHASE.name())
@@ -267,7 +272,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                            }
                          ],
                          "petStatus": "Available For Purchase",
-                         "petId": 10,
                          "vaccinationId": "AF54785412K",
                          "name": "Fido",
                          "petType": "Dog",
@@ -289,10 +293,11 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertEquals(petId, JsonPath.read(actualJsonBody, "$.pets[0].petId"));
     }
 
-    private void retrieveNewlyAddedPetById() throws JSONException {
-        URI uri = uriBuilder.getPetStoreURIFor(String.valueOf(10L))
+    private void retrieveNewlyAddedPetById(String petId) throws JSONException {
+        URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
@@ -317,7 +322,6 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                           }
                         ],
                         "petStatus": "Available For Purchase",
-                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -337,9 +341,10 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private void addANewPet() throws JSONException {
+    private String addANewPet() throws JSONException {
         NewPet petToAdd = testData.createNewPet();
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
@@ -381,9 +386,13 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                 """;
 
         String actualJsonBody = response.getBody();
+        String actualPetId = extractPetId(actualJsonBody);
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertThat(actualPetId, not(isEmptyOrNullString()));
+
+        return actualPetId;
     }
 
     private void verifyNotPetsOfAnyStatusesAreAlreadyPresent() throws JSONException {
@@ -401,5 +410,9 @@ public class EndToEndFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+    }
+
+    private String extractPetId(String actualJsonBody) {
+        return JsonPath.read(actualJsonBody, "$.petId");
     }
 }
