@@ -42,7 +42,7 @@ Depending on the use case it may be desirable to also include a mapping layer to
 following:
 
 - API model types (pet store)
-- 3rd Party - API model types (vaccinations)
+- External API call - API model types (vaccinations)
 - Datastore/Repository entity types (MongoDB)
 
 The API provides the following functionality:
