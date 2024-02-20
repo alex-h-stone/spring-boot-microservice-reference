@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.service.persistence.customer;
+package com.cgi.example.petstore.service.customer;
 
 import lombok.Builder;
 import lombok.Data;

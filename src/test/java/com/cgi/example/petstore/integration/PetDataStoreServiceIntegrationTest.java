@@ -2,9 +2,9 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
-import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
-import com.cgi.example.petstore.service.persistence.pet.PetDocument;
-import com.cgi.example.petstore.service.persistence.pet.PetRepository;
+import com.cgi.example.petstore.service.pet.PetDataStoreService;
+import com.cgi.example.petstore.service.pet.PetDocument;
+import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

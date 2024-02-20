@@ -7,7 +7,7 @@ import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
-import com.cgi.example.petstore.service.persistence.pet.PetDocument;
+import com.cgi.example.petstore.service.pet.PetDocument;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

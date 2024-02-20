@@ -6,8 +6,8 @@ import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.Vaccination;
-import com.cgi.example.petstore.service.persistence.customer.CustomerDataStoreService;
-import com.cgi.example.petstore.service.persistence.pet.PetDataStoreService;
+import com.cgi.example.petstore.service.customer.CustomerDataStoreService;
+import com.cgi.example.petstore.service.pet.PetDataStoreService;
 import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class PetService {
     public Pet addToPetStore(NewPet newPet) {
         Pet savedPet = petDataStoreService.insertNewPet(newPet);
 
-        return retrievePetDetails(savedPet.getPetId());
+        return enrichWithAdditionalInformation(savedPet);
     }
 
     public Pet retrievePetDetails(String petId) {

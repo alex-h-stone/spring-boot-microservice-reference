@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.service.persistence.pet;
+package com.cgi.example.petstore.service.pet;
 
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
