@@ -1,7 +1,11 @@
 package com.cgi.example.petstore.utils;
 
 import org.hamcrest.Matchers;
+import org.json.JSONException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,10 +32,19 @@ public class AssertionUtils {
         };
     }
 
-    public void assertOkJsonResponse(ResponseEntity<?> response) {
+    public void assertOkJSONResponse(ResponseEntity<?> response) {
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 assertJSONContentType(response)
         );
+    }
+
+    public void assertLenientJSONEquals(String expectedJSON, String actualJSON) {
+        try {
+            JSONAssert.assertEquals(expectedJSON, actualJSON, JSONCompareMode.LENIENT);
+        } catch (JSONException e) {
+            String message = "An exception occurred while attempting to compare JSON: [%s]".formatted(e.getMessage());
+            Assertions.fail(message, e);
+        }
     }
 }

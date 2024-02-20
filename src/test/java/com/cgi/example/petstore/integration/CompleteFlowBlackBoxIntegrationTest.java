@@ -9,10 +9,7 @@ import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
-import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +38,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
     private final TestData testData = new TestData();
 
     @Test
-    void shouldSuccessfullyAddModifyFindUpdateAndPurchaseAPet() throws JSONException {
+    void shouldSuccessfullyAddModifyFindUpdateAndPurchaseAPet() {
         String vaccinations = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
         stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
                 .willReturn(aResponse()
@@ -59,12 +56,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         updatePetDetails(newPetId);
 
-        purchaseThePet(newPetId);
+        String generatedCustomerId = purchaseThePet(newPetId);
 
-        verifyThePetHasBeenPurchased(newPetId);
+        verifyThePetHasBeenPurchased(generatedCustomerId, newPetId);
     }
 
-    private void verifyThePetHasBeenPurchased(String petId) throws JSONException {
+    private void verifyThePetHasBeenPurchased(String customerId, String petId) {
         URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
@@ -91,7 +88,6 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                         ],
                         "petStatus": "Pending Collection",
                         "owner": {
-                          "customerId": 246879,
                           "username": "alex.stone",
                           "firstName": "Alex",
                           "lastName": "Stone",
@@ -119,13 +115,15 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                 """;
 
         String actualJsonBody = response.getBody();
+        String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertEquals(petId, extractPetId(actualJsonBody));
+        assertEquals(customerId, actualCustomerId);
     }
 
-    private void purchaseThePet(String petId) throws JSONException {
+    private String purchaseThePet(String petId) {
         URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
@@ -153,7 +151,6 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                         ],
                         "petStatus": "Pending Collection",
                         "owner": {
-                          "customerId": 246879,
                           "username": "alex.stone",
                           "firstName": "Alex",
                           "lastName": "Stone",
@@ -181,13 +178,17 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                 """;
 
         String actualJsonBody = response.getBody();
+        String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertEquals(petId, extractPetId(actualJsonBody));
+        assertThat(actualCustomerId, not(isEmptyOrNullString()));
+
+        return actualCustomerId;
     }
 
-    private void updatePetDetails(String petId) throws JSONException {
+    private void updatePetDetails(String petId) {
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
                 .toUri();
@@ -237,12 +238,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private void retrieveNewlyAddedPetByStatus(String petId) throws JSONException {
+    private void retrieveNewlyAddedPetByStatus(String petId) {
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .pathSegment("findByStatus")
                 .queryParam("statuses", PetStatus.AVAILABLE_FOR_PURCHASE.name())
@@ -291,12 +292,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertEquals(petId, JsonPath.read(actualJsonBody, "$.pets[0].petId"));
     }
 
-    private void retrieveNewlyAddedPetById(String petId) throws JSONException {
+    private void retrieveNewlyAddedPetById(String petId) {
         URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
@@ -339,12 +340,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertEquals(petId, extractPetId(actualJsonBody));
     }
 
-    private String addANewPet() throws JSONException {
+    private String addANewPet() {
         NewPet petToAdd = testData.createNewPet();
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
@@ -388,14 +389,14 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String actualJsonBody = response.getBody();
         String actualPetId = extractPetId(actualJsonBody);
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
         assertThat(actualPetId, not(isEmptyOrNullString()));
 
         return actualPetId;
     }
 
-    private void verifyNotPetsOfAnyStatusesAreAlreadyPresent() throws JSONException {
+    private void verifyNotPetsOfAnyStatusesAreAlreadyPresent() {
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .pathSegment("findByStatus")
                 .queryParam("statuses", ALL_PET_STATUSES)
@@ -408,8 +409,8 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         String expectedJsonBody = "{ }";
         String actualJsonBody = response.getBody();
 
-        assertions.assertOkJsonResponse(response);
-        JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertions.assertOkJSONResponse(response);
+        assertions.assertLenientJSONEquals(expectedJsonBody, actualJsonBody);
     }
 
     private String extractPetId(String actualJsonBody) {

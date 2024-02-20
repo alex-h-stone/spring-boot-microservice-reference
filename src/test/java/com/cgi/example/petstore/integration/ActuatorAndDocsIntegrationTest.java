@@ -29,7 +29,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
         Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
 
-        assertions.assertOkJsonResponse(response);
+        assertions.assertOkJSONResponse(response);
         assertThat(links, Matchers.containsInAnyOrder("self", "health", "health-path",
                 "info", "metrics-requiredMetricName", "metrics", "mappings"));
     }
@@ -44,7 +44,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         String status = JsonPath.read(response.getBody(), "$.status");
         String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
 
-        assertions.assertOkJsonResponse(response);
+        assertions.assertOkJSONResponse(response);
         assertEquals("UP", status);
         assertEquals("UP", pingStatus);
     }
@@ -61,7 +61,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         String name = JsonPath.read(response.getBody(), "$.build.name");
         String group = JsonPath.read(response.getBody(), "$.build.group");
 
-        assertions.assertOkJsonResponse(response);
+        assertions.assertOkJSONResponse(response);
         assertAll(
                 () -> assertEquals("Spring Boot Template Service modeled on an online Pet Store.", description),
                 () -> assertEquals("spring-boot-microservice-template", artifact),
@@ -79,7 +79,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
         int numberOfMappings = JsonPath.read(response.getBody(), "$.contexts.application.mappings.dispatcherServlets.dispatcherServlet.length()");
 
-        assertions.assertOkJsonResponse(response);
+        assertions.assertOkJSONResponse(response);
         assertThat(numberOfMappings, Matchers.greaterThan(3));
     }
 
@@ -112,7 +112,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         int numberOfURLs = JsonPath.read(response.getBody(), "$.urls.length()");
         String url = JsonPath.read(response.getBody(), "$.urls[0].url");
 
-        assertions.assertOkJsonResponse(response);
+        assertions.assertOkJSONResponse(response);
         assertAll(
                 () -> assertEquals(1, numberOfURLs),
                 () -> assertEquals("/v3/api-docs/springdoc", url)
