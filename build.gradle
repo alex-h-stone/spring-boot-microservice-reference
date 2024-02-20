@@ -153,8 +153,8 @@ tasks.register('generateOpenAPIForAnimalVaccination', org.openapitools.generator
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.thirdparty.animalvaccination.api'
     modelPackage = 'com.cgi.example.thirdparty.animalvaccination.model'
-    inputSpec.set("$rootDir/src/main/resources/openapi/thirdparty/animal-vaccination-api.yaml")
-    outputDir = "${layout.buildDirectory.get()}/generated/sources/openapi/thirdparty/animalvaccination"
+    inputSpec.set("$rootDir/src/main/resources/openapi/external/animal-vaccination-api.yaml")
+    outputDir = "${layout.buildDirectory.get()}/generated/sources/openapi/external/animalvaccination"
     configOptions.set(openApiConfigOptions)
     validateSpec = true
 }
@@ -165,8 +165,8 @@ sourceSets {
     main {
         java {
             srcDirs = ['src/main/java',
-                       'build/generated/sources/openapi/petstore/src/main/java',
-                       'build/generated/sources/openapi/thirdparty/animalvaccination/src/main/java']
+                       "${layout.buildDirectory.get()}/generated/sources/openapi/petstore/src/main/java",
+                       "${layout.buildDirectory.get()}/generated/sources/openapi/external/animalvaccination/src/main/java"]
         }
     }
 }
@@ -178,5 +178,4 @@ task startVaccinationsWireMockServer(type: JavaExec) {
     if (project.hasProperty('portNumber')) {
         args project.portNumber
     }
-
 }

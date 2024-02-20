@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class PetMapperTest {
 
@@ -29,7 +30,7 @@ class PetMapperTest {
         assertNotNull(actualPet);
         assertAll(
                 () -> assertNotNull(actualPet),
-                () -> assertEquals(10, actualPet.getPetId()),
+                () -> assertEquals("KT1546", actualPet.getPetId()),
                 () -> assertEquals("AF54785412K", actualPet.getVaccinationId()),
                 () -> assertEquals("Fido", actualPet.getName()),
                 () -> assertEquals(PetType.DOG, actualPet.getPetType()),
@@ -48,7 +49,7 @@ class PetMapperTest {
 
         assertAll(
                 () -> assertNotNull(actualPetDocument),
-                () -> assertEquals(10, actualPetDocument.getPetId()),
+                () -> assertEquals("KT1546", actualPetDocument.getPetId()),
                 () -> assertEquals("AF54785412K", actualPetDocument.getVaccinationId()),
                 () -> assertEquals("Fido", actualPetDocument.getName()),
                 () -> assertEquals(PetType.DOG.name(), actualPetDocument.getPetType()),
@@ -65,7 +66,7 @@ class PetMapperTest {
         assertNotNull(actualPet);
         assertAll(
                 () -> assertNotNull(actualPet),
-                () -> assertEquals(10, actualPet.getPetId()),
+                () -> assertNull(actualPet.getPetId()),
                 () -> assertEquals("AF54785412K", actualPet.getVaccinationId()),
                 () -> assertEquals("Fido", actualPet.getName()),
                 () -> assertEquals(PetType.DOG, actualPet.getPetType()),

@@ -15,21 +15,22 @@ import java.util.List;
 
 public class TestData {
 
-    private static final String TEN_PET_ID = "10";
-    private static final String FIDO_NAME = "Fido";
+    private static final String PET_ID = "KT1546";
+    private static final String PET_NAME = "Fido";
     private static final PetType DOG_PET_TYPE = PetType.DOG;
     private static final String VACCINATION_ID = "AF54785412K";
-    private static final List<String> DEFAULT_PHOTO_URLS = List.of("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6");
+    private static final List<String> PHOTO_URLS =
+            List.of("https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6");
 
     public Pet createPet() {
         Pet pet = new Pet();
 
-        pet.setPetId(TEN_PET_ID);
+        pet.setPetId(PET_ID);
         pet.setVaccinationId(VACCINATION_ID);
         pet.setVaccinations(Collections.emptyList());
-        pet.setName(FIDO_NAME);
+        pet.setName(PET_NAME);
         pet.setPetType(DOG_PET_TYPE);
-        pet.photoUrls(DEFAULT_PHOTO_URLS);
+        pet.photoUrls(PHOTO_URLS);
         pet.setPetStatus(PetStatus.AVAILABLE_FOR_PURCHASE);
         pet.setAdditionalInformation(Collections.emptyList());
 
@@ -37,13 +38,17 @@ public class TestData {
     }
 
     public PetDocument createPetDocument() {
+        return createPetDocument(PET_ID);
+    }
+
+    public PetDocument createPetDocument(String petId) {
         LocalDateTime now = LocalDateTime.now();
         return PetDocument.builder()
-                .petId(TEN_PET_ID)
+                .petId(petId)
                 .vaccinationId(VACCINATION_ID)
-                .name(FIDO_NAME)
+                .name(PET_NAME)
                 .petType(DOG_PET_TYPE.getValue())
-                .photoUrls(DEFAULT_PHOTO_URLS)
+                .photoUrls(PHOTO_URLS)
                 .additionalInformation(Collections.emptyList())
                 .petStatus(PetStatus.AVAILABLE_FOR_PURCHASE.getValue())
                 .createdAt(now)
@@ -55,9 +60,9 @@ public class TestData {
         NewPet pet = new NewPet();
 
         pet.setVaccinationId(VACCINATION_ID);
-        pet.setName(FIDO_NAME);
+        pet.setName(PET_NAME);
         pet.setPetType(DOG_PET_TYPE);
-        pet.photoUrls(DEFAULT_PHOTO_URLS);
+        pet.photoUrls(PHOTO_URLS);
         pet.setAdditionalInformation(List.of(createPetInformationItem("Personality", "Energetic")));
 
         return pet;
@@ -74,6 +79,7 @@ public class TestData {
 
     public Customer createCustomer() {
         Customer customer = new Customer();
+
         customer.setCustomerId(246879L);
         customer.setUsername("alex.stone");
         customer.setFirstName("Alex");
@@ -86,10 +92,12 @@ public class TestData {
 
     private Address createAddress() {
         Address address = new Address();
+
         address.setStreet("40 Princes Street");
         address.setCity("Edinburgh");
         address.setPostCode("EH2 2BY");
         address.setCountry("United Kingdom");
+
         return address;
     }
 }

@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.handler;
 
 import com.cgi.example.petstore.exception.AbstractApplicationException;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,6 +22,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ProblemDetail onValidationException(ValidationException exception) {
+        ProblemDetail problemDetail = createProblemDetail(exception.getMessage(),
+                HttpStatus.BAD_REQUEST);
+
+        log.info("An exception occurred: [{}]", exception.getMessage(), exception);
+        return problemDetail;
+    }
+
     @ExceptionHandler(Throwable.class)
     public ProblemDetail onThrowable(Throwable throwable) {
         ProblemDetail problemDetail = createProblemDetail("An internal server error occurred.",
@@ -32,7 +42,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ProblemDetail createProblemDetail(String detail, HttpStatusCode httpStatus) {
         String simpleClassName = getClass().getSimpleName();
-        String detailedMessage = "Handled by %s - [%s]".formatted(simpleClassName, detail);
+        String detailedMessage = "Handled by %s: [%s]".formatted(simpleClassName, detail);
 
         return ProblemDetail.forStatusAndDetail(httpStatus, detailedMessage);
     }

@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -55,7 +57,6 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                       {
-                        "petId": 10,
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -64,14 +65,16 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 """;
 
         String actualJsonBody = response.getBody();
+        String actualGeneratedPetId = JsonPath.read(actualJsonBody, "$.petId");
 
         assertions.assertOkJsonResponse(response);
         JSONAssert.assertEquals(expectedJsonBody, actualJsonBody, JSONCompareMode.LENIENT);
+        assertThat(actualGeneratedPetId, not(isEmptyOrNullString()));
 
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(10L, actualPetDocument.getPetId());
+        assertEquals(actualGeneratedPetId, actualPetDocument.getPetId());
     }
 
     @Test
@@ -92,7 +95,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
         String expectedJsonBody = """
                       {
-                        "petId": 10,
+                        "petId": "KT1546",
                         "vaccinationId": "AF54785412K",
                         "name": "Fido",
                         "petType": "Dog",
@@ -123,7 +126,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                        "type": "about:blank",
                        "title": "Not Found",
                        "status": 404,
-                       "detail": "Handled by GlobalExceptionHandler - [Unable to find the pet with Id: [13]]",
+                       "detail": "Handled by GlobalExceptionHandler: [Unable to find the pet with Id: [13]]",
                        "instance": "/api/v1/pet-store/pets/13"
                      }
                 """;
@@ -141,7 +144,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        URI uri = uriBuilder.getPetStoreURIFor("10000")
+        URI uri = uriBuilder.getPetStoreURIFor("abcdefghijklmnopqrstuvwxyz0123456789")
                 .build()
                 .toUri();
 
@@ -154,11 +157,11 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String detail = JsonPath.read(response.getBody(), "$.detail");
 
         assertAll(
-                () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode()),
+                () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
-                () -> assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), status),
-                () -> assertEquals("Handled by GlobalExceptionHandler - [getPetById.petId: must be less than or equal to 2000]", detail),
-                () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/10000")));
+                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
+                () -> assertEquals("Handled by GlobalExceptionHandler: [getPetById.petId: size must be between 0 and 26]", detail),
+                () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/abcdefghijklmnopqrstuvwxyz0123456789")));
     }
 
     @Test
@@ -180,7 +183,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 () -> assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()),
                 assertions.assertContentType(response, MediaType.APPLICATION_PROBLEM_JSON_VALUE),
                 () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
-                () -> assertEquals("Handled by GlobalExceptionHandler - [Invalid Pet Id, the Id 666 is not permitted, found: 666]", detail),
+                () -> assertEquals("Handled by GlobalExceptionHandler: [Invalid Pet Id, the Id [666] is not permitted, found: [666]]", detail),
                 () -> assertThat(instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/666"))
         );
     }
@@ -188,13 +191,13 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() throws JSONException {
         PetDocument petDocumentLassie = createPetDocument(
-                String.valueOf(10L), "Lassie",
+                "KT1546", "Lassie",
                 PetStatus.PENDING_COLLECTION);
         PetDocument petDocumentAstro = createPetDocument(
-                String.valueOf(11L), "Astro",
+                "ABC456", "Astro",
                 PetStatus.SOLD);
         PetDocument petDocumentBeethoven = createPetDocument(
-                String.valueOf(12L), "Beethoven",
+                "XYZ987", "Beethoven",
                 PetStatus.AVAILABLE_FOR_PURCHASE);
 
         petRepository.saveAll(Arrays.asList(petDocumentLassie,
@@ -218,7 +221,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                       "pets": [
                         {
                           "petStatus": "Available For Purchase",
-                          "petId": 12,
+                          "petId": "XYZ987",
                           "vaccinationId": "AF54785412K",
                           "name": "Beethoven",
                           "petType": "Dog",
@@ -239,7 +242,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     @Test
     void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() throws JSONException {
         PetDocument petDocumentBeethoven = createPetDocument(
-                String.valueOf(12L), "Beethoven",
+                "XYZ987", "Beethoven",
                 PetStatus.AVAILABLE_FOR_PURCHASE);
 
         petRepository.save(petDocumentBeethoven);
@@ -251,7 +254,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 .toUri();
 
         PetPatch petPatch = new PetPatch();
-        petPatch.setId(String.valueOf(12));
+        petPatch.setId("XYZ987");
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
@@ -264,7 +267,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         String expectedJsonBody = """
                     {
                       "petStatus": "Available For Purchase",
-                      "petId": 12,
+                      "petId": "XYZ987",
                       "vaccinationId": "AF54785412K",
                       "name": "Astro",
                       "petType": "Dog",
@@ -317,7 +320,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                           "country": "United Kingdom"
                         }
                       },
-                      "petId": 10,
+                      "petId": "KT1546",
                       "vaccinationId": "AF54785412K",
                       "name": "Fido",
                       "petType": "Dog",
@@ -335,13 +338,13 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         List<PetDocument> actualAllPetDocuments = petRepository.findAll();
         assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
         PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals("10", allPetDocument.getPetId());
+        assertEquals("KT1546", allPetDocument.getPetId());
     }
 
     private PetDocument createPetDocument(String petId,
                                           String name,
                                           PetStatus petStatus) {
-        PetDocument petDocument = testData.createPetDocument();
+        PetDocument petDocument = testData.createPetDocument(petId);
 
         petDocument.setPetId(petId);
         petDocument.setName(name);
