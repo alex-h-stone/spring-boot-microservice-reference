@@ -139,14 +139,14 @@ In addition, 'WiremockServerForIntegrationTests' for how to utilise WireMock for
 
 See RequestLoggingFilterConfig for the required config to log requests.
 
-TODO stonal use aspectJ and PII/truffle hog style filter? Or request logging via AOP? with configurable filter to avoid
-logging of 'typical' sensitive field names
+Also consider the use of LoggingAspects and the associated annotations to log method arguments,
+and method responses.
 
 ---
 
 #### Failure recovery via Spring Retry
 
-See VaccinationsApiClient and SpringRetryConfig for an example of how Spring Retry can be used to retry failed external
+See VaccinationsApiClient for an example of how Spring WebClient can be used to retry failed external
 API calls.
 
 ---

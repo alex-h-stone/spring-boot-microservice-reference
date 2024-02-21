@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.thirdparty.vaccinations;
+package com.cgi.example.petstore.external.vaccinations;
 
 import com.cgi.example.petstore.model.Vaccination;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VaccinationsService {
 
-    private final ThirdPartyVaccinationsToPetVaccinationsMapper mapper;
+    private final ExternalVaccinationsToPetVaccinationsMapper mapper;
     private final VaccinationsApiClient apiClient;
 
     public List<Vaccination> getVaccinationDetails(String vaccinationId) {
-        Optional<List<com.cgi.example.thirdparty.animalvaccination.model.Vaccination>> vaccinationsOptional =
+        Optional<List<com.cgi.example.external.animalvaccination.model.Vaccination>> vaccinationsOptional =
                 apiClient.getVaccinations(vaccinationId);
 
         if (vaccinationsOptional.isEmpty()) {

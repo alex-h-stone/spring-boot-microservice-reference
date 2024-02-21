@@ -151,8 +151,8 @@ tasks.register('generateOpenAPIForPetStore', org.openapitools.generator.gradle.p
 }
 tasks.register('generateOpenAPIForAnimalVaccination', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName.set('spring')
-    apiPackage = 'com.cgi.example.thirdparty.animalvaccination.api'
-    modelPackage = 'com.cgi.example.thirdparty.animalvaccination.model'
+    apiPackage = 'com.cgi.example.external.animalvaccination.api'
+    modelPackage = 'com.cgi.example.external.animalvaccination.model'
     inputSpec.set("$rootDir/src/main/resources/openapi/external/animal-vaccination-api.yaml")
     outputDir = "${layout.buildDirectory.get()}/generated/sources/openapi/external/animalvaccination"
     configOptions.set(openApiConfigOptions)

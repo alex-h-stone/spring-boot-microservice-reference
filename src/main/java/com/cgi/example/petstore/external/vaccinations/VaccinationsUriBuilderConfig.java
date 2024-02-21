@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.thirdparty.vaccinations;
+package com.cgi.example.petstore.external.vaccinations;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +15,8 @@ public class VaccinationsUriBuilderConfig {
 
     @Bean("vaccinationsUriBuilder")
     @Scope("prototype")
-    public UriBuilder vaccinationsUriBuilder(@Value("${thirdparty.apis.vaccinations.baseUrl}") String baseUrl,
-                                             @Value("${thirdparty.apis.vaccinations.path}") String path) {
+    public UriBuilder vaccinationsUriBuilder(@Value("${external.apis.vaccinations.baseUrl}") String baseUrl,
+                                             @Value("${external.apis.vaccinations.path}") String path) {
         return UriComponentsBuilder.newInstance()
                 .uri(URI.create(baseUrl))
                 .path(path);

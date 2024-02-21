@@ -40,7 +40,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldSuccessfullyAddModifyFindUpdateAndPurchaseAPet() {
-        String vaccinations = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+        String vaccinations = fileUtils.readFile("external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
         stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)

@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsApiClient;
-import com.cgi.example.thirdparty.animalvaccination.model.Vaccination;
+import com.cgi.example.external.animalvaccination.model.Vaccination;
+import com.cgi.example.petstore.external.vaccinations.VaccinationsApiClient;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
@@ -75,7 +75,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
     }
 
     private ResponseDefinitionBuilder successResponse() {
-        String body = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+        String body = fileUtils.readFile("external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
 
         return aResponse()
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +97,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
                 .willSetStateTo("Third Call")
                 .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
-        String body = fileUtils.readFile("thirdparty\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+        String body = fileUtils.readFile("external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
 
         stubServer.stubFor(WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
                 .inScenario(scenarioName)

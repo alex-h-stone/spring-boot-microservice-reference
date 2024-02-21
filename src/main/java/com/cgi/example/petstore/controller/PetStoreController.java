@@ -2,6 +2,8 @@ package com.cgi.example.petstore.controller;
 
 import com.cgi.example.petstore.api.PetStoreApi;
 import com.cgi.example.petstore.controller.validation.PetValidator;
+import com.cgi.example.petstore.logging.LogMethodArguments;
+import com.cgi.example.petstore.logging.LogMethodResponse;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.MultiplePetsResponse;
 import com.cgi.example.petstore.model.NewPet;
@@ -23,6 +25,8 @@ public class PetStoreController implements PetStoreApi {
     private final PetService petService;
 
     @Override
+    @LogMethodArguments
+    @LogMethodResponse
     public ResponseEntity<Pet> addPet(NewPet newPet) {
         Pet addedPet = petService.addToPetStore(newPet);
 
@@ -30,6 +34,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
+    @LogMethodArguments
+    @LogMethodResponse
     public ResponseEntity<MultiplePetsResponse> findPetsByStatus(List<PetStatus> statuses) {
         List<Pet> pets = petService.retrieveAllPetsWithAStatusMatching(statuses);
 
@@ -40,6 +46,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
+    @LogMethodArguments
+    @LogMethodResponse
     public ResponseEntity<Pet> getPetById(String petId) {
         petValidator.validatePetId(petId);
 
@@ -49,6 +57,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
+    @LogMethodArguments
+    @LogMethodResponse
     public ResponseEntity<Pet> purchasePet(String petId, CustomerRequest customer) {
         petValidator.validatePetId(petId);
 
@@ -58,6 +68,8 @@ public class PetStoreController implements PetStoreApi {
     }
 
     @Override
+    @LogMethodArguments
+    @LogMethodResponse
     public ResponseEntity<Pet> patchPet(PetPatch petPatch) {
         Pet patchedPet = petService.patch(petPatch);
 

@@ -26,7 +26,7 @@ public class IntegrationTestConfig {
 
     private static final class IntegrationTestPropertySource extends MapPropertySource {
         private static final Map<String, Object> PROPERTIES =
-                Map.of("thirdparty.apis.vaccinations.baseUrl", "http://localhost:" + WiremockServerForIntegrationTests.getPort());
+                Map.of("external.apis.vaccinations.baseUrl", "http://localhost:" + WiremockServerForIntegrationTests.getPort());
 
         public IntegrationTestPropertySource() {
             super(IntegrationTestPropertySource.class.getSimpleName(),

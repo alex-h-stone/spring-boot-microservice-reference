@@ -1,7 +1,7 @@
-package com.cgi.example.petstore.thirdparty.vaccinations;
+package com.cgi.example.petstore.external.vaccinations;
 
-import com.cgi.example.thirdparty.animalvaccination.model.Vaccination;
-import com.cgi.example.thirdparty.animalvaccination.model.VaccinationsResponse;
+import com.cgi.example.external.animalvaccination.model.Vaccination;
+import com.cgi.example.external.animalvaccination.model.VaccinationsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,7 @@ public class VaccinationsApiClient {
                 return Optional.empty();
             }
 
+            // TODO add null check for null /empty body
             List<@Valid Vaccination> vaccinations = vaccinationsResponse.getBody().getVaccinations();
             log.debug("Retrieved {} vaccinations with URI: [{}]", vaccinations.size(), uri);
             return Optional.of(vaccinations);

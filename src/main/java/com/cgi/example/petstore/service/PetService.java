@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.service;
 
+import com.cgi.example.petstore.external.vaccinations.VaccinationsService;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.CustomerResponse;
 import com.cgi.example.petstore.model.NewPet;
@@ -9,7 +10,6 @@ import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.Vaccination;
 import com.cgi.example.petstore.service.customer.CustomerDataStoreService;
 import com.cgi.example.petstore.service.pet.PetDataStoreService;
-import com.cgi.example.petstore.thirdparty.vaccinations.VaccinationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -3,31 +3,21 @@ server:
   shutdown: graceful
 
 management:
-  server:
-    port: 8099
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,prometheus,mappings
-  endpoint:
-    health:
-      show-details: always
+  server.port: 8099
+  endpoints.web.exposure.include: health,info,metrics,prometheus,mappings
+  endpoint.health.show-details: always
 
-spring:
-  data:
-    mongodb:
-      uri: ${MONGO_DB_URI:mongodb://localhost:27017}
-      database: petStoreDatabase
+spring.data.mongodb:
+  uri: ${MONGO_DB_URI:mongodb://localhost:27017}
+  database: petStoreDatabase
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
-        web: DEBUG
+logging.level:
+  root: INFO
+  com.cgi.example.petstore.logging: DEBUG
+  org.springframework:
+    security: DEBUG
+    web: DEBUG
 
-thirdparty:
-  apis:
-    vaccinations:
-      baseUrl: ${VACCINATIONS_URL:https://www.vaccinations.thirdparty.com:9999}
-      path: "vaccinations/{vaccinationId}"
+external.apis.vaccinations:
+  baseUrl: ${VACCINATIONS_URL:https://www.vaccinations.external.com:9999}
+  path: "vaccinations/{vaccinationId}"
