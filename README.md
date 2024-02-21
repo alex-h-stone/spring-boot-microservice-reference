@@ -139,8 +139,8 @@ In addition, 'WiremockServerForIntegrationTests' for how to utilise WireMock for
 
 See RequestLoggingFilterConfig for the required config to log requests.
 
-Also consider the use of LoggingAspects and the associated annotations to log method arguments,
-and method responses.
+Also consider the use of LoggingAspects and the LogMethodArguments annotation to log method arguments,
+and the LogMethodResponse to log method responses.
 
 ---
 
