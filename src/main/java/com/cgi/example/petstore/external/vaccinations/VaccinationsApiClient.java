@@ -35,16 +35,15 @@ public class VaccinationsApiClient {
 
         try {
             ResponseEntity<VaccinationsResponse> vaccinationsResponse = getVaccinationsResponse(uri);
+            Optional<List<@Valid Vaccination>> vaccinationsOptional = extractVaccinations(vaccinationsResponse);
 
-            if (invalid(vaccinationsResponse)) {
+            if (vaccinationsOptional.isEmpty()) {
                 log.info("Unable to determine vaccinations for vaccinationId: [{}]", vaccinationId);
-                return Optional.empty();
+            } else {
+                log.debug("Retrieved {} vaccinations with URI: [{}]", vaccinationsOptional.get().size(), uri);
             }
 
-            // TODO add null check for null /empty body
-            List<@Valid Vaccination> vaccinations = vaccinationsResponse.getBody().getVaccinations();
-            log.debug("Retrieved {} vaccinations with URI: [{}]", vaccinations.size(), uri);
-            return Optional.of(vaccinations);
+            return vaccinationsOptional;
 
         } catch (RuntimeException e) {
             log.info("Unable to determine the vaccinations for vaccinationId: [{}] due to error [{}]",
@@ -53,11 +52,15 @@ public class VaccinationsApiClient {
         }
     }
 
-    private boolean invalid(ResponseEntity<VaccinationsResponse> vaccinationsResponse) {
-        return Objects.isNull(vaccinationsResponse) ||
+    private Optional<List<@Valid Vaccination>> extractVaccinations(ResponseEntity<VaccinationsResponse> vaccinationsResponse) {
+        if (Objects.isNull(vaccinationsResponse) ||
                 !vaccinationsResponse.getStatusCode().is2xxSuccessful() ||
                 Objects.isNull(vaccinationsResponse.getBody()) ||
-                Objects.isNull(vaccinationsResponse.getBody().getVaccinations());
+                Objects.isNull(vaccinationsResponse.getBody().getVaccinations())) {
+            return Optional.empty();
+        }
+
+        return Optional.of(vaccinationsResponse.getBody().getVaccinations());
     }
 
     private ResponseEntity<VaccinationsResponse> getVaccinationsResponse(URI uri) throws WebClientException {

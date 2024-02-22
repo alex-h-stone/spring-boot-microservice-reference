@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.service.pet;
 
-import com.cgi.example.petstore.exception.NotFoundExceptionAbstract;
+import com.cgi.example.petstore.exception.NotFoundException;
 import com.cgi.example.petstore.model.NewPet;
 import com.cgi.example.petstore.model.Pet;
 import com.cgi.example.petstore.model.PetPatch;
@@ -12,6 +12,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Design decision: This class acts as a Facade between the Controller and the MongoDB PetRepository.
+ * Specifically the persistence implementation (PetDocument, PetRepository) is not visible (no imports)
+ * outside of this class.
+ * This allows the persistence implementation to be altered and only the PetDataStoreService will be impacted.
+ * <p>
+ * Design decision: Since this is a service class it has no direct dependencies or knowledge of any REST/HTTP
+ * concepts. Specifically instead of returning a ResponseEntity with a 404/NotFound HTTP status code we throw
+ * a NotFoundException.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,7 +50,7 @@ public class PetDataStoreService {
         Optional<PetDocument> petDocumentOptional = petRepository.findById(petId);
         if (petDocumentOptional.isEmpty()) {
             String message = "Unable to find the pet with Id: [%s]".formatted(petId);
-            throw new NotFoundExceptionAbstract(message);
+            throw new NotFoundException(message);
         }
 
         return petDocumentOptional.get();
@@ -49,7 +59,7 @@ public class PetDataStoreService {
     public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
         List<String> petDocumentStatuses = petMapper.mapToPetStatusStrings(statuses);
         List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
-
+        // TODO vaccinations call should be made
         return petMapper.mapToPets(petDocumentsWithMatchingStatus);
     }
 

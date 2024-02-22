@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.service.customer;
 
-import com.cgi.example.petstore.exception.NotFoundExceptionAbstract;
+import com.cgi.example.petstore.exception.NotFoundException;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.CustomerResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class CustomerDataStoreService {
         Optional<CustomerDocument> optionalCustomerDocument = customerRepository.findById(customerId);
         if (optionalCustomerDocument.isEmpty()) {
             String message = "Unable to find the Customer with customerId: [%s]".formatted(customerId);
-            throw new NotFoundExceptionAbstract(message);
+            throw new NotFoundException(message);
         }
 
         CustomerDocument customerDocument = optionalCustomerDocument.get();
