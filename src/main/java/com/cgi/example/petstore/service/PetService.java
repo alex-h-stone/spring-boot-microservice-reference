@@ -39,19 +39,6 @@ public class PetService {
         return enrichWithAdditionalInformation(foundPet);
     }
 
-    private Pet enrichWithAdditionalInformation(Pet pet) {
-        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
-
-        pet.setVaccinations(vaccinations);
-
-        Optional<String> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(pet.getPetId());
-        if (optionalCustomerId.isPresent()) {
-            CustomerResponse customerResponse = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
-            pet.setOwner(customerResponse);
-        }
-        return pet;
-    }
-
     public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
         List<Pet> petsMatchingStatus = petDataStoreService.findPetsByStatus(statuses);
 
@@ -64,7 +51,7 @@ public class PetService {
     public Pet patch(PetPatch pet) {
         Pet patchedPet = petDataStoreService.patch(pet);
         log.debug("Successfully patched the pet with petId [{}]", patchedPet.getPetId());
-        return retrievePetDetails(patchedPet.getPetId());
+        return enrichWithAdditionalInformation(patchedPet);
     }
 
     public Pet purchase(String petId, CustomerRequest customer) {
@@ -73,5 +60,18 @@ public class PetService {
         Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
 
         return enrichWithAdditionalInformation(purchasedPet);
+    }
+
+    private Pet enrichWithAdditionalInformation(Pet pet) {
+        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
+
+        pet.setVaccinations(vaccinations);
+
+        Optional<String> optionalCustomerId = petDataStoreService.findOwnerCustomerIdForPet(pet.getPetId());
+        if (optionalCustomerId.isPresent()) {
+            CustomerResponse customerResponse = customerDataStoreService.retrieveCustomer(optionalCustomerId.get());
+            pet.setOwner(customerResponse);
+        }
+        return pet;
     }
 }

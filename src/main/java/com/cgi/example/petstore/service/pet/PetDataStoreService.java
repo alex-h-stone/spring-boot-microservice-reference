@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Design decision: This class acts as a Facade between the Controller and the MongoDB PetRepository.
+ * Design decision: This class acts as a Facade between the PetService and the MongoDB PetRepository.
  * Specifically the persistence implementation (PetDocument, PetRepository) is not visible (no imports)
- * outside of this class.
+ * outside of this class/package.
  * This allows the persistence implementation to be altered and only the PetDataStoreService will be impacted.
  * <p>
  * Design decision: Since this is a service class it has no direct dependencies or knowledge of any REST/HTTP
@@ -59,7 +59,7 @@ public class PetDataStoreService {
     public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
         List<String> petDocumentStatuses = petMapper.mapToPetStatusStrings(statuses);
         List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
-        // TODO vaccinations call should be made
+
         return petMapper.mapToPets(petDocumentsWithMatchingStatus);
     }
 

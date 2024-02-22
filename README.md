@@ -55,6 +55,18 @@ The API provides the following functionality:
 
 ---
 
+#### Alex TODO
+
+Add unit tests
+description of the purpose and role of this project
+Alternative frameworks and options
+Postman Collection integrated via a CI tool
+Reduce duplication in var/path names e.g. 'external'
+Add WebSecurity OAuth2?
+Add tracing in logging
+
+---
+
 #### OpenAPI contract driven development
 
 See build.gradle for an example of using OpenAPI schemas (pet-store-api.yaml and animal-vaccination-api.yaml)
@@ -69,6 +81,11 @@ breaking changes will force a compile time error.
 This service is integrated with a MongoDB NoSQL database using spring-boot-starter-data-mongodb
 and the MongoRepository.java interface. Connection details are defined in the application.yaml under
 'spring.data.mongodb'
+
+For a more lightweight and simpler MongoDB integration consider using
+the [https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync/4.11.1](mongodb-driver-sync)
+client library. Although the out-of-the-box features of MongoRepository and @Document will not be available.
+
 
 ---
 
