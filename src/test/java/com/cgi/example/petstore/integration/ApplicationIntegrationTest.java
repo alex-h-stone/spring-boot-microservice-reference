@@ -2,9 +2,9 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.model.CustomerRequest;
-import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetInformationItem;
-import com.cgi.example.petstore.model.PetPatch;
+import com.cgi.example.petstore.model.PetPatchRequest;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.pet.PetDocument;
 import com.cgi.example.petstore.service.pet.PetRepository;
@@ -41,14 +41,14 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void shouldSuccessfullyAddPet() {
-        NewPet petToAdd = testData.createNewPet();
+        NewPetRequest petToAdd = testData.createNewPetRequest();
 
         assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
                 .toUri();
-        RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
+        RequestEntity<NewPetRequest> requestEntity = new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -256,14 +256,14 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                 .build()
                 .toUri();
 
-        PetPatch petPatch = new PetPatch();
+        PetPatchRequest petPatch = new PetPatchRequest();
         petPatch.setId("XYZ987");
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
         petPatch.setAdditionalInformation(additionalInformation);
 
-        RequestEntity<PetPatch> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
+        RequestEntity<PetPatchRequest> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -303,7 +303,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         URI uri = uriBuilder.getPetStoreURIFor(savedPetDocument.getPetId())
                 .build()
                 .toUri();
-        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomer(),
+        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomerRequest(),
                 HttpMethod.POST,
                 uri);
 

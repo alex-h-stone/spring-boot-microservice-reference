@@ -18,7 +18,7 @@ import java.util.Set;
         properties = {"management.server.port=0",
                 "de.flapdoodle.mongodb.embedded.version=4.4.18"})
 @Tag("integration")
-public class BaseIntegrationTest {
+public abstract class BaseIntegrationTest {
 
     protected final AssertionExecutables assertions = new AssertionExecutables();
     protected final ResourceFileUtils fileUtils = new ResourceFileUtils();

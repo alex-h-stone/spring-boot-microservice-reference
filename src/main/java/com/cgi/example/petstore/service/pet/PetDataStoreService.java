@@ -1,9 +1,9 @@
 package com.cgi.example.petstore.service.pet;
 
 import com.cgi.example.petstore.exception.NotFoundException;
-import com.cgi.example.petstore.model.NewPet;
-import com.cgi.example.petstore.model.Pet;
-import com.cgi.example.petstore.model.PetPatch;
+import com.cgi.example.petstore.model.NewPetRequest;
+import com.cgi.example.petstore.model.PetPatchRequest;
+import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.model.PetStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,18 +30,18 @@ public class PetDataStoreService {
     private final PetMapper petMapper;
     private final PetRepository petRepository;
 
-    public Pet insertNewPet(NewPet newPet) {
-        Pet pet = petMapper.mapToPet(newPet);
+    public PetResponse insertNewPet(NewPetRequest newPet) {
+        PetResponse pet = petMapper.mapToPet(newPet);
         PetDocument petDocument = petMapper.mapToPetDocument(pet);
 
         PetDocument insertedPetDocument = petRepository.insert(petDocument);
 
-        Pet insertedPet = petMapper.mapToPet(insertedPetDocument);
+        PetResponse insertedPet = petMapper.mapToPet(insertedPetDocument);
         log.debug("Successfully inserted Pet with Id: [{}]", insertedPet.getPetId());
         return insertedPet;
     }
 
-    public Pet findPetById(String id) {
+    public PetResponse findPetById(String id) {
         PetDocument petDocument = retrievePetDocument(id);
         return petMapper.mapToPet(petDocument);
     }
@@ -56,15 +56,15 @@ public class PetDataStoreService {
         return petDocumentOptional.get();
     }
 
-    public List<Pet> findPetsByStatus(List<PetStatus> statuses) {
+    public List<PetResponse> findPetsByStatus(List<PetStatus> statuses) {
         List<String> petDocumentStatuses = petMapper.mapToPetStatusStrings(statuses);
         List<PetDocument> petDocumentsWithMatchingStatus = petRepository.findByPetStatusIn(petDocumentStatuses);
 
         return petMapper.mapToPets(petDocumentsWithMatchingStatus);
     }
 
-    public Pet patch(PetPatch petPatch) {
-        Pet petToBePatched = findPetById(petPatch.getId());
+    public PetResponse patch(PetPatchRequest petPatch) {
+        PetResponse petToBePatched = findPetById(petPatch.getId());
 
         petMapper.updateTargetObjectFromSourceObject(petPatch, petToBePatched);
         PetDocument petDocumentToSave = petMapper.mapToPetDocument(petToBePatched);
@@ -85,7 +85,7 @@ public class PetDataStoreService {
         return Optional.ofNullable(petDocument.getOwnerCustomerId());
     }
 
-    public Pet updatePetWithNewOwner(String petId, String customerId) {
+    public PetResponse updatePetWithNewOwner(String petId, String customerId) {
         PetDocument petDocument = retrievePetDocument(petId);
         petDocument.setOwnerCustomerId(customerId);
         petDocument.setPetStatus(PetStatus.PENDING_COLLECTION.getValue());

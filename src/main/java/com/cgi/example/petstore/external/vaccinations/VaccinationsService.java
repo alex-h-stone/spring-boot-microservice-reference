@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.external.vaccinations;
 
-import com.cgi.example.petstore.model.Vaccination;
+import com.cgi.example.petstore.model.PetStoreVaccination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VaccinationsService {
 
-    private final ExternalVaccinationsToPetVaccinationsMapper mapper;
+    private final ExternalVaccinationsMapper mapper;
     private final VaccinationsApiClient apiClient;
 
-    public List<Vaccination> getVaccinationDetails(String vaccinationId) {
+    public List<PetStoreVaccination> getVaccinationDetails(String vaccinationId) {
         Optional<List<com.cgi.example.external.animalvaccination.model.Vaccination>> vaccinationsOptional =
                 apiClient.getVaccinations(vaccinationId);
 
@@ -25,6 +25,6 @@ public class VaccinationsService {
             return Collections.emptyList();
         }
 
-        return mapper.map(vaccinationsOptional.get());
+        return mapper.mapToPetStoreVaccinationList(vaccinationsOptional.get());
     }
 }

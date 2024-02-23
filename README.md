@@ -51,25 +51,55 @@ The API provides the following functionality:
 - Customers can search for a pet.
 - Pets can be updated when details change.
 - Customers can purchase a pet.
-- Pet vaccination details are provided via a 3rd party API call.
+- Pet vaccination details are provided via an external API call.
 
 ---
 
 #### Alex TODO
 
 Add unit tests
+Add description and means to run unit/int/unit_int via JUnit tags? also via gradle?
+
 description of the purpose and role of this project
+
 Alternative frameworks and options
+
 Postman Collection integrated via a CI tool
+
 Reduce duplication in var/path names e.g. 'external'
+
 Add WebSecurity OAuth2?
+
 Add tracing in logging
 
 ---
 
 #### OpenAPI contract driven development
+---
 
-See build.gradle for an example of using OpenAPI schemas (pet-store-api.yaml and animal-vaccination-api.yaml)
+#### OpenAPI contract driven development
+
+---
+
+#### Running unit and integration tests
+
+Integration tests are identified by the JUnit annotation `@Tag("integration")` which is present on `BaseIntegrationTest`
+so is inherited by all integration test classes which extend `BaseIntegrationTest`.
+
+By default, all tests (unit and integration) are run:  
+`./gradlew test`
+
+To run only integration tests:  
+`./gradlew -PincludeTags=integration test`
+
+To run only unit tests  
+`./gradlew -PexcludeTags=integration test`
+
+---
+
+#### OpenAPI contract driven development
+
+See `build.gradle` for an example of using OpenAPI schemas (`pet-store-api.yaml` and `animal-vaccination-api.yaml`)
 to generate model classes and the Java interfaces for the APIs.  
 By having a controller implement the Java interface for the API, when the OpenAPI schema is updated some
 breaking changes will force a compile time error.
@@ -78,13 +108,13 @@ breaking changes will force a compile time error.
 
 #### Data persistence via MongoDB
 
-This service is integrated with a MongoDB NoSQL database using spring-boot-starter-data-mongodb
-and the MongoRepository.java interface. Connection details are defined in the application.yaml under
-'spring.data.mongodb'
+This service is integrated with a MongoDB NoSQL database using `spring-boot-starter-data-mongodb`
+and the `MongoRepository` interface. Connection details are defined in the `application.yaml` under
+`spring.data.mongodb`
 
 For a more lightweight and simpler MongoDB integration consider using
-the [https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync/4.11.1](mongodb-driver-sync)
-client library. Although the out-of-the-box features of MongoRepository and @Document will not be available.
+the [mongodb-driver-sync](https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync/4.11.1)
+client library. Although the out-of-the-box features of `MongoRepository` and `@Document` will not be available.
 
 
 ---
@@ -92,7 +122,7 @@ client library. Although the out-of-the-box features of MongoRepository and @Doc
 #### Exception handling
 
 See the integration test `shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
-and the implementation `GlobalExceptionHandler`
+and the implementation in `GlobalExceptionHandler`
 
 ---
 
@@ -111,21 +141,23 @@ test `shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
 
 ---
 
-#### Custom Enum serialisation/deserialisation logic
+#### API to DTO mapping
 
-See PetMapper for an example of how to define Enum/String serialisation/deserialisation using MapStruct.
+See the mappers `PetMapper`, `ExternalVaccinationsMapper` and `CustomerMapper` for examples of how to define logic to
+map between API, DTO and Mongo DB Document objects.
 
 ---
 
 #### Unit tests
-See JUnit tests in spring-boot-template-service\src\test\java which do not have the annotation @Tag("integration") or extend BaseIntegrationTest.java
+
+See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend `BaseIntegrationTest`
 
 ---
 
 #### Integration tests
 
-See the test package integration for examples of integration tests utilising WireMock and de.flapdoodle embedded
-MongoDB.
+For examples of integration tests utilising WireMock and de.flapdoodle embedded MongoDB see any JUnit test which either
+extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
 
 ---
 
@@ -137,7 +169,7 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 #### External REST API calls via Spring WebFlux
 
-See VaccinationsApiClient for an example of calling an external REST API using Spring Flux.
+See `VaccinationsApiClient` for an example of calling an external REST API using Spring Flux.
 
 ---
 
@@ -145,33 +177,33 @@ See VaccinationsApiClient for an example of calling an external REST API using S
 
 See https://wiremock.org/docs/stubbing/ for additional guidance with WireMock.
 
-Also see 'VaccinationsWireMockServer' for how to define a stub server for running a microservice locally with external
+Also see `VaccinationsWireMockServer` for how to define a stub server for running a microservice locally with external
 API dependencies.
 
-In addition, 'WiremockServerForIntegrationTests' for how to utilise WireMock for automated integration tests.
+In addition, `WiremockServerForIntegrationTests` for how to utilise WireMock for automated integration tests.
 
 ---
 
 #### Logging of requests and responses
 
-See RequestLoggingFilterConfig for the required config to log requests.
+See `RequestLoggingFilterConfig` for the required config to log requests.
 
-Also consider the use of LoggingAspects and the LogMethodArguments annotation to log method arguments,
-and the LogMethodResponse to log method responses.
+Also consider the use of `LoggingAspects` and the `LogMethodArguments` annotation to log method arguments,
+and the `LogMethodResponse` to log method responses.
 
 ---
 
 #### Failure recovery via Spring Retry
 
-See VaccinationsApiClient for an example of how Spring WebClient can be used to retry failed external
+See `VaccinationsApiClient` for an example of how Spring `WebClient` can be used to retry failed external
 API calls.
 
 ---
 
 #### Actuator endpoints
 
-Determined by dependencies ("OpenAPI/Swagger docs" in build.gradle),
-application config (see application.yaml) and security config (see SecurityConfig)
+Determined by dependencies ("OpenAPI/Swagger docs" in `build.gradle`),
+application config (`application.yaml`) and security config (`SecurityConfig`)
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 
@@ -182,7 +214,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#act
 - GET http://localhost:8099/actuator/metrics
 - GET http://localhost:8099/actuator/mappings
 
-Where 8099 is the Management Server Port 'management.server.port'
+Where 8099 is the Management Server Port `management.server.port`
 
 #### Swagger documentation endpoints
 
@@ -193,4 +225,4 @@ OpenAPI endpoints to provide live up-to-date API documentation.
 - http://localhost:8080/v3/api-docs/springdoc
 - http://localhost:8080/v3/api-docs/swagger-config
 
-Where 8080 is the Application Server Port 'server.port' 
+Where 8080 is the Application Server Port `server.port`

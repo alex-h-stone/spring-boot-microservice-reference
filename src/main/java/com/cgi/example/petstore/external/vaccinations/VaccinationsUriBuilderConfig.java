@@ -15,6 +15,7 @@ public class VaccinationsUriBuilderConfig {
 
     @Bean("vaccinationsUriBuilder")
     @Scope("prototype")
+    // Design decision: This is a prototype as a UriBuilder is mutable and should not share state across threads or individual requests.
     public UriBuilder vaccinationsUriBuilder(@Value("${external.apis.vaccinations.baseUrl}") String baseUrl,
                                              @Value("${external.apis.vaccinations.path}") String path) {
         return UriComponentsBuilder.newInstance()

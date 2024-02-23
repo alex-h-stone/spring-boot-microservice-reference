@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.service.persistence;
 
-import com.cgi.example.petstore.model.Pet;
+import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.model.PetType;
 import com.cgi.example.petstore.service.pet.PetDocument;
@@ -8,8 +8,8 @@ import com.cgi.example.petstore.service.pet.PetMapper;
 import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,11 +21,16 @@ class PetMapperTest {
 
     private final TestData testData = new TestData();
 
-    private final PetMapper mapper = Mappers.getMapper(PetMapper.class);
+    private PetMapper mapper;
+
+    @BeforeEach
+    void setUp() {
+        mapper = new PetMapper();
+    }
 
     @Test
     void shouldSuccessfullyMapFromAPetDocumentToPet() {
-        Pet actualPet = mapper.mapToPet(testData.createPetDocument());
+        PetResponse actualPet = mapper.mapToPet(testData.createPetDocument());
 
         assertNotNull(actualPet);
         assertAll(
@@ -43,10 +48,11 @@ class PetMapperTest {
 
     @Test
     void shouldSuccessfullyMapFromAPetToPetDocument() {
-        Pet pet = testData.createPet();
+        PetResponse pet = testData.createPetResponse();
 
         PetDocument actualPetDocument = mapper.mapToPetDocument(pet);
 
+        assertNotNull(actualPetDocument);
         assertAll(
                 () -> assertNotNull(actualPetDocument),
                 () -> assertEquals("KT1546", actualPetDocument.getPetId()),
@@ -61,7 +67,7 @@ class PetMapperTest {
 
     @Test
     void shouldSuccessfullyMapFromANewPetToPet() {
-        Pet actualPet = mapper.mapToPet(testData.createNewPet());
+        PetResponse actualPet = mapper.mapToPet(testData.createNewPetRequest());
 
         assertNotNull(actualPet);
         assertAll(

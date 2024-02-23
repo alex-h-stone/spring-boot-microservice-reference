@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.service.persistence;
 
-import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.service.pet.PetDataStoreService;
 import com.cgi.example.petstore.service.pet.PetDocument;
 import com.cgi.example.petstore.service.pet.PetMapper;
@@ -9,7 +9,6 @@ import com.cgi.example.petstore.utils.TestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,14 +28,13 @@ class PetDataStoreServiceTest {
 
     @BeforeEach
     void setUp() {
-        PetMapper mapper = Mappers.getMapper(PetMapper.class);
-        petDataStoreService = new PetDataStoreService(mapper,
-                mockPetRepository);
+        PetMapper mapper = new PetMapper();
+        petDataStoreService = new PetDataStoreService(mapper, mockPetRepository);
     }
 
     @Test
     void shouldSaveSuccessfully() {
-        NewPet petToSave = testData.createNewPet();
+        NewPetRequest petToSave = testData.createNewPetRequest();
         when(mockPetRepository.insert(any(PetDocument.class)))
                 .thenReturn(testData.createPetDocument());
 

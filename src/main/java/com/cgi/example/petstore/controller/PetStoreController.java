@@ -6,9 +6,9 @@ import com.cgi.example.petstore.logging.LogMethodArguments;
 import com.cgi.example.petstore.logging.LogMethodResponse;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.MultiplePetsResponse;
-import com.cgi.example.petstore.model.NewPet;
-import com.cgi.example.petstore.model.Pet;
-import com.cgi.example.petstore.model.PetPatch;
+import com.cgi.example.petstore.model.NewPetRequest;
+import com.cgi.example.petstore.model.PetPatchRequest;
+import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.service.PetService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ public class PetStoreController implements PetStoreApi {
     @Override
     @LogMethodArguments
     @LogMethodResponse
-    public ResponseEntity<Pet> addPet(NewPet newPet) {
-        Pet addedPet = petService.addToPetStore(newPet);
+    public ResponseEntity<PetResponse> addPet(NewPetRequest newPet) {
+        PetResponse addedPet = petService.addToPetStore(newPet);
 
         return ResponseEntity.ok(addedPet);
     }
@@ -37,7 +37,7 @@ public class PetStoreController implements PetStoreApi {
     @LogMethodArguments
     @LogMethodResponse
     public ResponseEntity<MultiplePetsResponse> findPetsByStatus(List<PetStatus> statuses) {
-        List<Pet> pets = petService.retrieveAllPetsWithAStatusMatching(statuses);
+        List<PetResponse> pets = petService.retrieveAllPetsWithAStatusMatching(statuses);
 
         MultiplePetsResponse petsResponse = new MultiplePetsResponse();
         petsResponse.setPets(pets);
@@ -48,10 +48,10 @@ public class PetStoreController implements PetStoreApi {
     @Override
     @LogMethodArguments
     @LogMethodResponse
-    public ResponseEntity<Pet> getPetById(String petId) {
+    public ResponseEntity<PetResponse> getPetById(String petId) {
         petValidator.validatePetId(petId);
 
-        Pet pet = petService.retrievePetDetails(petId);
+        PetResponse pet = petService.retrievePetDetails(petId);
 
         return ResponseEntity.ok().body(pet);
     }
@@ -59,10 +59,10 @@ public class PetStoreController implements PetStoreApi {
     @Override
     @LogMethodArguments
     @LogMethodResponse
-    public ResponseEntity<Pet> purchasePet(String petId, CustomerRequest customer) {
+    public ResponseEntity<PetResponse> purchasePet(String petId, CustomerRequest customer) {
         petValidator.validatePetId(petId);
 
-        Pet purchasedPet = petService.purchase(petId, customer);
+        PetResponse purchasedPet = petService.purchase(petId, customer);
 
         return ResponseEntity.ok().body(purchasedPet);
     }
@@ -70,8 +70,8 @@ public class PetStoreController implements PetStoreApi {
     @Override
     @LogMethodArguments
     @LogMethodResponse
-    public ResponseEntity<Pet> patchPet(PetPatch petPatch) {
-        Pet patchedPet = petService.patch(petPatch);
+    public ResponseEntity<PetResponse> patchPet(PetPatchRequest petPatch) {
+        PetResponse patchedPet = petService.patch(petPatch);
 
         return ResponseEntity.ok().body(patchedPet);
     }

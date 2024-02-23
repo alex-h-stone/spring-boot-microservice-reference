@@ -1,9 +1,9 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.model.CustomerRequest;
-import com.cgi.example.petstore.model.NewPet;
+import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetInformationItem;
-import com.cgi.example.petstore.model.PetPatch;
+import com.cgi.example.petstore.model.PetPatchRequest;
 import com.cgi.example.petstore.model.PetStatus;
 import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -130,7 +130,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         URI uri = uriBuilder.getPetStoreURIFor(petId)
                 .build()
                 .toUri();
-        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomer(),
+        RequestEntity<CustomerRequest> requestEntity = new RequestEntity<>(testData.createCustomerRequest(),
                 HttpMethod.POST,
                 uri);
 
@@ -198,14 +198,14 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
                 .build()
                 .toUri();
 
-        PetPatch petPatch = new PetPatch();
+        PetPatchRequest petPatch = new PetPatchRequest();
         petPatch.setId(petId);
         petPatch.setName("Astro");
         List<@Valid PetInformationItem> additionalInformation =
                 Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
         petPatch.setAdditionalInformation(additionalInformation);
 
-        RequestEntity<PetPatch> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
+        RequestEntity<PetPatchRequest> requestEntity = new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
@@ -357,11 +357,11 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
     }
 
     private String addANewPet() {
-        NewPet petToAdd = testData.createNewPet();
+        NewPetRequest petToAdd = testData.createNewPetRequest();
         URI uri = uriBuilder.getPetStoreBaseURI()
                 .build()
                 .toUri();
-        RequestEntity<NewPet> requestEntity = new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
+        RequestEntity<NewPetRequest> requestEntity = new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
 
         ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 

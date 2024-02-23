@@ -10,7 +10,7 @@ info:
     - Customers can search for a pet.
     - Pets can be updated when details change.
     - Customers can purchase a pet.
-    - Pet vaccination details are provided via a 3rd party API call.
+    - Pet vaccination details are provided via an external API call.
   contact:
     email: alex.stone@cgi.com
 externalDocs:
@@ -43,14 +43,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PetPatch'
+              $ref: '#/components/schemas/PetPatchRequest'
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/PetResponse'
         '400':
           description: Invalid Id supplied
         '404':
@@ -67,14 +67,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewPet'
+              $ref: '#/components/schemas/NewPetRequest'
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/PetResponse'
   /pet-store/pets/findByStatus:
     get:
       summary: Finds Pets by status
@@ -116,7 +116,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/PetResponse'
         '400':
           description: Invalid Id supplied
         '404':
@@ -145,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/PetResponse'
         '400':
           description: Invalid pet value
 components:
@@ -171,7 +171,7 @@ components:
       type: string
       description: The unique Id used to identify all vaccination details for the specified pet.
       example: AF54785412K
-    Vaccination:
+    PetStoreVaccination:
       type: object
       properties:
         name:
@@ -263,7 +263,7 @@ components:
           type: string
           description: The actual additional information content.
           example: Short Hair
-    NewPet:
+    NewPetRequest:
       description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
       type: object
       required:
@@ -283,9 +283,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PetInformationItem'
-    Pet:
+    PetResponse:
       allOf:
-        - $ref: '#/components/schemas/NewPet'
+        - $ref: '#/components/schemas/NewPetRequest'
       type: object
       required:
         - id
@@ -299,12 +299,12 @@ components:
         vaccinations:
           type: array
           items:
-            $ref: '#/components/schemas/Vaccination'
+            $ref: '#/components/schemas/PetStoreVaccination'
         petStatus:
           $ref: '#/components/schemas/PetStatus'
         owner:
           $ref: '#/components/schemas/CustomerResponse'
-    PetPatch:
+    PetPatchRequest:
       type: object
       required:
         - id
@@ -332,4 +332,4 @@ components:
         pets:
           type: array
           items:
-            $ref: '#/components/schemas/Pet'
+            $ref: '#/components/schemas/PetResponse'

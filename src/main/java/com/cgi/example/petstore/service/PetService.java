@@ -3,11 +3,11 @@ package com.cgi.example.petstore.service;
 import com.cgi.example.petstore.external.vaccinations.VaccinationsService;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.CustomerResponse;
-import com.cgi.example.petstore.model.NewPet;
-import com.cgi.example.petstore.model.Pet;
-import com.cgi.example.petstore.model.PetPatch;
+import com.cgi.example.petstore.model.NewPetRequest;
+import com.cgi.example.petstore.model.PetPatchRequest;
+import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.model.PetStatus;
-import com.cgi.example.petstore.model.Vaccination;
+import com.cgi.example.petstore.model.PetStoreVaccination;
 import com.cgi.example.petstore.service.customer.CustomerDataStoreService;
 import com.cgi.example.petstore.service.pet.PetDataStoreService;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +27,20 @@ public class PetService {
     private final PetDataStoreService petDataStoreService;
     private final CustomerDataStoreService customerDataStoreService;
 
-    public Pet addToPetStore(NewPet newPet) {
-        Pet savedPet = petDataStoreService.insertNewPet(newPet);
+    public PetResponse addToPetStore(NewPetRequest newPet) {
+        PetResponse savedPet = petDataStoreService.insertNewPet(newPet);
 
         return enrichWithAdditionalInformation(savedPet);
     }
 
-    public Pet retrievePetDetails(String petId) {
-        Pet foundPet = petDataStoreService.findPetById(petId);
+    public PetResponse retrievePetDetails(String petId) {
+        PetResponse foundPet = petDataStoreService.findPetById(petId);
 
         return enrichWithAdditionalInformation(foundPet);
     }
 
-    public List<Pet> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
-        List<Pet> petsMatchingStatus = petDataStoreService.findPetsByStatus(statuses);
+    public List<PetResponse> retrieveAllPetsWithAStatusMatching(List<PetStatus> statuses) {
+        List<PetResponse> petsMatchingStatus = petDataStoreService.findPetsByStatus(statuses);
 
         return petsMatchingStatus
                 .stream()
@@ -48,22 +48,22 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    public Pet patch(PetPatch pet) {
-        Pet patchedPet = petDataStoreService.patch(pet);
+    public PetResponse patch(PetPatchRequest pet) {
+        PetResponse patchedPet = petDataStoreService.patch(pet);
         log.debug("Successfully patched the pet with petId [{}]", patchedPet.getPetId());
         return enrichWithAdditionalInformation(patchedPet);
     }
 
-    public Pet purchase(String petId, CustomerRequest customer) {
+    public PetResponse purchase(String petId, CustomerRequest customer) {
         CustomerResponse savedCustomer = customerDataStoreService.insertIfAbsent(customer);
 
-        Pet purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
+        PetResponse purchasedPet = petDataStoreService.updatePetWithNewOwner(petId, savedCustomer.getCustomerId());
 
         return enrichWithAdditionalInformation(purchasedPet);
     }
 
-    private Pet enrichWithAdditionalInformation(Pet pet) {
-        List<Vaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
+    private PetResponse enrichWithAdditionalInformation(PetResponse pet) {
+        List<PetStoreVaccination> vaccinations = vaccinationsService.getVaccinationDetails(pet.getVaccinationId());
 
         pet.setVaccinations(vaccinations);
 
