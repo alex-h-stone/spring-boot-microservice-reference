@@ -102,7 +102,10 @@ To run only unit tests
 See `build.gradle` for an example of using OpenAPI schemas (`pet-store-api.yaml` and `animal-vaccination-api.yaml`)
 to generate model classes and the Java interfaces for the APIs.  
 By having a controller implement the Java interface for the API, when the OpenAPI schema is updated some
-breaking changes will force a compile time error.
+breaking changes will result in a compile time error.
+
+To generate all OpenAPI Java classes and interfaces:  
+`./gradlew generateAllOpenAPI`
 
 ---
 
@@ -151,12 +154,14 @@ map between API, DTO and Mongo DB Document objects.
 #### Unit tests
 
 See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend `BaseIntegrationTest`
+The same JUnit tag allows us to execute integration tests and unit tests separately if needed.
 
 ---
 
 #### Integration tests
 
-For examples of integration tests utilising WireMock and de.flapdoodle embedded MongoDB see any JUnit test which either
+For examples of integration tests utilising WireMock and `de.flapdoodle` embedded MongoDB see any JUnit test which
+either
 extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
 
 ---
@@ -167,9 +172,10 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 ---
 
-#### External REST API calls via Spring WebFlux
+#### External REST API call with retry via Spring WebFlux
 
-See `VaccinationsApiClient` for an example of calling an external REST API using Spring Flux.
+See `VaccinationsApiClient` for an example of making an external REST API call with retry logic using the Spring
+Flux `WebClient`.
 
 ---
 
@@ -190,13 +196,6 @@ See `RequestLoggingFilterConfig` for the required config to log requests.
 
 Also consider the use of `LoggingAspects` and the `LogMethodArguments` annotation to log method arguments,
 and the `LogMethodResponse` to log method responses.
-
----
-
-#### Failure recovery via Spring Retry
-
-See `VaccinationsApiClient` for an example of how Spring `WebClient` can be used to retry failed external
-API calls.
 
 ---
 
