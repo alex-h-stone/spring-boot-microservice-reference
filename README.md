@@ -63,8 +63,8 @@ Requirements to run locally:
 
 When the above have been satisfied, to start the microservice:
 
-1. Start the local stub server on a port via:  
-   `./gradlew startVaccinationsWireMockServer -PportNumber=8081`
+1. Start the local WireMock stub server on a port via:  
+   `./gradlew startVaccinationsWireMockServer -PportNumber=8090`
 2. Update the environment variables defined in `cleanBuildTestAndRun.ps1` with your MongoDB URI `MONGO_DB_URI` and stub
    server URL `VACCINATIONS_URL` with port number matching the above WireMockServer port.
 3. Start the microservice via:  

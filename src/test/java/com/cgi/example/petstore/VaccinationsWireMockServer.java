@@ -17,7 +17,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 public class VaccinationsWireMockServer {
 
-    private static final int DEFAULT_PORT_NUMBER = 8081;
+    private static final int DEFAULT_PORT_NUMBER = 8090;
 
     private final int portNumber;
     private final String defaultResponse;
@@ -26,7 +26,7 @@ public class VaccinationsWireMockServer {
      * Used to start the WireMockServer independently of integration tests.
      * e.g. If running the microservice locally you may want to stub external API calls using WireMock.
      *
-     * @param args portNumber (defaults to 8081 if not provided)
+     * @param args portNumber (defaults to 8090 if not provided)
      */
     public static void main(String[] args) {
         int portNumber = getPortNumberElseDefault(args);
