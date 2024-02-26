@@ -9,6 +9,7 @@ Spring Boot 3 based microservice template integrating features which address a m
 - [Introduction and purpose](#introduction-and-purpose)
 - [Run the microservice](#run-the-pet-store-microservice)
 - [Running Tests](#running-unit-and-integration-tests)
+- [Dependency version management](#dependency-version-management)
 - [OpenAPI/Swagger Code Generation](#openapiswagger-code-generation)
 - [Data Persistence via MongoDB](#data-persistence-via-mongodb)
 - [Exception Handling](#exception-handling)
@@ -98,6 +99,23 @@ To run only integration tests:
 
 To run only unit tests  
 `./gradlew -PexcludeTag=integration test`
+
+---
+
+#### Dependency version management
+
+To best manage a large number of Spring dependencies with independent version numbers this template uses the
+Gradle plugins:
+
+- `org.springframework.boot`
+- `io.spring.dependency-management`
+
+In addition to the dependency management BOM's:
+
+- `org.springframework.boot:spring-boot-dependencies`
+- `org.junit.jupiter:junit-jupiter`
+
+With all Gradle dependency and plugin version numbers defined in one place in `gradle.properties  `
 
 ---
 

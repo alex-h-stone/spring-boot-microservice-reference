@@ -36,7 +36,6 @@ repositories {
 
 dependencyManagement {
     imports {
-        // Manage all the version numbers of Spring Boot and related libraries for us
         mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
         mavenBom "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
     }
