@@ -19,5 +19,5 @@ logging.level:
     web: DEBUG
 
 external.apis.vaccinations:
-  baseUrl: ${VACCINATIONS_URL:https://www.vaccinations.external.com:9999}
+  baseUrl: ${VACCINATIONS_URL:http://localhost:8081}
   path: "vaccinations/{vaccinationId}"

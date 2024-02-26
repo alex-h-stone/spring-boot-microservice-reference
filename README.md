@@ -4,22 +4,55 @@ Spring Boot 3 based microservice template integrating features which address a m
 
 ## Table of Contents
 
-- [OpenAPI contract driven development](#openapi-contract-driven-development)
-- [Data persistence via MongoDB](#data-persistence-via-mongodb)
-- [Exception handling](#exception-handling)
-- [Custom request validation](#custom-request-validation)
-- [Request validation via OpenAPI specification](#request-validation-via-openapi-specification)
-- [Custom Enum serialisation/deserialisation logic](#custom-enum-serialisationdeserialisation-logic)
-- [Unit tests](#unit-tests)
-- [Integration tests](#integration-tests)
-- [Metrics endpoint](#metrics-endpoint)
-- [External REST API calls via Spring WebFlux](#external-rest-api-calls-via-spring-webflux)
-- [Stubbing of external API calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
-- [Logging of requests and responses](#logging-of-requests-and-responses)
-- [Failure recovery via Spring Retry](#failure-recovery-via-spring-retry)
-- [Actuator endpoints](#actuator-endpoints)
-- [Swagger documentation endpoints](#swagger-documentation-endpoints)
+# Table of Contents
 
+- [Introduction and purpose](#introduction-and-purpose)
+- [Run the microservice](#run-the-pet-store-microservice)
+- [Running Tests](#running-unit-and-integration-tests)
+- [OpenAPI/Swagger Code Generation](#openapiswagger-code-generation)
+- [Data Persistence via MongoDB](#data-persistence-via-mongodb)
+- [Exception Handling](#exception-handling)
+- [Java Request Validation](#java-request-validation)
+- [Request Validation via OpenAPI Specification](#request-validation-via-openapi-specification)
+- [API to DTO Mapping](#api-to-dto-mapping)
+- [Unit Tests](#unit-tests)
+- [Integration Tests](#integration-tests)
+- [Metrics Endpoint](#metrics-endpoint)
+- [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
+- [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
+- [Logging of Requests and Responses](#logging-of-requests-and-responses)
+- [Actuator Endpoints](#actuator-endpoints)
+- [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
+
+---
+
+#### Introduction and purpose
+
+TODO Alex
+
+The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
+Editor https://editor.swagger.io/
+
+The microservice is structured with Controller and Service layers.
+Depending on the use case it may be desirable to also include a mapping layer to translate between one or more of the
+following:
+TBC
+
+- API model types (pet store)
+- External API call - API model types (vaccinations)
+- Datastore/Repository entity types (MongoDB)
+
+The API provides the following functionality: TBC
+
+- New pets can be added to the pet store.
+- Customers can search for a pet.
+- Pets can be updated when details change.
+- Customers can purchase a pet.
+- Pet vaccination details are provided via an external API call.
+
+---
+
+#### Run the Pet Store microservice
 Requirements to run locally:
 
 * Java 21 e.g. https://jdk.java.net/21/
@@ -29,29 +62,12 @@ Requirements to run locally:
 
 When the above have been satisfied, to start the microservice:
 
-1. Start the local stub server on a port via './gradlew startVaccinationsWireMockServer -PportNumber=8081'
-2. Update the environment variables defined in 'cleanBuildTestAndRun.ps1' with your MongoDB URI (MONGO_DB_URI) and stub
-   server URL (VACCINATIONS_URL).
-3. Start the microservice via '.\cleanBuildTestAndRun.ps1  '
-
-The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
-Editor https://editor.swagger.io/
-
-The microservice is structured with Controller and Service layers.
-Depending on the use case it may be desirable to also include a mapping layer to translate between one or more of the
-following:
-
-- API model types (pet store)
-- External API call - API model types (vaccinations)
-- Datastore/Repository entity types (MongoDB)
-
-The API provides the following functionality:
-
-- New pets can be added to the pet store.
-- Customers can search for a pet.
-- Pets can be updated when details change.
-- Customers can purchase a pet.
-- Pet vaccination details are provided via an external API call.
+1. Start the local stub server on a port via:  
+   `./gradlew startVaccinationsWireMockServer -PportNumber=8081`
+2. Update the environment variables defined in `cleanBuildTestAndRun.ps1` with your MongoDB URI `MONGO_DB_URI` and stub
+   server URL `VACCINATIONS_URL` with port number matching the above WireMockServer port.
+3. Start the microservice via:  
+   `./cleanBuildTestAndRun.ps1`
 
 ---
 
@@ -64,13 +80,8 @@ The API provides the following functionality:
 - Reduce duplication in var/path names e.g. 'external'
 - Add WebSecurity OAuth2?
 - Add tracing in logging
-
----
-
-#### OpenAPI contract driven development
----
-
-#### OpenAPI contract driven development
+- Add code style plugin support via https://github.com/diffplug/spotless
+  or https://plugins.gradle.org/plugin/org.ec4j.editorconfig
 
 ---
 
@@ -90,15 +101,21 @@ To run only unit tests
 
 ---
 
-#### OpenAPI contract driven development
+#### OpenAPI/Swagger code generation
 
-See `build.gradle` for an example of using OpenAPI schemas (`pet-store-api.yaml` and `animal-vaccination-api.yaml`)
+See the `build.gradle` for an example of using OpenAPI schemas (`pet-store-api.yaml` and `animal-vaccination-api.yaml`)
 to generate model classes and the Java interfaces for the APIs.  
-By having a controller implement the Java interface for the API, when the OpenAPI schema is updated some
-breaking changes will result in a compile time error.
+By having a controller implement the Java interface derived from the API, when the schema is updated some
+breaking changes will be caught as compile time errors.
 
 To generate all OpenAPI Java classes and interfaces:  
 `./gradlew generateAllOpenAPI`
+
+To generate the Pet Store API classes and interfaces:  
+`./gradlew generatePetStoreClasses`
+
+To generate the external Animal Vaccination API classes and interfaces:  
+`./gradlew generateExternalAnimalVaccinationClasses`
 
 ---
 
@@ -117,15 +134,16 @@ client library. Although the out-of-the-box features of `MongoRepository` and `@
 
 #### Exception handling
 
-See the integration test `shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
-and the implementation in `GlobalExceptionHandler`
+See the `GlobalExceptionHandler` class for details on how to implement exception handling, along with
+the application exception class `AbstractApplicationException`
 
 ---
 
-#### Custom request validation
+#### Java request validation
 
 See `PetValidator` and the integration test
-`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidId`
+`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
+for details of how to write custom request validation logic.
 
 ---
 
@@ -133,14 +151,16 @@ See `PetValidator` and the integration test
 
 See `/pets/{petId}` GET endpoint and the `petId schema` definition in `pet-store-api.yaml`
 and the associated integration
-test `shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted`
+test `shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted` for details of how request validation can
+be implemented via the API yaml.
 
 ---
 
 #### API to DTO mapping
 
 See the mappers `PetMapper`, `ExternalVaccinationsMapper` and `CustomerMapper` for examples of how to define logic to
-map between API, DTO and Mongo DB Document objects.
+map between API, DTO and Mongo DB Document objects.  
+Depending on the use case [MapStruct](https://mapstruct.org/) is an option for reducing boilerplate mapping code.
 
 ---
 
@@ -167,8 +187,8 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 #### External REST API call with retry via Spring WebFlux
 
-See `VaccinationsApiClient` for an example of making an external REST API call with retry logic using the Spring
-Flux `WebClient`.
+See `VaccinationsApiClient` for an example of making an external REST API call with retry logic
+using the SpringFlux `WebClient`.
 
 ---
 
@@ -207,6 +227,8 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#act
 - GET http://localhost:8099/actuator/mappings
 
 Where 8099 is the Management Server Port `management.server.port`
+
+---
 
 #### Swagger documentation endpoints
 
