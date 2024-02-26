@@ -67,7 +67,7 @@ dependencies {
     implementation "javax.annotation:javax.annotation-api:$javaxAnnotationVersion"
     implementation "org.openapitools:jackson-databind-nullable:$jacksonDatabindVersion"
 
-    // Other
+    // Metrics
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // General purpose
@@ -115,19 +115,20 @@ jacocoTestReport {
 
 test() {
     useJUnitPlatform() {
-        if (project.hasProperty('includeTags')) {
-            setIncludeTags(project.includeTags.split(','))
+        if (project.hasProperty('includeTag')) {
+            setIncludeTags([project.includeTag] as Set)
         }
 
-        if (project.hasProperty('excludeTags')) {
-            setIncludeTags(project.excludeTags.split(','))
+        if (project.hasProperty('excludeTag')) {
+            setExcludeTags([project.excludeTag] as Set)
         }
     }
     finalizedBy jacocoTestReport
 }
 
-tasks.register('generateOpenAPI') {
-    description = 'Generate Java classes and interfaces from OpenAPI specifications.'
+tasks.register('generateAllOpenAPI') {
+    group = 'build'
+    description = 'Generate all Java classes and interfaces for all OpenAPI specifications.'
     dependsOn generateOpenAPIForPetStore
     dependsOn generateOpenAPIForAnimalVaccination
 }
@@ -143,7 +144,7 @@ def openApiConfigOptions = [
         additionalModelTypeAnnotations: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)'
 ]
 tasks.register('generateOpenAPIForPetStore', GenerateTask) {
-    group = build
+    group = 'build'
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.petstore.api'
     modelPackage = 'com.cgi.example.petstore.model'
@@ -153,7 +154,7 @@ tasks.register('generateOpenAPIForPetStore', GenerateTask) {
     validateSpec = true
 }
 tasks.register('generateOpenAPIForAnimalVaccination', GenerateTask) {
-    group = build
+    group = 'build'
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.external.animalvaccination.api'
     modelPackage = 'com.cgi.example.external.animalvaccination.model'
@@ -163,7 +164,7 @@ tasks.register('generateOpenAPIForAnimalVaccination', GenerateTask) {
     validateSpec = true
 }
 
-compileJava.dependsOn generateOpenAPI
+compileJava.dependsOn generateAllOpenAPI
 
 sourceSets {
     main {
@@ -176,6 +177,8 @@ sourceSets {
 }
 
 tasks.register('startVaccinationsWireMockServer', JavaExec) {
+    group = 'application'
+    description = 'Start a WireMockServer to be used as a stub for the external Vaccinations API call.'
     classpath = sourceSets.test.runtimeClasspath
     getMainClass().set('com.cgi.example.petstore.VaccinationsWireMockServer')
     jvmArgs '-Xms256m', '-Xmx1024m'

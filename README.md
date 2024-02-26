@@ -90,10 +90,10 @@ By default, all tests (unit and integration) are run:
 `./gradlew test`
 
 To run only integration tests:  
-`./gradlew -PincludeTags=integration test`
+`./gradlew -PincludeTag=integration test`
 
 To run only unit tests  
-`./gradlew -PexcludeTags=integration test`
+`./gradlew -PexcludeTag=integration test`
 
 ---
 
