@@ -1,3 +1,5 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
     id 'java'
     id 'application'
@@ -18,7 +20,7 @@ java {
     targetCompatibility = "$javaVersion"
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -114,11 +116,11 @@ jacocoTestReport {
 test() {
     useJUnitPlatform() {
         if (project.hasProperty('includeTags')) {
-            includeTags(project.includeTags.split(','))
+            setIncludeTags(project.includeTags.split(','))
         }
 
         if (project.hasProperty('excludeTags')) {
-            excludeTags(project.excludeTags.split(','))
+            setIncludeTags(project.excludeTags.split(','))
         }
     }
     finalizedBy jacocoTestReport
@@ -140,7 +142,7 @@ def openApiConfigOptions = [
         useEnumCaseInsensitive        : 'true',
         additionalModelTypeAnnotations: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)'
 ]
-tasks.register('generateOpenAPIForPetStore', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+tasks.register('generateOpenAPIForPetStore', GenerateTask) {
     group = build
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.petstore.api'
@@ -150,7 +152,7 @@ tasks.register('generateOpenAPIForPetStore', org.openapitools.generator.gradle.p
     configOptions.set(openApiConfigOptions)
     validateSpec = true
 }
-tasks.register('generateOpenAPIForAnimalVaccination', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+tasks.register('generateOpenAPIForAnimalVaccination', GenerateTask) {
     group = build
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.external.animalvaccination.api'
@@ -173,7 +175,7 @@ sourceSets {
     }
 }
 
-task startVaccinationsWireMockServer(type: JavaExec) {
+tasks.register('startVaccinationsWireMockServer', JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     getMainClass().set('com.cgi.example.petstore.VaccinationsWireMockServer')
     jvmArgs '-Xms256m', '-Xmx1024m'
