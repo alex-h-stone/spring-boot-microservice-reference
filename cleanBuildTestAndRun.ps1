@@ -1,7 +1,7 @@
 # PowerShell Script: cleanBuildTestAndRun.ps1
 
 $env:MONGO_DB_URI = "mongodb://username:password@host:port/?ssl=true"
-$env:VACCINATIONS_URL = "http://localhost:8081"
+$env:VACCINATIONS_URL = "http://localhost:8090"
 
 Write-Host "Environment Variables:"
 Write-Host "MONGO_DB_URI=$env:MONGO_DB_URI"
