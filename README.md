@@ -55,22 +55,15 @@ The API provides the following functionality:
 
 ---
 
-#### Alex TODO
+#### TODO Alex TODO
 
-Add unit tests
-Add description and means to run unit/int/unit_int via JUnit tags? also via gradle?
-
-description of the purpose and role of this project
-
-Alternative frameworks and options
-
-Postman Collection integrated via a CI tool
-
-Reduce duplication in var/path names e.g. 'external'
-
-Add WebSecurity OAuth2?
-
-Add tracing in logging
+- Add extra unit tests
+- Flesh out the description, purpose and role of this project
+- Include alternative frameworks and options
+- Postman Collection integrated via a CI tool
+- Reduce duplication in var/path names e.g. 'external'
+- Add WebSecurity OAuth2?
+- Add tracing in logging
 
 ---
 
