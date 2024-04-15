@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PetInformationItemPersistenceType {
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 }

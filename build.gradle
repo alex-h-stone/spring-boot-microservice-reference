@@ -4,16 +4,18 @@ plugins {
     id 'java'
     id 'application'
     id 'jacoco'
+    id 'io.freefair.lombok' version "$lombokPluginVersion"
     id 'org.springframework.boot' version "$springBootVersion"
-    id 'io.spring.dependency-management' version "$springDependencyManagementVersion"
-    id 'org.asciidoctor.jvm.convert' version "$asciiDoctorJvmVersion"
     id 'org.openapi.generator' version "$openApiGeneratorVersion"
+    id 'com.diffplug.spotless' version "$diffPlugSpotlessVersion"
 }
 
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.openapi.generator'
 
 group = 'com.cgi.example'
 description = 'Spring Boot Template Service modeled on an online Pet Store.'
+version = '1.0.0-SNAPSHOT'
 
 java {
     sourceCompatibility = "$javaVersion"
@@ -21,7 +23,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    options.encoding = "$characterEncoding"
 }
 
 configurations {
@@ -30,8 +32,10 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
 
 dependencyManagement {
@@ -43,12 +47,11 @@ dependencyManagement {
 
 dependencies {
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // Spring Boot dependencies
+    implementation project(':common')
+
+    // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -59,7 +62,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework:spring-aspects'
 
-    // OpenAPI, Swagger and API CodeGen related dependencies
+    // OpenAPI, Swagger and API CodeGen
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion"
     implementation "org.springdoc:springdoc-openapi-ui:$springDocUiVersion"
     implementation 'jakarta.validation:jakarta.validation-api'
@@ -69,13 +72,17 @@ dependencies {
     // Metrics
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
+    // JSON structured logging
+    implementation "net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion"
+
     // General purpose
     implementation "org.apache.commons:commons-collections4:$commonsCollections4Version"
 
-    // Unit and integration test dependencies
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    // Unit and integration test
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockVersion"
@@ -128,10 +135,10 @@ test() {
 tasks.register('generateAllOpenAPI') {
     group = 'build'
     description = 'Generate all Java classes and interfaces for all OpenAPI specifications.'
-    dependsOn generatePetStoreClasses
-    dependsOn generateExternalAnimalVaccinationClasses
+    dependsOn generatePetStoreClasses, generateExternalAnimalVaccinationClasses
 }
 
+def generatedOpenApiSourcesDir = "${layout.buildDirectory.get()}/generated/sources/openapi"
 def openApiConfigOptions = [
         skipDefaultInterface: 'true',
         skipModelGeneration : 'true',
@@ -148,7 +155,7 @@ tasks.register('generatePetStoreClasses', GenerateTask) {
     apiPackage = 'com.cgi.example.petstore.api'
     modelPackage = 'com.cgi.example.petstore.model'
     inputSpec.set("$rootDir/src/main/resources/openapi/pet-store-api.yaml")
-    outputDir = "${layout.buildDirectory.get()}/generated/sources/openapi/petstore"
+    outputDir = "${generatedOpenApiSourcesDir}/petstore"
     configOptions.set(openApiConfigOptions)
     validateSpec = true
 }
@@ -158,30 +165,53 @@ tasks.register('generateExternalAnimalVaccinationClasses', GenerateTask) {
     apiPackage = 'com.cgi.example.external.animalvaccination.api'
     modelPackage = 'com.cgi.example.external.animalvaccination.model'
     inputSpec.set("$rootDir/src/main/resources/openapi/external/animal-vaccination-api.yaml")
-    outputDir = "${layout.buildDirectory.get()}/generated/sources/openapi/external/animalvaccination"
+    outputDir = "${generatedOpenApiSourcesDir}/external/animalvaccination"
     configOptions.set(openApiConfigOptions)
     validateSpec = true
 }
 
+// Ensure all Java code is formatted consistently via the Spotless plugin.
+spotless {
+    java {
+        target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+        importOrder()
+        removeUnusedImports()
+        cleanthat().sourceCompatibility('21')
+        googleJavaFormat()
+        formatAnnotations()
+    }
+}
+
 compileJava.dependsOn generateAllOpenAPI
+
+tasks.named('spotlessJava') {
+    dependsOn 'generateAllOpenAPI'
+}
 
 sourceSets {
     main {
         java {
             srcDirs = ['src/main/java',
-                       "${layout.buildDirectory.get()}/generated/sources/openapi/petstore/src/main/java",
-                       "${layout.buildDirectory.get()}/generated/sources/openapi/external/animalvaccination/src/main/java"]
+                       "${generatedOpenApiSourcesDir}/petstore/src/main/java",
+                       "${generatedOpenApiSourcesDir}/external/animalvaccination/src/main/java"]
         }
     }
 }
 
-tasks.register('startVaccinationsWireMockServer', JavaExec) {
+tasks.register('startEmbeddedWireMockServer', JavaExec) {
     group = 'application'
-    description = 'Start a WireMockServer to be used as a stub for the external Vaccinations API call.'
+    description = 'Start a WireMockServer to be used as a stub for the external API calls.'
     classpath = sourceSets.test.runtimeClasspath
-    getMainClass().set('com.cgi.example.petstore.VaccinationsWireMockServer')
+    standardInput = System.in
+    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedWireMockServer')
     jvmArgs '-Xms256m', '-Xmx1024m'
-    if (project.hasProperty('portNumber')) {
-        args project.portNumber
-    }
+}
+
+tasks.register('startEmbeddedMongoDB', JavaExec) {
+    group = 'application'
+    description = 'Start an in-memory Mongo DB server.'
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedMongoDB')
+    jvmArgs '-Xms256m', '-Xmx1024m'
 }

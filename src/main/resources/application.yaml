@@ -4,20 +4,22 @@ server:
 
 management:
   server.port: 8099
-  endpoints.web.exposure.include: health,info,metrics,prometheus,mappings
+  endpoints.web.exposure.include: health,info,metrics,prometheus,mappings,beans,loggers,env,httptrace,configprops
   endpoint.health.show-details: always
 
-spring.data.mongodb:
-  uri: ${MONGO_DB_URI:mongodb://localhost:27017}
-  database: petStoreDatabase
+spring:
+  jackson.mapper.sort-properties-alphabetically: true
+  data.mongodb:
+    uri: ${MONGO_DB_URI}
+    database: petStoreDatabase
 
 logging.level:
   root: INFO
-  com.cgi.example.petstore.logging: DEBUG
+  com.cgi.example.petstore.logging: INFO
   org.springframework:
-    security: DEBUG
-    web: DEBUG
+    security: INFO
+    web: INFO
 
 external.apis.vaccinations:
-  baseUrl: ${VACCINATIONS_URL:http://localhost:8090}
+  baseUrl: ${VACCINATIONS_URL}
   path: vaccinations/{vaccinationId}

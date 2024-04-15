@@ -1,13 +1,16 @@
 package com.cgi.example.petstore.service.pet;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PetRepository extends MongoRepository<PetDocument, String> {
 
-    List<PetDocument> findByPetStatusIn(Collection<String> statuses);
+  List<PetDocument> findByPersistenceStatusAndPetStatusIn(
+      String persistenceStatus, Collection<String> statuses);
+
+  Optional<PetDocument> findByPersistenceStatusAndPetId(String persistenceStatus, String petId);
 }

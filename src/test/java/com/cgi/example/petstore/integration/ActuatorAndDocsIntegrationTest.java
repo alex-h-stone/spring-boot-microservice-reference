@@ -1,128 +1,153 @@
 package com.cgi.example.petstore.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.cgi.example.petstore.integration.utils.UriBuilder;
+import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.jayway.jsonpath.JsonPath;
+import java.net.URI;
+import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import java.net.URI;
-import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
 class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
-    @Test
-    public void actuatorEndpointShouldListResources() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                uriBuilder.getManagementURIFor("actuator").build().toUri());
+  private AssertionExecutables assertionExecutables;
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+  @Test
+  public void actuatorEndpointShouldListResources() {
+    RequestEntity<String> requestEntity =
+        new RequestEntity<>(
+            HttpMethod.GET, uriBuilder.getManagementURIFor("actuator").build().toUri());
 
-        Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertThat(links, Matchers.containsInAnyOrder("self", "health", "health-path",
-                        "info", "metrics-requiredMetricName", "metrics", "mappings"))
-        );
-    }
+    Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
 
-    @Test
-    void actuatorHealthEndpointShouldShowUp() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                uriBuilder.getManagementURIFor("actuator/health").build().toUri());
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () ->
+            assertThat(
+                links,
+                Matchers.containsInAnyOrder(
+                    "self",
+                    "beans",
+                    "health",
+                    "health-path",
+                    "info",
+                    "configprops",
+                    "configprops-prefix",
+                    "env",
+                    "env-toMatch",
+                    "loggers",
+                    "loggers-name",
+                    "metrics-requiredMetricName",
+                    "metrics",
+                    "mappings")));
+  }
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+  @Test
+  void actuatorHealthEndpointShouldShowUp() {
+    RequestEntity<String> requestEntity =
+        new RequestEntity<>(
+            HttpMethod.GET, uriBuilder.getManagementURIFor("actuator/health").build().toUri());
 
-        String status = JsonPath.read(response.getBody(), "$.status");
-        String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertEquals("UP", status),
-                () -> assertEquals("UP", pingStatus)
-        );
-    }
+    String status = JsonPath.read(response.getBody(), "$.status");
+    String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
 
-    @Test
-    void actuatorInfoEndpointShouldIncludeDescriptionArtifactNameAndGroup() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                uriBuilder.getManagementURIFor("actuator/info").build().toUri());
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () -> assertEquals("UP", status),
+        () -> assertEquals("UP", pingStatus));
+  }
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+  @Test
+  void actuatorInfoEndpointShouldIncludeDescriptionArtifactNameAndGroup() {
+    RequestEntity<String> requestEntity =
+        new RequestEntity<>(
+            HttpMethod.GET, uriBuilder.getManagementURIFor("actuator/info").build().toUri());
 
-        String description = JsonPath.read(response.getBody(), "$.build.description");
-        String artifact = JsonPath.read(response.getBody(), "$.build.artifact");
-        String name = JsonPath.read(response.getBody(), "$.build.name");
-        String group = JsonPath.read(response.getBody(), "$.build.group");
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertEquals("Spring Boot Template Service modeled on an online Pet Store.", description),
-                () -> assertEquals("spring-boot-microservice-template", artifact),
-                () -> assertEquals("spring-boot-microservice-template", name),
-                () -> assertEquals("com.cgi.example", group)
-        );
-    }
+    String description = JsonPath.read(response.getBody(), "$.build.description");
+    String artifact = JsonPath.read(response.getBody(), "$.build.artifact");
+    String name = JsonPath.read(response.getBody(), "$.build.name");
+    String group = JsonPath.read(response.getBody(), "$.build.group");
 
-    @Test
-    void actuatorMappingsEndpointShouldListMultipleMappings() {
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET,
-                uriBuilder.getManagementURIFor("actuator/mappings").build().toUri());
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () ->
+            assertEquals(
+                "Spring Boot Template Service modeled on an online Pet Store.", description),
+        () -> assertEquals("spring-boot-microservice-template", artifact),
+        () -> assertEquals("spring-boot-microservice-template", name),
+        () -> assertEquals("com.cgi.example", group));
+  }
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+  @Test
+  void actuatorMappingsEndpointShouldListMultipleMappings() {
+    RequestEntity<String> requestEntity =
+        new RequestEntity<>(
+            HttpMethod.GET, uriBuilder.getManagementURIFor("actuator/mappings").build().toUri());
 
-        int numberOfMappings = JsonPath.read(response.getBody(), "$.contexts.application.mappings.dispatcherServlets.dispatcherServlet.length()");
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertThat(numberOfMappings, Matchers.greaterThan(3))
-        );
-    }
+    int numberOfMappings =
+        JsonPath.read(
+            response.getBody(),
+            "$.contexts.application.mappings.dispatcherServlets.dispatcherServlet.length()");
 
-    @ParameterizedTest
-    @CsvSource({"v3/api-docs,application/json",
-            "v3/api-docs.yaml,application/vnd.oai.openapi",
-            "v3/api-docs/springdoc,application/json"
-    })
-    void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints(String apiDocUrl, String expectedContentType) {
-        URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () -> assertThat(numberOfMappings, Matchers.greaterThan(3)));
+  }
 
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+  @ParameterizedTest
+  @CsvSource({
+    "v3/api-docs,application/json",
+    "v3/api-docs.yaml,application/vnd.oai.openapi",
+    "v3/api-docs/springdoc,application/json"
+  })
+  void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints(
+      String apiDocUrl, String expectedContentType) {
+    URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
-                () -> assertThat(response.getBody(), Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
-                () -> assertThat(response.getBody(), Matchers.containsString("Find pet by Id"))
-        );
-    }
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-    @Test
-    void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints() {
-        URI requestUri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config").build().toUri();
-        RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
+    assertAll(
+        assertions.assertContentType(response, expectedContentType),
+        () ->
+            assertThat(
+                response.getBody(),
+                Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
+        () -> assertThat(response.getBody(), Matchers.containsString("Find pet by Id")),
+        () -> assertThat(response.getBody(), Matchers.containsString("pet-store API")));
+  }
 
-        ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+  @Test
+  void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints() {
+    URI requestUri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config").build().toUri();
+    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
 
-        int numberOfURLs = JsonPath.read(response.getBody(), "$.urls.length()");
-        String url = JsonPath.read(response.getBody(), "$.urls[0].url");
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertEquals(1, numberOfURLs),
-                () -> assertEquals("/v3/api-docs/springdoc", url)
-        );
-    }
+    int numberOfURLs = JsonPath.read(response.getBody(), "$.urls.length()");
+    String url = JsonPath.read(response.getBody(), "$.urls[0].url");
+
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () -> assertEquals(1, numberOfURLs),
+        () -> assertEquals("/v3/api-docs/springdoc", url));
+  }
 }

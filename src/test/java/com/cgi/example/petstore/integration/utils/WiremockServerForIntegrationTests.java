@@ -1,71 +1,58 @@
 package com.cgi.example.petstore.integration.utils;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
+import com.cgi.example.petstore.embedded.EmbeddedWireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import org.springframework.context.annotation.Bean;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StopWatch;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.function.Supplier;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-
+@Slf4j
 @Component
-public class WiremockServerForIntegrationTests {
-    private static final int WIREMOCK_PORT;
-    private static final WireMockServer mockWebServer;
+public class WireMockServerForIntegrationTests implements SmartLifecycle {
 
-    static {
-        final int nextAvailablePort = 0;
-        try (var serverSocket = new ServerSocket(nextAvailablePort)) {
-            WIREMOCK_PORT = serverSocket.getLocalPort();
-        } catch (IOException e) {
-            String message = "Unable to establish a WireMock port: [%s]".formatted(e.getMessage());
-            throw new RuntimeException(message, e);
-        }
-        WireMock.configureFor(WIREMOCK_PORT); // Configure WireMock client
-        mockWebServer = new WireMockServer(wireMockConfig().port(WIREMOCK_PORT));
-        mockWebServer.start();
-        waitUntil(mockWebServer::isRunning);
-    }
+  private static final EmbeddedWireMockServer WIRE_MOCK_SERVER;
 
-    @Bean(destroyMethod = "shutdown")
-    public WiremockServerForIntegrationTests stubServer() {
-        return this;
-    }
+  static {
+    WIRE_MOCK_SERVER = new EmbeddedWireMockServer();
+    WIRE_MOCK_SERVER.start();
 
-    void shutdown() {
-        mockWebServer.shutdown();
-        waitUntil(() -> !mockWebServer.isRunning());
-    }
+    DynamicApplicationPropertiesRepository propertiesRepository =
+        new DynamicApplicationPropertiesRepository();
+    System.setProperty(
+        "VACCINATIONS_URL", "http://localhost:" + propertiesRepository.getWireMockPort());
+  }
 
-    public static int getPort() {
-        return WIREMOCK_PORT;
-    }
+  public void resetAll() {
+    WIRE_MOCK_SERVER.getWireMockServer().resetAll();
+  }
 
-    public void resetAll() {
-        mockWebServer.resetAll();
-    }
+  public void stubFor(MappingBuilder mappingBuilder) {
+    WIRE_MOCK_SERVER.getWireMockServer().stubFor(mappingBuilder);
+  }
 
-    public void stubFor(MappingBuilder mappingBuilder) {
-        mockWebServer.stubFor(mappingBuilder);
-    }
+  public void verify(int numberOfTimes, RequestPatternBuilder request) {
+    WIRE_MOCK_SERVER.getWireMockServer().verify(numberOfTimes, request);
+  }
 
-    private static void waitUntil(Supplier<Boolean> isComplete) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        while (!isComplete.get() &&
-                stopWatch.getTotalTimeSeconds() < 3.0) {
-            // Loop until complete or timeout is reached
-        }
-        stopWatch.stop();
-    }
+  @Override
+  public void start() {
+    WIRE_MOCK_SERVER.start();
+  }
 
-    public void verify(int numberOfTimes, RequestPatternBuilder request) {
-        mockWebServer.verify(numberOfTimes, request);
-    }
+  @Override
+  public void stop() {
+    WIRE_MOCK_SERVER.stop();
+  }
+
+  @Override
+  public boolean isRunning() {
+    return WIRE_MOCK_SERVER.isRunning();
+  }
+
+  @Override
+  public int getPhase() {
+    return Integer.MIN_VALUE;
+  }
 }

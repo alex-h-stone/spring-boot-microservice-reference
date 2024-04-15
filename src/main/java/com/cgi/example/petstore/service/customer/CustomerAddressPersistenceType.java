@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class CustomerAddressPersistenceType {
 
-    private String street;
+  private String street;
 
-    private String city;
+  private String city;
 
-    private String postCode;
+  private String postCode;
 
-    private String country;
+  private String country;
 }

@@ -10,6 +10,7 @@ info:
     - Customers can search for a pet.
     - Pets can be updated when details change.
     - Customers can purchase a pet.
+    - Pets can be removed (archived) from the pet store.
     - Pet vaccination details are provided via an external API call.
   contact:
     email: alex.stone@cgi.com
@@ -52,7 +53,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PetResponse'
         '400':
-          description: Invalid Id supplied
+          description: Invalid Pet Id supplied
         '404':
           description: Pet not found
         '405':
@@ -88,7 +89,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/PetStatus'
+              $ref: '#/components/schemas/PetAvailabilityStatus'
       responses:
         '200':
           description: successful operation
@@ -118,7 +119,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PetResponse'
         '400':
-          description: Invalid Id supplied
+          description: Invalid Pet Id supplied
         '404':
           description: Pet not found
     post:
@@ -148,6 +149,29 @@ paths:
                 $ref: '#/components/schemas/PetResponse'
         '400':
           description: Invalid pet value
+    delete:
+      summary: Remove a pet from the store.
+      description: By supplying a Pet Id, remove the single pet from the pet store.
+      operationId: deletePetById
+      parameters:
+        - name: petId
+          in: path
+          description: Id of pet to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/PetId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetDeletionResponse'
+        '400':
+          description: Invalid Pet Id supplied
+        '404':
+          description: Pet not found
+
 components:
   schemas:
     PetId:
@@ -159,9 +183,9 @@ components:
       type: string
       description: The pet answers to this name.
       example: Fido
-    PetStatus:
+    PetAvailabilityStatus:
       type: string
-      description: The status of the pet in the store
+      description: The availability of the pet in the Pet Shop.
       enum:
         - Available For Purchase
         - Pending Collection
@@ -264,7 +288,7 @@ components:
           description: The actual additional information content.
           example: Short Hair
     NewPetRequest:
-      description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a 'petStatus' of "Available For Purchase"
+      description: A Pet which is new to the Pet Store. Does not have any vaccination details, and will have a PetAvailabilityStatus of "Available For Purchase".
       type: object
       required:
         - vaccinationId
@@ -292,7 +316,7 @@ components:
         - vaccinationId
         - name
         - petType
-        - petStatus
+        - availabilityStatus
       properties:
         petId:
           $ref: '#/components/schemas/PetId'
@@ -300,10 +324,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PetStoreVaccination'
-        petStatus:
-          $ref: '#/components/schemas/PetStatus'
+        availabilityStatus:
+          $ref: '#/components/schemas/PetAvailabilityStatus'
         owner:
           $ref: '#/components/schemas/CustomerResponse'
+    PetDeletionResponse:
+      type: object
+      required:
+        - petId
+      properties:
+        petId:
+          $ref: '#/components/schemas/PetId'
+        message:
+          type: string
+          description: Message relating to the deletion request.
+          example: Successfully deleted the pet with Id KT1546.
     PetPatchRequest:
       type: object
       required:
@@ -323,8 +358,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PetInformationItem'
-        petStatus:
-          $ref: '#/components/schemas/PetStatus'
+        availabilityStatus:
+          $ref: '#/components/schemas/PetAvailabilityStatus'
     MultiplePetsResponse:
       type: object
       description: The result of a request which may return 2 or more Pets.
