@@ -38,18 +38,13 @@ allprojects {
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:$springBootVersion"
-        mavenBom "org.junit.jupiter:junit-jupiter:$junitJupiterVersion"
-    }
-}
-
 dependencies {
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation project(':common')
+
+    implementation platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+    implementation platform("org.junit:junit-bom:$junitJupiterVersion")
 
     // Spring Boot
     implementation 'org.springframework.boot:spring-boot-starter-web'

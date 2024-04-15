@@ -1,5 +1,6 @@
 package com.cgi.example.common.local;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,8 +36,8 @@ class ToClickableUriStringTest {
 
         String clickableUri = toClickableUriString.apply(nonExistentFile);
 
-        assertTrue(clickableUri.startsWith("file:///"));
-        assertTrue(clickableUri.contains(fileName));
+        assertThat(clickableUri, Matchers.startsWith("file:///"));
+        assertThat(clickableUri, Matchers.containsString(fileName));
     }
 
     @Test
@@ -48,7 +50,7 @@ class ToClickableUriStringTest {
 
         String clickableUri = toClickableUriString.apply(file);
 
-        assertTrue(clickableUri.startsWith("file:///"));
-        assertTrue(clickableUri.contains(fileName));
+        assertThat(clickableUri, Matchers.startsWith("file:///"));
+        assertThat(clickableUri, Matchers.containsString(fileName));
     }
 }

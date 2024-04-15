@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'jacoco'
     id 'io.freefair.lombok' version "$lombokPluginVersion"
 }
 
@@ -22,6 +23,7 @@ configurations {
 }
 
 dependencies {
+    implementation platform("org.junit:junit-bom:$junitJupiterVersion")
     implementation platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -30,6 +32,25 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/entity/**',
+                    '**/model/**',
+                    '**/dto/**',
+                    '**/config/**'
+            ])
+        }))
+    }
 }
 
 def generatedSources = '/generated/sources/local/src/main/java/'
@@ -45,6 +66,7 @@ sourceSets {
 
 test() {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 tasks.register('generateDynamicApplicationFileProperties') {
