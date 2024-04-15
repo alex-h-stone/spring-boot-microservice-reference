@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
@@ -32,8 +33,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
 
     assertAll(
-        assertions.assertOkJsonResponse(response),
-        () ->
+            assertions.assertStatusCode(response, HttpStatus.OK),
+            assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
+            () ->
             assertThat(
                 links,
                 Matchers.containsInAnyOrder(
@@ -65,8 +67,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
 
     assertAll(
-        assertions.assertOkJsonResponse(response),
-        () -> assertEquals("UP", status),
+            assertions.assertStatusCode(response, HttpStatus.OK),
+            assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
+            () -> assertEquals("UP", status),
         () -> assertEquals("UP", pingStatus));
   }
 
@@ -84,7 +87,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     String group = JsonPath.read(response.getBody(), "$.build.group");
 
     assertAll(
-        assertions.assertOkJsonResponse(response),
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
         () ->
             assertEquals(
                 "Spring Boot Template Service modeled on an online Pet Store.", description),
@@ -107,7 +111,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
             "$.contexts.application.mappings.dispatcherServlets.dispatcherServlet.length()");
 
     assertAll(
-        assertions.assertOkJsonResponse(response),
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
         () -> assertThat(numberOfMappings, Matchers.greaterThan(3)));
   }
 

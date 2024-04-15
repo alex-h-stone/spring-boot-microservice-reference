@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.LoggingTestRestTemplate;
+import com.cgi.example.petstore.integration.utils.WebClientExecutor;
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.integration.utils.WireMockServerForIntegrationTests;
 import com.cgi.example.petstore.utils.AssertionExecutables;
@@ -24,7 +24,7 @@ public abstract class BaseIntegrationTest {
 
   @Autowired private MongoTemplate mongoTemplate;
 
-  @Autowired protected LoggingTestRestTemplate testRestTemplate;
+  @Autowired protected WebClientExecutor testRestTemplate;
 
   @Autowired protected UriBuilder uriBuilder;
 

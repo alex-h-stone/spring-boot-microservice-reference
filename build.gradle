@@ -80,7 +80,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation "com.github.tomakehurst:wiremock-jre8:$wiremockVersion"
+    testImplementation "org.wiremock:wiremock-standalone:$wireMockVersion"
     testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring31x:$embedMongoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
 }
@@ -135,8 +135,8 @@ tasks.register('generateAllOpenAPI') {
 
 def generatedOpenApiSourcesDir = "${layout.buildDirectory.get()}/generated/sources/openapi"
 def openApiConfigOptions = [
-        skipDefaultInterface: 'true',
-        skipModelGeneration : 'true',
+        skipDefaultInterface          : 'true',
+        skipModelGeneration           : 'true',
         requestMappingMode            : 'api_interface',
         interfaceOnly                 : 'true',
         useJakartaEe                  : 'true',
