@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration;
 
-import com.cgi.example.petstore.integration.utils.WebClientExecutor;
 import com.cgi.example.petstore.integration.utils.UriBuilder;
+import com.cgi.example.petstore.integration.utils.WebClientExecutor;
 import com.cgi.example.petstore.integration.utils.WireMockServerForIntegrationTests;
 import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.cgi.example.petstore.utils.ResourceFileUtils;

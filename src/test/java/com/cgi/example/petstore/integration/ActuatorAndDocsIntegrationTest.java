@@ -33,9 +33,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     Set<String> links = JsonPath.read(response.getBody(), "$._links.keys()");
 
     assertAll(
-            assertions.assertStatusCode(response, HttpStatus.OK),
-            assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
-            () ->
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
+        () ->
             assertThat(
                 links,
                 Matchers.containsInAnyOrder(
@@ -67,9 +67,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
 
     assertAll(
-            assertions.assertStatusCode(response, HttpStatus.OK),
-            assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
-            () -> assertEquals("UP", status),
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
+        () -> assertEquals("UP", status),
         () -> assertEquals("UP", pingStatus));
   }
 
