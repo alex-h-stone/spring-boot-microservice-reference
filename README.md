@@ -80,11 +80,13 @@ WIP `.\cleanBuildTestAndRunLocally.ps1` WIP
 #### TODO Alex TODO
 
 - Run API tests as part of the build?
+- Run perf tests as part of the build?
 - Add WebSecurity via OAuth2
 - Add Introduction and purpose text
 - Flesh out the description, purpose and role of this project
 - Add extra unit tests
 - Include alternative frameworks and options
+- Add description for dynamic local repo
 
 ---
 
@@ -178,6 +180,10 @@ be implemented via the API yaml.
 
 #### API Model to DTO mapping
 
+---
+
+#### API Model to DTO mapping
+
 See the mappers `PetMapper`, `ExternalVaccinationsMapper` and `CustomerMapper` for examples of how to define logic to
 map between API, DTO and Mongo DB Document objects.
 
@@ -238,10 +244,25 @@ In addition, `WiremockServerForIntegrationTests` for how to utilise WireMock for
 
 #### Logging of requests and responses
 
-See `RequestLoggingFilterConfig` for the required config to log requests.
+See `RequestLoggingFilterConfig` for the required config to log requests using the `CommonsRequestLoggingFilter`.
 
-Also consider the use of `LoggingAspects` and the `LogMethodArguments` annotation to log method arguments,
-and the `LogMethodResponse` to log method responses.
+Also consider the use of AOP `LoggingAspects` and the `@LogMethodArguments` annotations to log method arguments,
+and the `@LogMethodResponse` to log the method return object.
+
+---
+
+#### Structured JSON logging
+
+To improve the search-ability of application logs they are structured using JSON to provide a balance between both 
+machine and developer readability.
+
+This is implemented using the dependency `net.logstash.logback:logstash-logback-encoder` and the appropriate config in `logback.xml`.
+
+---
+
+#### Generate an ETag for requests and consider it in responses
+
+In `WebConfiguration` we define a `ShallowEtagHeaderFilter` bean
 
 ---
 
