@@ -16,9 +16,7 @@ spring:
 logging.level:
   root: INFO
   com.cgi.example.petstore.logging: INFO
-  org.springframework:
-    security: INFO
-    web: INFO
+  org.springframework.web.filter: DEBUG
 
 external.apis.vaccinations:
   baseUrl: ${VACCINATIONS_URL}

@@ -260,12 +260,6 @@ This is implemented using the dependency `net.logstash.logback:logstash-logback-
 
 ---
 
-#### Generate an ETag for requests and consider it in responses
-
-In `WebConfiguration` we define a `ShallowEtagHeaderFilter` bean
-
----
-
 #### Execute Postman API test Collection as a Gradle task
 
 Install `Node.js` version greater than 16 as

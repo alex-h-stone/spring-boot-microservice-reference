@@ -1,12 +1,12 @@
 package com.cgi.example.petstore.integration.utils;
 
+import java.util.Objects;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -19,46 +19,39 @@ public class WebClientExecutor {
   private final WebClient webClient;
 
   public ResponseEntity<String> execute(RequestEntity<?> requestEntity) {
-    // TODO simplify this
-    log.info("Integration test RequestEntity: [{}]", requestEntity);
+    log.info("Request entity: [{}]", requestEntity);
     WebClient.RequestBodySpec requestSpec =
         webClient
-            .method(requestEntity.getMethod())
+            .method(Objects.requireNonNull(requestEntity.getMethod()))
             .uri(requestEntity.getUrl())
             .headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()));
-    if (requestEntity.hasBody()) {
-      requestSpec.bodyValue(requestEntity.getBody());
+
+    Object body = requestEntity.getBody();
+    if (Objects.nonNull(body)) {
+      requestSpec.bodyValue(body);
     }
-    ResponseEntity<String> entity =
-        requestSpec.exchangeToMono(exchange()).onErrorResume(onError()).block();
 
-    log.info("Integration test ResponseEntity: [{}]", entity);
-    return entity;
-  }
+    ResponseEntity<String> responseEntity =
+        requestSpec
+            .exchangeToMono(response -> response.toEntity(String.class))
+            .onErrorResume(onError())
+            .block();
 
-  private static Function<ClientResponse, Mono<ResponseEntity<String>>> exchange() {
-    return response -> {
-      if (response.statusCode().isError()) {
-        return response.createException().flatMap(Mono::error);
-      } else {
-        return response.toEntity(String.class);
-      }
-    };
+    log.info("Response entity: [{}]", responseEntity);
+    return responseEntity;
   }
 
   private Function<Throwable, Mono<? extends ResponseEntity<String>>> onError() {
     return throwable -> {
-      if (throwable instanceof WebClientResponseException) {
-        WebClientResponseException ex = (WebClientResponseException) throwable;
-        // Return the status code and body contained in the exception
+      if (throwable instanceof WebClientResponseException exception) {
         ResponseEntity<String> responseEntity =
-            ResponseEntity.status(ex.getStatusCode())
-                .headers(ex.getHeaders())
-                .body(ex.getResponseBodyAsString());
-
+            ResponseEntity.status(exception.getStatusCode())
+                .headers(exception.getHeaders())
+                .body(exception.getResponseBodyAsString());
         return Mono.just(responseEntity);
       }
-      return Mono.just(ResponseEntity.noContent().build());
+      log.error("Unable to create HTTP ResponseEntity: {}", throwable.getMessage(), throwable);
+      throw new IllegalStateException("Unable to create HTTP ResponseEntity", throwable);
     };
   }
 }
