@@ -70,9 +70,6 @@ dependencies {
     // JSON structured logging
     implementation "net.logstash.logback:logstash-logback-encoder:$logbackEncoderVersion"
 
-    // General purpose
-    implementation "org.apache.commons:commons-collections4:$commonsCollections4Version"
-
     // Unit and integration test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 

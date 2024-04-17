@@ -24,6 +24,6 @@ public class VaccinationsService {
       return Collections.emptyList();
     }
 
-    return mapper.mapToPetStoreVaccinationList(vaccinationsOptional.get());
+    return mapper.mapToPetStoreVaccinations(vaccinationsOptional.get());
   }
 }

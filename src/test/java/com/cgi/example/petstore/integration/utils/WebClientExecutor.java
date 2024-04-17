@@ -19,6 +19,7 @@ public class WebClientExecutor {
   private final WebClient webClient;
 
   public ResponseEntity<String> execute(RequestEntity<?> requestEntity) {
+    // TODO simplify this
     log.info("Integration test RequestEntity: [{}]", requestEntity);
     WebClient.RequestBodySpec requestSpec =
         webClient
