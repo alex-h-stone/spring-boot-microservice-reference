@@ -168,7 +168,7 @@ spotless {
         target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
         importOrder()
         removeUnusedImports()
-        cleanthat().sourceCompatibility('21')
+        cleanthat().sourceCompatibility("$javaVersion")
         googleJavaFormat()
         formatAnnotations()
     }
@@ -190,12 +190,12 @@ sourceSets {
     }
 }
 
-tasks.register('startEmbeddedWireMockServer', JavaExec) {
+tasks.register('startEmbeddedWireMock', JavaExec) {
     group = 'application'
     description = 'Start a WireMockServer to be used as a stub for the external API calls.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedWireMockServer')
+    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedWireMock')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 

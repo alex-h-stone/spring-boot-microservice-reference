@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration.utils;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.petstore.embedded.EmbeddedWireMockServer;
+import com.cgi.example.petstore.embedded.EmbeddedWireMock;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class WireMockServerForIntegrationTests implements SmartLifecycle {
+public class WiremockForIntegrationTests implements SmartLifecycle {
 
-  private static final EmbeddedWireMockServer WIRE_MOCK_SERVER;
+  private static final EmbeddedWireMock WIRE_MOCK;
 
   static {
-    WIRE_MOCK_SERVER = new EmbeddedWireMockServer();
-    WIRE_MOCK_SERVER.start();
+    WIRE_MOCK = new EmbeddedWireMock();
+    WIRE_MOCK.start();
 
     DynamicApplicationPropertiesRepository propertiesRepository =
         new DynamicApplicationPropertiesRepository();
@@ -25,30 +25,30 @@ public class WireMockServerForIntegrationTests implements SmartLifecycle {
   }
 
   public void resetAll() {
-    WIRE_MOCK_SERVER.getWireMockServer().resetAll();
+    WIRE_MOCK.getWireMockServer().resetAll();
   }
 
   public void stubFor(MappingBuilder mappingBuilder) {
-    WIRE_MOCK_SERVER.getWireMockServer().stubFor(mappingBuilder);
+    WIRE_MOCK.getWireMockServer().stubFor(mappingBuilder);
   }
 
   public void verify(int numberOfTimes, RequestPatternBuilder request) {
-    WIRE_MOCK_SERVER.getWireMockServer().verify(numberOfTimes, request);
+    WIRE_MOCK.getWireMockServer().verify(numberOfTimes, request);
   }
 
   @Override
   public void start() {
-    WIRE_MOCK_SERVER.start();
+    WIRE_MOCK.start();
   }
 
   @Override
   public void stop() {
-    WIRE_MOCK_SERVER.stop();
+    WIRE_MOCK.stop();
   }
 
   @Override
   public boolean isRunning() {
-    return WIRE_MOCK_SERVER.isRunning();
+    return WIRE_MOCK.isRunning();
   }
 
   @Override

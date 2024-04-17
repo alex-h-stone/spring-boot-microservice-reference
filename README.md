@@ -60,8 +60,8 @@ Requirements to run locally:
 
 When the above requirements have been satisfied, to start the Pet Store microservice:
 
-1. Start the WireMock stub server:  
-   `./gradlew startEmbeddedWireMockServer`
+1. Start the Wire Mock stub server:  
+   `./gradlew startEmbeddedWireMock`
 2. Start the in-memory MongoDB server:  
    `./gradlew startEmbeddedMongoDB`
 3. Start the microservice:  
@@ -79,14 +79,14 @@ WIP `.\cleanBuildTestAndRunLocally.ps1` WIP
 
 #### TODO Alex TODO
 
-- Run API tests as part of the build?
-- Run perf tests as part of the build?
-- Add WebSecurity via OAuth2
 - Add Introduction and purpose text
 - Flesh out the description, purpose and role of this project
 - Add extra unit tests
 - Include alternative frameworks and options
-- Add description for dynamic local repo
+- Run API tests as part of the build?
+- Maybe using id 'com.github.node-gradle.node' version "7.0.2" https://github.com/node-gradle/gradle-node-plugin/blob/main/docs/usage.md
+- Run perf tests as part of the build?
+- Add WebSecurity via OAuth2
 
 ---
 
@@ -200,7 +200,7 @@ The same JUnit tag allows us to execute integration tests and unit tests separat
 
 #### Integration tests
 
-For examples of integration tests utilising WireMock and `de.flapdoodle` embedded MongoDB see any JUnit test which
+For examples of integration tests utilising Wire Mock and `de.flapdoodle` embedded MongoDB see any JUnit test which
 either
 extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
 
@@ -208,12 +208,20 @@ extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
 
 #### Dynamic port allocation and discovery for local development
 
-To improve developer efficiency, when running the microservice and associated dependencies like WireMock and Embedded
-MongoDB
-locally, all port numbers are assigned dynamically and subsequently used as needed via the
+To improve developer efficiency, when running the microservice and associated dependencies like Wire Mock and Embedded
+MongoDB locally, all port numbers are assigned dynamically and subsequently discovered when needed via the
 `DynamicApplicationPropertiesRepository`.
 
-This includes running the `api-test` and `load-test` against a local instance of the microservice.
+For example, when you start the `EmbeddedWireMock` the port number which it is listening on persisted so that 
+when you start the microservice (with the `local` profile) it will be automatically configured to use the correct 
+Wire Mock port.
+
+Port allocation and discovery includes:
+- Embedded Wire Mock `./gradlew startEmbeddedWireMock`
+- Embedded MongoDB `./gradlew startEmbeddedMongoDB`
+- Pet Store microservice `./gradlew bootRun --args='--spring.profiles.active=local'`
+- API Tests `./gradlew :api-test:run`
+- Load Tests `./gradlew :load-test:run`
 
 ---
 
@@ -231,14 +239,14 @@ using the SpringFlux `WebClient`.
 
 ---
 
-#### Stubbing of external API calls via WireMock
+#### Stubbing of external API calls via Wire Mock
 
-See https://wiremock.org/docs/stubbing/ for additional guidance with WireMock.
+See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 
-Also see `VaccinationsWireMockServer` for how to define a stub server for running a microservice locally with external
-API dependencies.
+Also see `EmbeddedWireMock` for how to run a stand-alone embedded stub server for running a microservice 
+locally which has external API dependencies.
 
-In addition, `WiremockServerForIntegrationTests` for how to utilise WireMock for automated integration tests.
+In addition, `WiremockForIntegrationTests` for how to utilise Wire Mock for automated integration tests.
 
 ---
 
