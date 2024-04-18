@@ -4,29 +4,36 @@ Spring Boot 3 based microservice template integrating features which address a m
 
 # Table of Contents
 
-- [Introduction and purpose](#introduction-and-purpose)
-- [Run the microservice](#run-the-pet-store-microservice)
-- [Running Tests](#running-unit-and-integration-tests)
-- [Dependency version management](#dependency-version-management)
-- [OpenAPI/Swagger Code Generation](#openapiswagger-code-generation)
-- [Data Persistence via MongoDB](#data-persistence-via-mongodb)
-- [Exception Handling](#exception-handling)
-- [Java Request Validation](#java-request-validation)
-- [Request Validation via OpenAPI Specification](#request-validation-via-openapi-specification)
-- [API to DTO Mapping](#api-to-dto-mapping)
-- [Unit Tests](#unit-tests)
-- [Integration Tests](#integration-tests)
-- [Metrics Endpoint](#metrics-endpoint)
-- [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
-- [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
-- [Logging of Requests and Responses](#logging-of-requests-and-responses)
-- [Actuator Endpoints](#actuator-endpoints)
-- [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
-- [Automated Code Style Formatting](#automated-code-style-formatting)
+1. [Introduction and Purpose](#introduction-and-purpose)
+2. [Run the Pet Store Microservice](#run-the-pet-store-microservice)
+3. [Running Unit and Integration Tests](#running-unit-and-integration-tests)
+4. [Dependency Version Management](#dependency-version-management)
+5. [OpenAPI/Swagger Code Generation](#openapiswagger-code-generation)
+6. [Data Persistence via MongoDB](#data-persistence-via-mongodb)
+7. [Exception Handling](#exception-handling)
+8. [Java Request Validation](#java-request-validation)
+9. [Request Validation via OpenAPI Specification](#request-validation-via-openapi-specification)
+10. [API to DTO Mapping](#api-to-dto-mapping)
+11. [Unit Tests](#unit-tests)
+12. [Integration Tests](#integration-tests)
+13. [Metrics Endpoint](#metrics-endpoint)
+14. [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
+15. [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
+16. [Logging of Requests and Responses](#logging-of-requests-and-responses)
+17. [Actuator Endpoints](#actuator-endpoints)
+18. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
+19. [Automated Code Style Formatting](#automated-code-style-formatting)
+
 
 ---
 
 #### Introduction and purpose
+
+This template is designed to serve as a go-to reference for implementing many Spring Boot microservice features.
+It is _representative_ of a real-life production ready microservice, although clearly depending on your specific 
+requirements you will likely have to make some modifications to the approaches included in this project.
+
+At a minimum, the template should provide a high quality default starting point for new features.
 
 The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
 Editor https://editor.swagger.io/
@@ -109,7 +116,7 @@ To run only unit tests:
 #### Dependency version management
 
 To best manage a large number of Spring dependencies with independent version numbers this template uses the
-Gradle plugins:
+following Spring Gradle plugins:
 
 - `org.springframework.boot`
 - `io.spring.dependency-management`
@@ -117,9 +124,9 @@ Gradle plugins:
 In addition to the dependency management BOM's:
 
 - `org.springframework.boot:spring-boot-dependencies`
-- `org.junit.jupiter:junit-jupiter`
+- `org.junit:junit-bom`
 
-With all Gradle dependency and plugin version numbers are defined in one place, the `gradle.properties`
+With all Gradle dependency and plugin versions defined in one place `gradle.properties`.
 
 ---
 
@@ -144,28 +151,20 @@ To generate the external Animal Vaccination API classes and interfaces:
 #### Data persistence via MongoDB
 
 This service is integrated with a MongoDB NoSQL database using `spring-boot-starter-data-mongodb`
-and the `MongoRepository` interface. Connection details are defined in the `application.yaml` under
-`spring.data.mongodb`
+and the `MongoRepository` interface. Connection details are defined in the `application.yaml` as a connection string 
+using the property `spring.data.mongodb.uri`.
 
 For a more lightweight and simpler MongoDB integration consider using
 the [mongodb-driver-sync](https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync/4.11.1)
 client library. Although the out-of-the-box features of `MongoRepository` and `@Document` will not be available.
 
-
 ---
 
 #### Exception handling
 
-See the `GlobalExceptionHandler` class for details on how to implement exception handling, along with
-the application exception class `AbstractApplicationException`
-
----
-
-#### Java request validation
-
-See `PetValidator` and the integration test
-`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
-for details of how to write custom request validation logic.
+Any exceptions which are thrown by the microservice will be caught and handled by the `GlobalExceptionHandler`.
+All application exceptions extend `AbstractApplicationException` which allows you to specify both a message and 
+the HTTP status code which should be used in the response.
 
 ---
 
@@ -178,31 +177,47 @@ be implemented via the API yaml.
 
 ---
 
-#### API Model to DTO mapping
+#### Java request validation
+
+See `PetValidator` and the integration test
+`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
+for details of how to write custom request validation logic.
+
+Wherever possible, request validation logic should be defined in the OpenAPI definition e.g. [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
+This has several benefits over custom Java validators, including:
+- Reusable and language agnostic, such that you can use the OpenAPI yaml to rewrite the microservice using another (non-Java) implementation language.
+- The validation is visible by all consumers of the microservice via the OpenAPI yaml.
+- The API documentation will always be up-to-date with the validation implementation.
 
 ---
 
-#### API Model to DTO mapping
+#### Mapping between Pet Store API model, external API model and MongoDB Documents 
 
-See the mappers `PetMapper`, `ExternalVaccinationsMapper` and `CustomerMapper` for examples of how to define logic to
-map between API, DTO and Mongo DB Document objects.
+See the below classes for examples of different mappers:
+- [PetMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fpet%2FPetMapper.java)
+- [ExternalVaccinationsMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FExternalVaccinationsMapper.java)
+- [CustomerMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fcustomer%2FCustomerMapper.java)
+- 
 
-Depending on the use case [MapStruct](https://mapstruct.org/) is an option for reducing boilerplate mapping code.
+Depending on the use case [MapStruct](https://mapstruct.org/) is also an option for reducing boilerplate mapping code. 
+This should to be weighed up against the increase in complexity of the mapping implementation.
 
 ---
 
 #### Unit tests
 
-See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend `BaseIntegrationTest`
+See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
 The same JUnit tag allows us to execute integration tests and unit tests separately if needed.
 
 ---
 
 #### Integration tests
 
-For examples of integration tests utilising Wire Mock and `de.flapdoodle` embedded MongoDB see any JUnit test which
-either
-extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
+For examples of integration tests utilising  
+Wire Mock [WiremockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWiremockForIntegrationTests.java)  
+and  
+`de.flapdoodle.embed:de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)   
+see any JUnit test which either extends [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java) or has the JUnit annotation `@Tag("integration")`.
 
 ---
 
@@ -210,9 +225,9 @@ extends `BaseIntegrationTest` or has the JUnit annotation `@Tag("integration")`.
 
 To improve developer efficiency, when running the microservice and associated dependencies like Wire Mock and Embedded
 MongoDB locally, all port numbers are assigned dynamically and subsequently discovered when needed via the
-`DynamicApplicationPropertiesRepository`.
+[DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
-For example, when you start the `EmbeddedWireMock` the port number which it is listening on persisted so that 
+For example, when you start the [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) the port number which it is listening on persisted so that 
 when you start the microservice (with the `local` profile) it will be automatically configured to use the correct 
 Wire Mock port.
 
@@ -234,8 +249,8 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 #### External REST API call with retry via Spring WebFlux
 
-See `VaccinationsApiClient` for an example of making an external REST API call with retry logic
-using the SpringFlux `WebClient`.
+See [VaccinationsApiClient.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FVaccinationsApiClient.java) 
+for an example of making an external REST API call with retry logic using the SpringFlux `WebClient`.
 
 ---
 
@@ -243,18 +258,20 @@ using the SpringFlux `WebClient`.
 
 See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 
-Also see `EmbeddedWireMock` for how to run a stand-alone embedded stub server for running a microservice 
+Also see [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) for how to run a stand-alone embedded stub server for running a microservice 
 locally which has external API dependencies.
 
-In addition, `WiremockForIntegrationTests` for how to utilise Wire Mock for automated integration tests.
+In addition, [WiremockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWiremockForIntegrationTests.java) for how to utilise Wire Mock for automated integration tests.
 
 ---
 
 #### Logging of requests and responses
 
-See `RequestLoggingFilterConfig` for the required config to log requests using the `CommonsRequestLoggingFilter`.
+See [RequestLoggingFilterConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FRequestLoggingFilterConfiguration.java) 
+for the required config to log requests using the `CommonsRequestLoggingFilter`.
 
-Also consider the use of AOP `LoggingAspects` and the `@LogMethodArguments` annotations to log method arguments,
+Also consider the use of AOP [LoggingAspects.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2FLoggingAspects.java) 
+and the `@LogMethodArguments` annotations to log method arguments,
 and the `@LogMethodResponse` to log the method return object.
 
 ---
@@ -264,7 +281,8 @@ and the `@LogMethodResponse` to log the method return object.
 To improve the search-ability of application logs they are structured using JSON to provide a balance between both 
 machine and developer readability.
 
-This is implemented using the dependency `net.logstash.logback:logstash-logback-encoder` and the appropriate config in `logback.xml`.
+This is implemented using the dependency `net.logstash.logback:logstash-logback-encoder` and the appropriate config in 
+[logback.xml](src%2Fmain%2Fresources%2Flogback.xml).
 
 ---
 
@@ -286,12 +304,32 @@ And the additional Newman HTML reporting feature: `npm install -g newman-reporte
 To execute the Postman Collection execute the gradle task:
 `./gradlew :api-test:run`
 
+The API test is implemented via [ApiTestApplication.java](api-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fapitest%2FApiTestApplication.java)
+which uses the required port numbers from [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java) 
+to execute Newman with the required command line arguments.
+
+---
+
+#### Load test
+
+Load testing is implemented using `Gatling` for which the dependencies are defined in [load-test/build.gradle](load-test%2Fbuild.gradle).
+It is executed via the [LoadTestApplication.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java) class.  
+The load test scenarios are defined in [LoadSimulationDefinition.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadSimulationDefinition.java).  
+
+There is also a metrics collection feature, which polls the JVM memory usage using the actuator metrics endpoint. 
+The metrics are recorded and reported on following the load test. See [MemoryUsageMetrics.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java) 
+for implementation details.
+
+All required port numbers are configured dynamically in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java) using the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).   
+
+
 ---
 
 #### Actuator endpoints
 
-Determined by dependencies ("OpenAPI/Swagger docs" in `build.gradle`),
-application config (`application.yaml`) and security config (`SecurityConfig`)
+Determined by the "OpenAPI/Swagger docs" dependencies in the [build.gradle](build.gradle),  
+application config [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml)  
+and security config [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java).
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 
@@ -330,4 +368,4 @@ Code formatting can be applied to the project via:
 And verified via:  
 `./gradlew spotlessCheck`
 
-See `spotless` in `build.gradle` for details.
+See `spotless` in [build.gradle](build.gradle) for details.
