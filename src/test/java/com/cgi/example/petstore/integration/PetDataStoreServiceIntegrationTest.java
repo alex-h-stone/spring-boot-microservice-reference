@@ -23,7 +23,7 @@ public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
   @Autowired private PetRepository petRepository;
 
   @Test
-  void shouldSavePetToMongoDB() {
+  void should_SavePetToMongoDB() {
     NewPetRequest petToSave = testData.createNewPetRequest();
 
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());

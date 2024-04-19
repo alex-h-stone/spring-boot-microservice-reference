@@ -100,7 +100,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     "v3/api-docs.yaml,application/vnd.oai.openapi",
     "v3/api-docs/springdoc,application/json",
   })
-  void shouldReturnApiDefinitionWhenCallingApiDocsEndpoints(
+  void should_ReturnApiDefinitionWhenCallingApiDocsEndpoints(
       String apiDocUrl, String expectedContentType) {
     URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
 
@@ -137,7 +137,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnApiDefinitionWhenCallingApiDocsEndpoint() {
+  void should_ReturnApiDefinitionWhenCallingApiDocsEndpoint() {
     URI requestUri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config").build().toUri();
     RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
 
@@ -153,7 +153,7 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnApiDefinitionWhenCallingSwaggerUiIndexHtmlEndpoint() {
+  void should_ReturnApiDefinition_When_CallingSwaggerUiIndexHtmlEndpoint() {
     URI requestUri = uriBuilder.getApplicationURIFor("swagger-ui/index.html").build().toUri();
     RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
 

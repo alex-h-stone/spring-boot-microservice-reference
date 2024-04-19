@@ -38,7 +38,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   @Autowired private PetRepository petRepository;
 
   @Test
-  void shouldSuccessfullyAddPet() {
+  void should_SuccessfullyAddPet() {
     NewPetRequest petToAdd = testData.createNewPetRequest();
 
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
@@ -83,7 +83,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnFidoWhenCallingGetPetEndpoint() {
+  void should_ReturnFido_When_CallingGetPetEndpoint() {
     PetDocument petDocument = testData.createPetDocument();
     String petId = petDocument.getPetId();
     petRepository.save(petDocument);
@@ -114,7 +114,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldNotReturnPetWhenCallingGetPetEndpointForArchivedPet() {
+  void should_NotReturnPet_When_CallingGetPetEndpointForArchivedPet() {
     PetDocument petDocument = testData.createPetDocument();
     petDocument.setPersistenceStatus(PersistenceStatus.ARCHIVED.getValue());
     String petId = petDocument.getPetId();
@@ -134,7 +134,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnNotFoundWhenCallingGetPetWithUnknownPetId() {
+  void should_ReturnNotFound_When_CallingGetPetWithUnknownPetId() {
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
     URI uri = uriBuilder.getPetStoreURIFor("13").build().toUri();
@@ -163,7 +163,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted() {
+  void should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted() {
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
     URI uri = uriBuilder.getPetStoreURIFor("abcdefghijklmnopqrstuvwxyz0123456789").build().toUri();
@@ -192,7 +192,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation() {
+  void should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation() {
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
     URI uri = uriBuilder.getPetStoreURIFor("666").build().toUri();
@@ -218,7 +218,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnPetsWithMatchingStatusesWhenCallingFindByStatus() {
+  void should_ReturnPetsWithMatchingStatuses_When_CallingFindByStatus() {
     PetDocument petDocumentLassie =
         createPetDocument("KT1546", "Lassie", PetAvailabilityStatus.PENDING_COLLECTION);
     PetDocument petDocumentAstro = createPetDocument("ABC456", "Astro", PetAvailabilityStatus.SOLD);
@@ -267,7 +267,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldUpdateExistingPetWithNewNameAndInformationWhenPatchEndpointIsCalled() {
+  void should_UpdateExistingPetWithNewNameAndInformation_When_PatchEndpointIsCalled() {
     PetDocument petDocumentBeethoven =
         createPetDocument("XYZ987", "Beethoven", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE);
 
@@ -317,7 +317,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldSuccessfullyPurchaseAPet() {
+  void should_SuccessfullyPurchaseAPet() {
     PetDocument savedPetDocument = petRepository.save(testData.createPetDocument());
 
     assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
@@ -369,7 +369,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldSuccessDeletePet() {
+  void should_SuccessDeletePet() {
     PetDocument petDocument = testData.createPetDocument();
     String petId = petDocument.getPetId();
     petRepository.save(petDocument);

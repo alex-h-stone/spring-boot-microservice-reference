@@ -42,7 +42,7 @@ public class MappedDiagnosticFilterChainContextFilterTest {
   }
 
   @Test
-  void shouldPopulateMDCWithAuthenticatedUser() throws ServletException, IOException {
+  void should_PopulateMDCWithAuthenticatedUser() throws ServletException, IOException {
     String userId = "alex.stone@cgi.com";
     String remoteAddress = "192.168.1.1";
 
@@ -63,7 +63,7 @@ public class MappedDiagnosticFilterChainContextFilterTest {
   }
 
   @Test
-  void shouldPopulateMDCWithUnauthenticatedUserAndUnknownRemoteAddress() throws Exception {
+  void should_PopulateMDCWithUnauthenticatedUserAndUnknownRemoteAddress() throws Exception {
     when(httpRequest.getUserPrincipal()).thenReturn(null);
     when(httpRequest.getRemoteAddr()).thenReturn(null);
 

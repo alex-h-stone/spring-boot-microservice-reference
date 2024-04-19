@@ -22,7 +22,7 @@ class StringToPetAvailabilityStatusConverterTest {
 
   @ParameterizedTest
   @MethodSource("testDataProvider")
-  void shouldSuccessfullyConvertCaseInsensitiveStatusStringToEnum(
+  void should_SuccessfullyConvertCaseInsensitiveStatusStringToEnum(
       String enumStringToConvert, PetAvailabilityStatus expectedStatus) {
     PetAvailabilityStatus actualStatus = converter.convert(enumStringToConvert);
 
@@ -40,7 +40,7 @@ class StringToPetAvailabilityStatusConverterTest {
   }
 
   @Test
-  void shouldThrowExceptionForInvalidPetAvailabilityStatusString() {
+  void should_ThrowExceptionForInvalidPetAvailabilityStatusString() {
     IllegalArgumentException actualException =
         assertThrows(
             IllegalArgumentException.class, () -> converter.convert("Invalid Status Value"));

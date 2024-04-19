@@ -29,7 +29,7 @@ class PetMapperTest {
   }
 
   @Test
-  void shouldSuccessfullyMapFromAPetDocumentToPet() {
+  void should_SuccessfullyMapFromAPetDocumentToPet() {
     PetResponse actualPet = mapper.mapToPetResponse(testData.createPetDocument());
 
     assertNotNull(actualPet);
@@ -52,7 +52,7 @@ class PetMapperTest {
   }
 
   @Test
-  void shouldSuccessfullyMapFromAPetToPetDocument() {
+  void should_SuccessfullyMapFromAPetToPetDocument() {
     PetResponse pet = testData.createPetResponse();
 
     PetDocument actualPetDocument = mapper.mapToPetDocument(pet);
@@ -77,7 +77,7 @@ class PetMapperTest {
   }
 
   @Test
-  void shouldSuccessfullyMapFromANewPetToPet() {
+  void should_SuccessfullyMapFromANewPetToPet() {
     PetResponse actualPet = mapper.mapToPetResponse(testData.createNewPetRequest());
 
     assertNotNull(actualPet);

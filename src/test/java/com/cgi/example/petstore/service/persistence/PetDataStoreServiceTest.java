@@ -32,7 +32,7 @@ class PetDataStoreServiceTest {
   }
 
   @Test
-  void shouldSaveSuccessfully() {
+  void should_SaveSuccessfully() {
     NewPetRequest petToSave = testData.createNewPetRequest();
     when(mockPetRepository.insert(any(PetDocument.class))).thenReturn(testData.createPetDocument());
 

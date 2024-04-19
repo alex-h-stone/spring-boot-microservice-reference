@@ -26,7 +26,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   @Autowired private VaccinationsApiClient apiClient;
 
   @Test
-  void shouldReturnVaccinationDetailsForValidVaccinationId() {
+  void should_ReturnVaccinationDetailsForValidVaccinationId() {
     stubServer.stubFor(
         WireMock.get(urlEqualTo("/vaccinations/AF54785412K")).willReturn(successResponse()));
 
@@ -40,7 +40,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldReturnEmptyOptionalForUnknownVaccinationId() {
+  void should_ReturnEmptyOptionalForUnknownVaccinationId() {
     stubServer.stubFor(
         WireMock.get(urlEqualTo("/vaccinations/Z6456INVALID"))
             .willReturn(
@@ -63,7 +63,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldRetryTwiceIfTheRequestFailsBeforeEventuallyFailing() {
+  void should_RetryTwiceIfTheRequestFailsBeforeEventuallyFailing() {
     stubServer.stubFor(
         WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
             .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
@@ -87,7 +87,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
-  void shouldRetryTwiceIfTheRequestFailsBeforeEventuallySucceeding() {
+  void should_RetryTwiceIfTheRequestFailsBeforeEventuallySucceeding() {
     final String scenarioName = "RetryUntilSuccess";
     stubServer.stubFor(
         WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))

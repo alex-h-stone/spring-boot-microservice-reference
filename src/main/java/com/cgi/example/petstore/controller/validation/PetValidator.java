@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class PetValidator {
 
-  private static final String INVALID_ID = "666";
+  private static final String INVALID_PET_ID = "666";
 
   public void validatePetId(String petId) {
     if (Objects.isNull(petId)) {
-      String message = "Pet Id must not be null: %s".formatted(INVALID_ID);
-      throw new ValidationException(message);
+      throw new ValidationException("Pet Id must not be null but found: null");
     }
 
-    if (INVALID_ID.equals(petId)) {
+    if (INVALID_PET_ID.equals(petId)) {
       String message =
-          "Invalid Pet Id, the Id [%s] is not permitted, found: [%s]".formatted(INVALID_ID, petId);
+          "Invalid Pet Id, the Id [%s] is not permitted, found: [%s]"
+              .formatted(INVALID_PET_ID, petId);
       throw new ValidationException(message);
     }
   }

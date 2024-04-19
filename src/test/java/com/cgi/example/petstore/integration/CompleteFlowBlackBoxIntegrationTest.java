@@ -37,7 +37,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   private final TestData testData = new TestData();
 
   @Test
-  void shouldSuccessfullyAddModifyFindUpdateAndPurchaseAPet() {
+  void should_Successfully_Add_Modify_Find_Update_PurchaseAPet() {
     String vaccinations =
         fileUtils.readFile(
             "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");

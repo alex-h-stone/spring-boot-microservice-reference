@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 class ProcessManagementTest {
 
   @Test
-  void shouldTimeOutAfterThreeSecondsIsTaskHasNotCompleted() {
+  void should_TimeOutAfterThreeSecondsIsTaskHasNotCompleted() {
     assertTimeoutPreemptively(
         Duration.ofSeconds(5), () -> ProcessManagement.waitUntil(() -> false));
   }
 
   @Test
-  void shouldCompleteInLessThanTwoSecondsOnImmediateSuccess() {
+  void should_CompleteInLessThanTwoSecondsOnImmediateSuccess() {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> ProcessManagement.waitUntil(() -> true));
   }
 }
