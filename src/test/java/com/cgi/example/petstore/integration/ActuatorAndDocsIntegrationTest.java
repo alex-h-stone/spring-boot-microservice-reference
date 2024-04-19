@@ -116,7 +116,10 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
             assertThat(
                 responseBody, Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
         () -> assertThat(responseBody, Matchers.containsString("Find pet by Id")),
-        () -> assertThat(responseBody, Matchers.containsString("pet-store API")));
+        () ->
+            assertThat(
+                responseBody,
+                Matchers.containsString("Operations on the Pet Store concerning pets.")));
   }
 
   @Test

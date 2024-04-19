@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.controller;
 
-import com.cgi.example.petstore.api.PetStoreApi;
+import com.cgi.example.petstore.api.PetsApi;
 import com.cgi.example.petstore.controller.validation.PetValidator;
 import com.cgi.example.petstore.logging.LogMethodArguments;
 import com.cgi.example.petstore.logging.LogMethodResponse;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class PetStoreController implements PetStoreApi {
+public class PetStoreController implements PetsApi {
 
   private final PetValidator petValidator;
   private final PetService petService;

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Pet Store API
-  version: "1.0"
+  version: "1.0.0"
   description: |
     This is an example Pet Store API to illustrate various microservice concepts.
     The API provides the following functionality:
@@ -17,24 +17,29 @@ info:
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
+tags:
+  - name: pets
+    description: Operations on the Pet Store concerning pets.
 servers: [
   {
-    url: "http://localhost:8080/api/v1",
+    url: "http://localhost:8080/api/v1/pet-store",
     description: "Local development"
   },
   {
-    url: "https://staging.cloud.com/api/v1",
+    url: "https://staging.cloud.com/api/v1/pet-store",
     description: "Staging server"
   },
   {
-    url: "https://production.cloud.com/api/v1",
+    url: "https://production.cloud.com/api/v1/pet-store",
     description: "Production server"
   }
 ]
 
 paths:
-  /pet-store/pets:
+  /pets:
     patch:
+      tags:
+        - pets
       summary: Update an existing pet
       description: Update an existing pet by Id
       operationId: patchPet
@@ -59,6 +64,8 @@ paths:
         '405':
           description: Validation exception
     post:
+      tags:
+        - pets
       summary: Add a new pet to the store
       description: Add a new pet to the store
       operationId: addPet
@@ -76,8 +83,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PetResponse'
-  /pet-store/pets/findByStatus:
+  /pets/findByStatus:
     get:
+      tags:
+        - pets
       summary: Finds Pets by status
       description: Multiple status values can be provided with comma separated strings
       operationId: findPetsByStatus
@@ -99,8 +108,10 @@ paths:
                 $ref: '#/components/schemas/MultiplePetsResponse'
         '400':
           description: Invalid status value
-  /pet-store/pets/{petId}:
+  /pets/{petId}:
     get:
+      tags:
+        - pets
       summary: Find pet by Id
       description: Returns a single pet
       operationId: getPetById
@@ -123,6 +134,8 @@ paths:
         '404':
           description: Pet not found
     post:
+      tags:
+        - pets
       summary: Called when a customer purchases a pet.
       description: Update the details for the pet to reflect the new owner.
       operationId: purchasePet
@@ -150,6 +163,8 @@ paths:
         '400':
           description: Invalid pet value
     delete:
+      tags:
+        - pets
       summary: Remove a pet from the store.
       description: By supplying a Pet Id, remove the single pet from the pet store.
       operationId: deletePetById
