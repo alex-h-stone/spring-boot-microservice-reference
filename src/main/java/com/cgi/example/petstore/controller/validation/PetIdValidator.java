@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PetValidator {
+public class PetIdValidator {
 
   private static final String INVALID_PET_ID = "666";
 

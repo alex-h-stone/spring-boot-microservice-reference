@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.controller;
 
 import com.cgi.example.petstore.api.PetsApi;
-import com.cgi.example.petstore.controller.validation.PetValidator;
+import com.cgi.example.petstore.controller.validation.PetIdValidator;
 import com.cgi.example.petstore.logging.LogMethodArguments;
 import com.cgi.example.petstore.logging.LogMethodResponse;
 import com.cgi.example.petstore.model.CustomerRequest;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PetStoreController implements PetsApi {
 
-  private final PetValidator petValidator;
+  private final PetIdValidator petIdValidator;
   private final PetService petService;
 
   @Override
@@ -37,6 +37,8 @@ public class PetStoreController implements PetsApi {
   @LogMethodArguments
   @LogMethodResponse
   public ResponseEntity<PetDeletionResponse> deletePetById(String petId) {
+    petIdValidator.validatePetId(petId);
+
     String message = petService.deletePetFromPetStore(petId);
 
     PetDeletionResponse petDeletionResponse = new PetDeletionResponse();
@@ -63,7 +65,7 @@ public class PetStoreController implements PetsApi {
   @LogMethodArguments
   @LogMethodResponse
   public ResponseEntity<PetResponse> getPetById(String petId) {
-    petValidator.validatePetId(petId);
+    petIdValidator.validatePetId(petId);
 
     PetResponse pet = petService.retrievePetDetails(petId);
 
@@ -74,7 +76,7 @@ public class PetStoreController implements PetsApi {
   @LogMethodArguments
   @LogMethodResponse
   public ResponseEntity<PetResponse> purchasePet(String petId, CustomerRequest customer) {
-    petValidator.validatePetId(petId);
+    petIdValidator.validatePetId(petId);
 
     PetResponse purchasedPet = petService.purchase(petId, customer);
 
@@ -85,6 +87,8 @@ public class PetStoreController implements PetsApi {
   @LogMethodArguments
   @LogMethodResponse
   public ResponseEntity<PetResponse> patchPet(PetPatchRequest petPatch) {
+    petIdValidator.validatePetId(petPatch.getId());
+
     PetResponse patchedPet = petService.patch(petPatch);
 
     return ResponseEntity.ok().body(patchedPet);

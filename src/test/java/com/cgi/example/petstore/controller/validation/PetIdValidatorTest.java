@@ -9,13 +9,13 @@ import com.cgi.example.petstore.exception.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PetValidatorTest {
+class PetIdValidatorTest {
 
-  private PetValidator validator;
+  private PetIdValidator validator;
 
   @BeforeEach
   void setUp() {
-    validator = new PetValidator();
+    validator = new PetIdValidator();
   }
 
   @Test

@@ -170,8 +170,8 @@ be implemented via the API yaml.
 
 #### Java Request Validation
 
-See `PetValidator` and the integration test
-`shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
+See [PetIdValidator.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fcontroller%2Fvalidation%2FPetIdValidator.java) and the integration test
+`should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation`  
 for details of how to write custom request validation logic.
 
 Wherever possible, request validation logic should be defined in the OpenAPI definition e.g. [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
