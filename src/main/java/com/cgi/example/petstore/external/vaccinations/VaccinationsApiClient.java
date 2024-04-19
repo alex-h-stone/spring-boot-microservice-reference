@@ -7,7 +7,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class VaccinationsApiClient {
   private final VaccinationsUri vaccinationsUri;
 
   public Optional<List<Vaccination>> getVaccinations(String vaccinationId) {
-    URI uri = vaccinationsUri.with(Map.of("vaccinationId", vaccinationId));
+    URI uri = vaccinationsUri.with(vaccinationId);
 
     log.debug("About to get vaccinations with URI: [{}]", uri);
 

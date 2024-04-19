@@ -12,12 +12,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @EnableConfigurationProperties(VaccinationsConfiguration.class)
 public class VaccinationsUri {
 
+  private static final String VACCINATION_ID_PATH_VARIABLE = "vaccinationId";
+
   private final VaccinationsConfiguration vaccinationsConfiguration;
 
-  public URI with(Map<String, ?> uriVariables) {
+  public URI with(String vaccinationId) {
+
+    URI baseUri = URI.create(vaccinationsConfiguration.getBaseUrl());
     return UriComponentsBuilder.newInstance()
-        .uri(URI.create(vaccinationsConfiguration.getBaseUrl()))
+        .uri(baseUri)
         .path(vaccinationsConfiguration.getPath())
-        .build(uriVariables);
+        .build(Map.of(VACCINATION_ID_PATH_VARIABLE, vaccinationId));
   }
 }

@@ -25,7 +25,7 @@ public class AssertionExecutables {
     };
   }
 
-  public Executable assertContains(String actual, String expectedString){
+  public Executable assertContains(String actual, String expectedString) {
     return () -> assertThat(actual, Matchers.containsString(expectedString));
   }
 
