@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.cgi.example.petstore.integration.utils.UriBuilder;
-import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.jayway.jsonpath.JsonPath;
 import java.net.URI;
 import java.util.Set;
@@ -19,8 +18,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
-
-  private AssertionExecutables assertionExecutables;
 
   @Test
   public void actuatorEndpointShouldListResources() {
@@ -97,6 +94,31 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         () -> assertEquals("com.cgi.example", group));
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    "v3/api-docs,application/json",
+    "v3/api-docs.yaml,application/vnd.oai.openapi",
+    "v3/api-docs/springdoc,application/json",
+  })
+  void shouldReturnApiDefinitionWhenCallingApiDocsEndpoints(
+      String apiDocUrl, String expectedContentType) {
+    URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
+
+    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
+
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+    String responseBody = response.getBody();
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, expectedContentType),
+        () ->
+            assertThat(
+                responseBody, Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
+        () -> assertThat(responseBody, Matchers.containsString("Find pet by Id")),
+        () -> assertThat(responseBody, Matchers.containsString("pet-store API")));
+  }
+
   @Test
   void actuatorMappingsEndpointShouldListMultipleMappings() {
     RequestEntity<String> requestEntity =
@@ -116,32 +138,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         () -> assertThat(numberOfMappings, Matchers.greaterThan(3)));
   }
 
-  @ParameterizedTest
-  @CsvSource({
-    "v3/api-docs,application/json",
-    "v3/api-docs.yaml,application/vnd.oai.openapi",
-    "v3/api-docs/springdoc,application/json"
-  })
-  void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints(
-      String apiDocUrl, String expectedContentType) {
-    URI uri = uriBuilder.getApplicationURIFor(apiDocUrl).build().toUri();
-
-    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
-
-    assertAll(
-        assertions.assertContentType(response, expectedContentType),
-        () ->
-            assertThat(
-                response.getBody(),
-                Matchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/{petId}")),
-        () -> assertThat(response.getBody(), Matchers.containsString("Find pet by Id")),
-        () -> assertThat(response.getBody(), Matchers.containsString("pet-store API")));
-  }
-
   @Test
-  void shouldReturnApiDefinitionsWhenCallingApiDocsEndpoints() {
+  void shouldReturnApiDefinitionWhenCallingApiDocsEndpoint() {
     URI requestUri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config").build().toUri();
     RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
 
@@ -154,5 +152,21 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
         assertions.assertOkJsonResponse(response),
         () -> assertEquals(1, numberOfURLs),
         () -> assertEquals("/v3/api-docs/springdoc", url));
+  }
+
+  @Test
+  void shouldReturnApiDefinitionWhenCallingSwaggerUiIndexHtmlEndpoint() {
+    URI requestUri = uriBuilder.getApplicationURIFor("swagger-ui/index.html").build().toUri();
+    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, requestUri);
+
+    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+
+    String responseBody = response.getBody();
+
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.OK),
+        assertions.assertContentType(response, "text/html"),
+        () -> assertThat(responseBody, Matchers.containsString("swagger-ui")),
+        () -> assertThat(responseBody, Matchers.containsString("html")));
   }
 }

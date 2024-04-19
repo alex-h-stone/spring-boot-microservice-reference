@@ -133,7 +133,6 @@ tasks.register('generateAllOpenAPI') {
 def generatedOpenApiSourcesDir = "${layout.buildDirectory.get()}/generated/sources/openapi"
 def openApiConfigOptions = [
         skipDefaultInterface          : 'true',
-        skipModelGeneration           : 'true',
         requestMappingMode            : 'api_interface',
         interfaceOnly                 : 'true',
         useJakartaEe                  : 'true',
@@ -142,6 +141,7 @@ def openApiConfigOptions = [
         additionalModelTypeAnnotations: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)'
 ]
 tasks.register('generatePetStoreClasses', GenerateTask) {
+    description = 'Generate Java classes for this microservice (Pet Store) from the Open API yaml definition.'
     group = 'build'
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.petstore.api'
@@ -152,6 +152,7 @@ tasks.register('generatePetStoreClasses', GenerateTask) {
     validateSpec = true
 }
 tasks.register('generateExternalAnimalVaccinationClasses', GenerateTask) {
+    description = 'Generate Java classes from the external animal vaccination Open API yaml definition.'
     group = 'build'
     generatorName.set('spring')
     apiPackage = 'com.cgi.example.external.animalvaccination.api'

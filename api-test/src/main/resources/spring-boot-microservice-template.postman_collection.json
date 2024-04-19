@@ -579,168 +579,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "v3/api-docs",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "{{acceptHeader}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{applicationPort}}",
-							"path": [
-								"v3",
-								"api-docs"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "v3/api-docs.yaml",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.oai.openapi",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs.yaml",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{applicationPort}}",
-							"path": [
-								"v3",
-								"api-docs.yaml"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "v3/api-docs/springdoc",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "{{acceptHeader}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs/springdoc",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{applicationPort}}",
-							"path": [
-								"v3",
-								"api-docs",
-								"springdoc"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "v3/api-docs/swagger-config",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "{{acceptHeader}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs/swagger-config",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{applicationPort}}",
-							"path": [
-								"v3",
-								"api-docs",
-								"swagger-config"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -854,7 +692,8 @@
 									"\r",
 									"pm.test(\"Response contains 1 additionalInformation element\", function () {\r",
 									"    pm.expect(jsonData.additionalInformation).to.be.an('array').to.have.lengthOf(1);\r",
-									"});"
+									"});\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1199,6 +1038,252 @@
 							"path": [
 								"vaccinations",
 								"AF54785412K"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API Documentation",
+			"item": [
+				{
+					"name": "swagger-ui.html",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/swagger-ui.html",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"swagger-ui.html"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/swagger-ui/index.html",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/swagger-ui/index.html",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"swagger-ui",
+								"index.html"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs/swagger-config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs/swagger-config",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"v3",
+								"api-docs",
+								"swagger-config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs.yaml",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.oai.openapi",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs.yaml",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"v3",
+								"api-docs.yaml"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "v3/api-docs/springdoc",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{applicationPort}}/v3/api-docs/springdoc",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{applicationPort}}",
+							"path": [
+								"v3",
+								"api-docs",
+								"springdoc"
 							]
 						}
 					},

@@ -6,28 +6,32 @@ Spring Boot 3 based microservice template integrating features which address a m
 
 1. [Introduction and Purpose](#introduction-and-purpose)
 2. [Run the Pet Store Microservice](#run-the-pet-store-microservice)
-3. [Running Unit and Integration Tests](#running-unit-and-integration-tests)
+3. [Run Unit and Integration Tests](#run-unit-and-integration-tests)
 4. [Dependency Version Management](#dependency-version-management)
 5. [OpenAPI/Swagger Code Generation](#openapiswagger-code-generation)
 6. [Data Persistence via MongoDB](#data-persistence-via-mongodb)
 7. [Exception Handling](#exception-handling)
-8. [Java Request Validation](#java-request-validation)
-9. [Request Validation via OpenAPI Specification](#request-validation-via-openapi-specification)
-10. [API to DTO Mapping](#api-to-dto-mapping)
+8. [Request Validation via OpenAPI Specification](#request-validation-via-openapi-specification)
+9. [Java Request Validation](#java-request-validation)
+10. [Mapping between Pet Store API model, external API model and MongoDB Documents](#mapping-between-pet-store-api-model-external-api-model-and-mongodb-documents)
 11. [Unit Tests](#unit-tests)
 12. [Integration Tests](#integration-tests)
-13. [Metrics Endpoint](#metrics-endpoint)
-14. [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
-15. [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wiremock)
-16. [Logging of Requests and Responses](#logging-of-requests-and-responses)
-17. [Actuator Endpoints](#actuator-endpoints)
-18. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
-19. [Automated Code Style Formatting](#automated-code-style-formatting)
-
+13. [Dynamic port allocation and discovery for local development](#dynamic-port-allocation-and-discovery-for-local-development)
+14. [Metrics Endpoint](#metrics-endpoint)
+15. [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
+16. [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wire-mock)
+17. [Logging of Requests and Responses](#logging-of-requests-and-responses)
+18. [Logging with a Mapped Diagnostic Context (MDC)](#logging-with-a-mapped-diagnostic-context-mdc)
+19. [Structured JSON logging](#structured-json-logging)
+20. [Execute Postman API test Collection as a Gradle task](#execute-postman-api-test-collection-as-a-gradle-task)
+21. [Load Testing](#load-testing)
+22. [Actuator Endpoints](#actuator-endpoints)
+23. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
+24. [Automated Code Style Formatting](#automated-code-style-formatting)
 
 ---
 
-#### Introduction and purpose
+#### Introduction and Purpose
 
 This template is designed to serve as a go-to reference for implementing many Spring Boot microservice features.
 It is _representative_ of a real-life production ready microservice, although clearly depending on your specific 
@@ -84,20 +88,7 @@ WIP `.\cleanBuildTestAndRunLocally.ps1` WIP
 
 ---
 
-#### TODO Alex TODO
-
-- Add Introduction and purpose text
-- Flesh out the description, purpose and role of this project
-- Add extra unit tests
-- Include alternative frameworks and options
-- Run API tests as part of the build?
-- Maybe using id 'com.github.node-gradle.node' version "7.0.2" https://github.com/node-gradle/gradle-node-plugin/blob/main/docs/usage.md
-- Run perf tests as part of the build?
-- Add WebSecurity via OAuth2
-
----
-
-#### Running unit and integration tests
+#### Run unit and integration tests
 
 Integration tests are identified by the JUnit annotation `@Tag("integration")` which is present on `BaseIntegrationTest`
 so is inherited by all integration test classes which extend `BaseIntegrationTest`.
@@ -113,7 +104,7 @@ To run only unit tests:
 
 ---
 
-#### Dependency version management
+#### Dependency Version Management
 
 To best manage a large number of Spring dependencies with independent version numbers this template uses the
 following Spring Gradle plugins:
@@ -160,7 +151,7 @@ client library. Although the out-of-the-box features of `MongoRepository` and `@
 
 ---
 
-#### Exception handling
+#### Exception Handling
 
 Any exceptions which are thrown by the microservice will be caught and handled by the `GlobalExceptionHandler`.
 All application exceptions extend `AbstractApplicationException` which allows you to specify both a message and 
@@ -177,7 +168,7 @@ be implemented via the API yaml.
 
 ---
 
-#### Java request validation
+#### Java Request Validation
 
 See `PetValidator` and the integration test
 `shouldReturnErrorWhenCallingGetPetEndpointWithInvalidIdFailingValidation`  
@@ -191,27 +182,26 @@ This has several benefits over custom Java validators, including:
 
 ---
 
-#### Mapping between Pet Store API model, external API model and MongoDB Documents 
+#### Mapping between Pet Store API model, external API model and MongoDB Documents
 
 See the below classes for examples of different mappers:
 - [PetMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fpet%2FPetMapper.java)
 - [ExternalVaccinationsMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FExternalVaccinationsMapper.java)
 - [CustomerMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fcustomer%2FCustomerMapper.java)
-- 
 
 Depending on the use case [MapStruct](https://mapstruct.org/) is also an option for reducing boilerplate mapping code. 
 This should to be weighed up against the increase in complexity of the mapping implementation.
 
 ---
 
-#### Unit tests
+#### Unit Tests
 
 See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
 The same JUnit tag allows us to execute integration tests and unit tests separately if needed.
 
 ---
 
-#### Integration tests
+#### Integration Tests
 
 For examples of integration tests utilising  
 Wire Mock [WiremockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWiremockForIntegrationTests.java)  
@@ -240,7 +230,7 @@ Port allocation and discovery includes:
 
 ---
 
-#### Metrics endpoint
+#### Metrics Endpoint
 
 See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 - GET http://localhost:8099/actuator/metrics
@@ -276,7 +266,18 @@ and the `@LogMethodResponse` to log the method return object.
 
 ---
 
-#### Structured JSON logging
+#### Logging with a Mapped Diagnostic Context (MDC)
+
+To improve the traceability of user actions when looking at the microservice logs there is a Mapped Diagnostic Context (MDC).
+This class [MappedDiagnosticContextFilter.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FMappedDiagnosticContextFilter.java)
+ensures that every log statement includes both the `userId` and `remoteAddress`.  
+Making retrieving logs for a specific user or remote system trivial.
+
+Consider also including a unique session Id in the MDC, provided by an API Gateway.
+
+---
+
+#### Structured JSON Logging
 
 To improve the search-ability of application logs they are structured using JSON to provide a balance between both 
 machine and developer readability.
@@ -310,7 +311,7 @@ to execute Newman with the required command line arguments.
 
 ---
 
-#### Load test
+#### Load Testing
 
 Load testing is implemented using `Gatling` for which the dependencies are defined in [load-test/build.gradle](load-test%2Fbuild.gradle).
 It is executed via the [LoadTestApplication.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java) class.  
@@ -325,7 +326,7 @@ All required port numbers are configured dynamically in [HttpProtocolBuilders.ja
 
 ---
 
-#### Actuator endpoints
+#### Actuator Endpoints
 
 Determined by the "OpenAPI/Swagger docs" dependencies in the [build.gradle](build.gradle),  
 application config [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml)  
@@ -344,14 +345,17 @@ Where `8099` is the Management Server Port `management.server.port`
 
 ---
 
-#### Swagger documentation endpoints
+#### Swagger Documentation Endpoints
 
-OpenAPI endpoints to provide live up-to-date API documentation.
+With the [OpenApiConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FOpenApiConfiguration.java) 
+endpoints are provided to provide live up-to-date API documentation.
 
+- http://localhost:8080/swagger-ui.html
+- http://localhost:8080/v3/api-docs/swagger-config
 - http://localhost:8080/v3/api-docs
 - http://localhost:8080/v3/api-docs.yaml
 - http://localhost:8080/v3/api-docs/springdoc
-- http://localhost:8080/v3/api-docs/swagger-config
+
 
 Where `8080` is the Application Server Port `server.port`
 
