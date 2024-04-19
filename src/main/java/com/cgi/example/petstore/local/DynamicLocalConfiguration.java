@@ -13,17 +13,31 @@ import org.springframework.stereotype.Component;
 public class DynamicLocalConfiguration
     implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-  private final DynamicApplicationPropertiesRepository propertiesRepository =
-      new DynamicApplicationPropertiesRepository();
+  private static final String VACCINATIONS_URL_SYSTEM_PROPERTY = "VACCINATIONS_URL";
+  private static final String MONGO_DB_URI_SYSTEM_PROPERTY = "MONGO_DB_URI";
+
+  private final DynamicApplicationPropertiesRepository propertiesRepository;
+
+  public DynamicLocalConfiguration() {
+    this(new DynamicApplicationPropertiesRepository());
+  }
+
+  // Constructor for injecting DynamicApplicationPropertiesRepository dependency to facilitate unit testing
+  public DynamicLocalConfiguration(
+      DynamicApplicationPropertiesRepository dynamicApplicationPropertiesRepository) {
+    this.propertiesRepository = dynamicApplicationPropertiesRepository;
+  }
 
   @Override
   public void initialize(ConfigurableApplicationContext applicationContext) {
-    log.debug("About to set local DynamicLocalConfiguration");
+    log.info("About to set local DynamicLocalConfiguration");
 
     System.setProperty(
-        "VACCINATIONS_URL", "http://localhost:" + propertiesRepository.getWireMockPort());
+        VACCINATIONS_URL_SYSTEM_PROPERTY,
+        "http://localhost:" + propertiesRepository.getWireMockPort());
 
-    System.setProperty("MONGO_DB_URI", propertiesRepository.getMongoDBConnectionString());
+    System.setProperty(
+        MONGO_DB_URI_SYSTEM_PROPERTY, propertiesRepository.getMongoDBConnectionString());
 
     log.info("Completed setting local DynamicLocalConfiguration");
   }
