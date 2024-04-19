@@ -21,8 +21,6 @@ public class ApiTestApplication {
     private final DynamicApplicationPropertiesRepository propertiesRepository = new DynamicApplicationPropertiesRepository();
     private final ToClickableUriString toClickableUriString = new ToClickableUriString();
 
-    // Execute via the parent module e.g. './gradlew :api-test:run' due to the postman paths
-    // TODO Alex could maybe make working directory invariant?
     public static void main(String[] args) {
         ApiTestApplication apiTestApplication = new ApiTestApplication();
         apiTestApplication.start();

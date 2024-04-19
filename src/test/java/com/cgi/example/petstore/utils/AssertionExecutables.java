@@ -25,6 +25,10 @@ public class AssertionExecutables {
     };
   }
 
+  public Executable assertContains(String actual, String expectedString){
+    return () -> assertThat(actual, Matchers.containsString(expectedString));
+  }
+
   public Executable assertJsonContentType(HttpEntity<?> response) {
     return assertContentType(response, MediaType.APPLICATION_JSON_VALUE);
   }
