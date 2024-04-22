@@ -11,9 +11,11 @@ import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import java.util.List;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Tag("integration")
 public class PetDataStoreServiceIntegrationTest extends BaseIntegrationTest {
 
   private final TestData testData = new TestData();

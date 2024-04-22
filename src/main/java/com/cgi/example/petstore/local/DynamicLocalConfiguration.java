@@ -22,7 +22,8 @@ public class DynamicLocalConfiguration
     this(new DynamicApplicationPropertiesRepository());
   }
 
-  // Constructor for injecting DynamicApplicationPropertiesRepository dependency to facilitate unit testing
+  // Constructor for injecting DynamicApplicationPropertiesRepository dependency to facilitate unit
+  // testing
   public DynamicLocalConfiguration(
       DynamicApplicationPropertiesRepository dynamicApplicationPropertiesRepository) {
     this.propertiesRepository = dynamicApplicationPropertiesRepository;

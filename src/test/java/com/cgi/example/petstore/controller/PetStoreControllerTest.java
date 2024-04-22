@@ -14,6 +14,7 @@ import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.service.PetService;
 import com.cgi.example.petstore.utils.TestData;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 class PetStoreControllerTest {
 
   @Mock private PetIdValidator validator;

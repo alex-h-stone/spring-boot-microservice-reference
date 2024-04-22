@@ -15,8 +15,10 @@ import com.cgi.example.petstore.utils.TestData;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("unit")
 class PetMapperTest {
 
   private final TestData testData = new TestData();

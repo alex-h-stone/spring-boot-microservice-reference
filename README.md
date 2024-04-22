@@ -88,19 +88,15 @@ WIP `.\cleanBuildTestAndRunLocally.ps1` WIP
 
 ---
 
-#### Run unit and integration tests
+#### Run Unit and Integration tests
 
-Integration tests are identified by the JUnit annotation `@Tag("integration")` which is present on `BaseIntegrationTest`
-so is inherited by all integration test classes which extend `BaseIntegrationTest`.
+The integration tests are identified by the JUnit annotation `@Tag("integration")` which is also present in
+[BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
+which is typically extended by integration tests.  
+While unit tests are identified by the JUnit annotation `@Tag("unit")`.
 
 By default, all tests (unit and integration) are run:  
 `./gradlew test`
-
-To run only integration tests:  
-`./gradlew -PincludeTag=integration test`
-
-To run only unit tests:  
-`./gradlew -PexcludeTag=integration test`
 
 ---
 
@@ -117,7 +113,7 @@ In addition to the dependency management BOM's:
 - `org.springframework.boot:spring-boot-dependencies`
 - `org.junit:junit-bom`
 
-With all Gradle dependency and plugin versions defined in one place `gradle.properties`.
+With all Gradle dependency and plugin versions defined in one place [gradle.properties](gradle.properties).
 
 ---
 
@@ -196,18 +192,32 @@ This should to be weighed up against the increase in complexity of the mapping i
 
 #### Unit Tests
 
-See JUnit tests in java which do not have the annotation `@Tag("integration")` or extend [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
-The same JUnit tag allows us to execute integration tests and unit tests separately if needed.
+All JUnit based unit tests have the annotation `@Tag("unit")` so they can be easily identified and executed
+independently of slower running integration tests.
+
+To run only unit tests:  
+`./gradlew -PincludeTag=unit test`  
+or  
+`./gradlew -PexcludeTag=integration test`
 
 ---
 
 #### Integration Tests
 
-For examples of integration tests utilising  
-Wire Mock [WiremockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWiremockForIntegrationTests.java)  
-and  
-`de.flapdoodle.embed:de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)   
-see any JUnit test which either extends [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java) or has the JUnit annotation `@Tag("integration")`.
+All JUnit based integration tests have the annotation `@Tag("integration")` so they can be easily identified and
+executed when required.
+
+Typically, integration tests extend the base
+class [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
+and use Wire
+Mock [WireMockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWireMockForIntegrationTests.java)
+and `de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)
+to stand-in for external dependencies.
+
+To run only integration tests:  
+`./gradlew -PincludeTag=integration test`  
+or  
+`./gradlew -PexcludeTag=unit test`
 
 ---
 
@@ -251,7 +261,9 @@ See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 Also see [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) for how to run a stand-alone embedded stub server for running a microservice 
 locally which has external API dependencies.
 
-In addition, [WiremockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWiremockForIntegrationTests.java) for how to utilise Wire Mock for automated integration tests.
+In
+addition, [WireMockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWireMockForIntegrationTests.java)
+for how to utilise Wire Mock for automated integration tests.
 
 ---
 

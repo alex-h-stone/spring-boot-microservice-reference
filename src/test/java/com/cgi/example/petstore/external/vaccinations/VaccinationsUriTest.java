@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("unit")
 class VaccinationsUriTest {
 
   private VaccinationsUri vaccinationsUri;

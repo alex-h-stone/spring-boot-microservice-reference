@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,6 +17,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 class MongoDBApplicationStartupCheckTest {
 
   @Mock private MongoTemplate mockMongoTemplate;

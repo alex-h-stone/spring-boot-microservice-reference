@@ -508,7 +508,7 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Status code is 404\", function () {\r",
-									"    pm.response.to.have.status(404); // TODO Fix this\r",
+									"    pm.response.to.have.status(404); // TODO Fix this do we want and/or should we need this? likely Dev Only \r",
 									"});"
 								],
 								"type": "text/javascript",

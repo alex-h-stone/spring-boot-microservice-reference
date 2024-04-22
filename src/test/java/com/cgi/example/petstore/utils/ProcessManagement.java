@@ -22,9 +22,9 @@ public class ProcessManagement {
     }
   }
 
-  private static void sleepForMilliseconds(int millis) {
+  private static void sleepForMilliseconds(int milliSeconds) {
     try {
-      Thread.sleep(millis);
+      Thread.sleep(milliSeconds);
     } catch (InterruptedException e) {
       String message = "ProcessManagement was interrupted: %s".formatted(e.getMessage());
       throw new RuntimeException(message, e);

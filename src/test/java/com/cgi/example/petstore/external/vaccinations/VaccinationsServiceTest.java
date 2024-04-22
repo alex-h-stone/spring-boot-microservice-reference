@@ -8,6 +8,7 @@ import com.cgi.example.petstore.model.PetStoreVaccination;
 import java.util.List;
 import java.util.Optional;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 class VaccinationsServiceTest {
 
   private static final String VACCINATION_ID = "AF54785412K";

@@ -4,6 +4,7 @@ import com.cgi.example.common.DynamicApplicationFileProperties;
 import com.cgi.example.common.local.model.ApplicationModule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@Tag("unit")
 class DynamicApplicationPropertiesRepositoryTest {
 
     private static final ApplicationModule APPLICATION_MODULE = ApplicationModule.APPLICATION_MAIN;

@@ -11,12 +11,14 @@ import com.cgi.example.petstore.service.pet.PetMapper;
 import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("unit")
 class PetDataStoreServiceTest {
 
   private final TestData testData = new TestData();

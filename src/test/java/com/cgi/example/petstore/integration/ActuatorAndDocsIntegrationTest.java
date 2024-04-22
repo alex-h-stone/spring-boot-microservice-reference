@@ -9,6 +9,7 @@ import com.jayway.jsonpath.JsonPath;
 import java.net.URI;
 import java.util.Set;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+@Tag("integration")
 class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
 
   @Test

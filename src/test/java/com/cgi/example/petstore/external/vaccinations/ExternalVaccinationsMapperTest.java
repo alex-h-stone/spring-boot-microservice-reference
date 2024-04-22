@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("unit")
 class ExternalVaccinationsMapperTest {
 
   private ExternalVaccinationsMapper mapper;

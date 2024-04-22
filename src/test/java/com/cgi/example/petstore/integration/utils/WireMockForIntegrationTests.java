@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class WiremockForIntegrationTests implements SmartLifecycle {
+public class WireMockForIntegrationTests implements SmartLifecycle {
 
   private static final EmbeddedWireMock WIRE_MOCK;
 

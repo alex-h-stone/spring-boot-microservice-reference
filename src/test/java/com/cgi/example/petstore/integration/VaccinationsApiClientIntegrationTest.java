@@ -16,11 +16,13 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import java.util.List;
 import java.util.Optional;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@Tag("integration")
 class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Autowired private VaccinationsApiClient apiClient;

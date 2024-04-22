@@ -2,7 +2,7 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.integration.utils.WebClientExecutor;
-import com.cgi.example.petstore.integration.utils.WiremockForIntegrationTests;
+import com.cgi.example.petstore.integration.utils.WireMockForIntegrationTests;
 import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
 import java.util.Set;
@@ -28,7 +28,7 @@ public abstract class BaseIntegrationTest {
 
   @Autowired protected UriBuilder uriBuilder;
 
-  @Autowired protected WiremockForIntegrationTests stubServer;
+  @Autowired protected WireMockForIntegrationTests stubServer;
 
   private void dropAllMongoDBCollections() {
     Set<String> collectionNames = mongoTemplate.getCollectionNames();
