@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.exception.handler;
 
 import com.cgi.example.petstore.exception.AbstractApplicationException;
-import jakarta.validation.ValidationException;
+import com.cgi.example.petstore.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
