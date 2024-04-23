@@ -8,9 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @Slf4j
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class PetStoreApplication66 {
+public class PetStoreApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PetStoreApplication66.class, args);
+        SpringApplication.run(PetStoreApplication.class, args);
     }
 }
