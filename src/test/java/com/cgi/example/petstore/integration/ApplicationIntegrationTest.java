@@ -168,7 +168,9 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
   void should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted() {
     assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-    URI uri = uriBuilder.getPetStoreURIFor("abcdefghijklmnopqrstuvwxyz0123456789").build().toUri();
+    String longPetId = "abcdefghijklmnopqrstuvwxyz0123456789";
+    assertThat("Failed precondition", longPetId.length(), Matchers.greaterThan(26));
+    URI uri = uriBuilder.getPetStoreURIFor(longPetId).build().toUri();
 
     RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
 

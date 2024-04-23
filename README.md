@@ -28,6 +28,7 @@ Spring Boot 3 based microservice template integrating features which address a m
 22. [Actuator Endpoints](#actuator-endpoints)
 23. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
 24. [Automated Code Style Formatting](#automated-code-style-formatting)
+25. [Notes](#notes)
 
 ---
 
@@ -68,6 +69,7 @@ Requirements to run locally:
 * An IDE, IntelliJ (recommended), or Eclipse
 * (Nice to have) MongoDB or equivalent (e.g. Microsoft Azure CosmosDB via [CGI
   Sandbox](https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx))
+* Node.js and Newman, see [Installing Node.js and Newman](#installing-nodejs-and-newman)
 
 When the above requirements have been satisfied, to start the Pet Store microservice:
 
@@ -157,10 +159,11 @@ the HTTP status code which should be used in the response.
 
 #### Request validation via OpenAPI specification
 
-See `/pets/{petId}` GET endpoint and the `petId schema` definition in `pet-store-api.yaml`
-and the associated integration
-test `shouldReturnErrorWhenCallingGetPetEndpointWithIdLargerThanPermitted` for details of how request validation can
-be implemented via the API yaml.
+See the `/pets/{petId}` GET endpoint and the `PetId` schema definition
+in [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)
+and the associated integration test `should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted`
+in [ApplicationIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FApplicationIntegrationTest.java)
+for details of how request validation can be implemented via the Open API yaml.
 
 ---
 
@@ -301,25 +304,17 @@ This is implemented using the dependency `net.logstash.logback:logstash-logback-
 
 #### Execute Postman API test Collection as a Gradle task
 
-Install `Node.js` version greater than 16 as
-per https://github.com/postmanlabs/newman?tab=readme-ov-file#getting-started.
+The API tests consist of
+a [Postman Collection](api-test%2Fsrc%2Fmain%2Fresources%2Fspring-boot-microservice-template.postman_collection.json)
+and are run using [Newman](https://github.com/postmanlabs/newman).  
+They are executed
+via [ApiTestApplication.java](api-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fapitest%2FApiTestApplication.java)
+which obtains the required port numbers
+from [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java)
+to execute [Newman](https://github.com/postmanlabs/newman) with the required command line arguments.
 
-On Windows this is best done via [nvm](https://github.com/coreybutler/nvm-windows/releases).  
-After `nvm` has been installed, execute the command `nvm list available` to see which versions of `Node.js` are
-available to install, now install a compatible version of `Node.js` e.g. `nvm install 21.7.2`.  
-Now use `nvm` to select the updated `Node.js` version e.g. `nvm use 21.7.2`.
-
-Now install the Postman Collections Runner `Newman` via: `npm install -g newman`.  
-And the additional Newman HTML reporting feature: `npm install -g newman-reporter-htmlextra`
-
-**Note**, you may require to temporarily disable npm ssl: `npm config set strict-ssl false`
-
-To execute the Postman Collection execute the gradle task:
+To execute the Postman Collection execute the gradle task:  
 `./gradlew :api-test:run`
-
-The API test is implemented via [ApiTestApplication.java](api-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fapitest%2FApiTestApplication.java)
-which uses the required port numbers from [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java) 
-to execute Newman with the required command line arguments.
 
 ---
 
@@ -385,3 +380,25 @@ And verified via:
 `./gradlew spotlessCheck`
 
 See `spotless` in [build.gradle](build.gradle) for details.
+
+---
+
+### Notes
+
+#### Installing Node.js and Newman
+
+Install `Node.js` with a version greater than 16 as
+per https://github.com/postmanlabs/newman?tab=readme-ov-file#getting-started.  
+On Windows this is best done via [nvm](https://github.com/coreybutler/nvm-windows/releases).
+
+After `nvm` has been installed, execute the command `nvm list available` to see which versions of `Node.js` are
+available to install, now install a compatible version of `Node.js` e.g. `nvm install 21.7.2`.  
+Now use `nvm` to select the updated `Node.js` version e.g. `nvm use 21.7.2`.
+
+Now install the Postman Collections Runner `Newman` via: `npm install -g newman`.  
+And the additional Newman HTML reporting feature: `npm install -g newman-reporter-htmlextra`
+
+To verify your installation execute the following command and check that the version is 6.1.2 or greater:  
+`newman -version`
+
+**Note:** You may need to temporarily disable npm SSL: `npm config set strict-ssl false`

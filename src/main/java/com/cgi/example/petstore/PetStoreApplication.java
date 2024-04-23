@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 public class PetStoreApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(PetStoreApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(PetStoreApplication.class, args);
+  }
 }
