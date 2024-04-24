@@ -1,6 +1,7 @@
 package com.cgi.example.petstore.local;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -31,15 +32,27 @@ public class DynamicLocalConfiguration
 
   @Override
   public void initialize(ConfigurableApplicationContext applicationContext) {
-    log.info("About to set local DynamicLocalConfiguration");
+    log.info("About to set Dynamic Local Configuration");
 
-    System.setProperty(
+    setSystemPropertyIfAbsent(
         VACCINATIONS_URL_SYSTEM_PROPERTY,
         "http://localhost:" + propertiesRepository.getWireMockPort());
 
-    System.setProperty(
+    setSystemPropertyIfAbsent(
         MONGO_DB_URI_SYSTEM_PROPERTY, propertiesRepository.getMongoDBConnectionString());
 
-    log.info("Completed setting local DynamicLocalConfiguration");
+    log.info("Completed setting Dynamic Local Configuration");
+  }
+
+  private void setSystemPropertyIfAbsent(String systemPropertyKey, String systemPropertyValue) {
+    String property = System.getProperty(systemPropertyKey);
+    if (Objects.nonNull(property)) {
+      log.info(
+          "Not setting system property {} as it has already been set with a value of [{}]",
+          systemPropertyKey,
+          property);
+    } else {
+      System.setProperty(systemPropertyKey, systemPropertyValue);
+    }
   }
 }

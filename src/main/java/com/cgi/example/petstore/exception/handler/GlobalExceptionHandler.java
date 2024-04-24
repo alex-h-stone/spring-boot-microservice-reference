@@ -2,6 +2,7 @@ package com.cgi.example.petstore.exception.handler;
 
 import com.cgi.example.petstore.exception.AbstractApplicationException;
 import com.cgi.example.petstore.exception.ValidationException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail problemDetail =
         createProblemDetail(exception.getResponseMessage(), exception.getHttpResponseCode());
 
-    log.info("An exception occurred: [{}]", exception.getMessage(), exception);
+    log.info("An AbstractApplicationException occurred: [{}]", exception.getMessage(), exception);
     return problemDetail;
   }
 
@@ -28,7 +29,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail problemDetail =
         createProblemDetail(exception.getMessage(), HttpStatus.BAD_REQUEST);
 
-    log.info("An exception occurred: [{}]", exception.getMessage(), exception);
+    log.info("A ValidationException occurred: [{}]", exception.getMessage(), exception);
+    return problemDetail;
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ProblemDetail onConstraintViolationException(ConstraintViolationException exception) {
+    ProblemDetail problemDetail =
+        createProblemDetail(exception.getMessage(), HttpStatus.BAD_REQUEST);
+
+    log.info("A ConstraintViolationException occurred: [{}]", exception.getMessage(), exception);
     return problemDetail;
   }
 
@@ -37,7 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail problemDetail =
         createProblemDetail("An internal server error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
 
-    log.info("An exception occurred: [{}]", throwable.getMessage(), throwable);
+    log.info("A Throwable occurred: [{}]", throwable.getMessage(), throwable);
     return problemDetail;
   }
 

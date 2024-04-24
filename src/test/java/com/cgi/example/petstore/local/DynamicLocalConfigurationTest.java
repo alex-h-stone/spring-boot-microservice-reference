@@ -2,6 +2,7 @@ package com.cgi.example.petstore.local;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -61,5 +62,25 @@ class DynamicLocalConfigurationTest {
         () ->
             assertEquals(
                 "mongodb://localhost:8456", System.getProperty(MONGO_DB_URI_SYSTEM_PROPERTY)));
+  }
+
+  @Test
+  void should_NotPopulateSystemProperties_WhenSystemPropertiesHaveAlreadyBeenSet() {
+    final String presetUrl = "http://localhost:9999";
+    System.setProperty(VACCINATIONS_URL_SYSTEM_PROPERTY, presetUrl);
+    final String presetMongoDb = "mongodb://localhost:8888";
+    System.setProperty(MONGO_DB_URI_SYSTEM_PROPERTY, presetMongoDb);
+
+    when(repository.getWireMockPort()).thenReturn(9050);
+    when(repository.getMongoDBConnectionString()).thenReturn("mongodb://localhost:8456");
+
+    assertNotNull(System.getProperty(VACCINATIONS_URL_SYSTEM_PROPERTY), "Failed precondition");
+    assertNotNull(System.getProperty(MONGO_DB_URI_SYSTEM_PROPERTY), "Failed precondition");
+
+    dynamicConfiguration.initialize(applicationContext);
+
+    assertAll(
+        () -> assertEquals(presetUrl, System.getProperty(VACCINATIONS_URL_SYSTEM_PROPERTY)),
+        () -> assertEquals(presetMongoDb, System.getProperty(MONGO_DB_URI_SYSTEM_PROPERTY)));
   }
 }

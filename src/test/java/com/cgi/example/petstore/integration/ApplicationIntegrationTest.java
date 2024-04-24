@@ -1,5 +1,11 @@
 package com.cgi.example.petstore.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.NewPetRequest;
@@ -12,6 +18,10 @@ import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
@@ -21,17 +31,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("integration")
 class ApplicationIntegrationTest extends BaseIntegrationTest {
@@ -192,8 +191,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
         () ->
             assertThat(
                 instance,
-                CoreMatchers.containsString(
-                        UriBuilder.PET_STORE_BASE_URL + "/" + longPetId)));
+                CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/" + longPetId)));
   }
 
   @Test
