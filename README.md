@@ -90,7 +90,7 @@ WIP Alex `.\cleanBuildTestAndRunLocally.ps1` WIP Alex
 
 To explore the microservice endpoints, you can view the Swagger UI
 at [http://localhost:{applicationPort}/swagger-ui/index.html](http://localhost:{applicationPort}/swagger-ui/index.html)
-where the applicationPort can be found
+where the `{applicationPort}` can be found
 in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
 
 You can also open the Postman collection  
