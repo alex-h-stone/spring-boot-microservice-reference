@@ -501,46 +501,6 @@
 					"response": []
 				},
 				{
-					"name": "actuator/httptrace",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 404\", function () {\r",
-									"    pm.response.to.have.status(404); // TODO Fix this do we want and/or should we need this? likely Dev Only \r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "{{acceptHeader}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "http://{{host}}:{{managementPort}}/actuator/httptrace",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{managementPort}}",
-							"path": [
-								"actuator",
-								"httptrace"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "actuator/mappings",
 					"event": [
 						{

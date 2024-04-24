@@ -4,7 +4,7 @@ server:
 
 management:
   server.port: 8099
-  endpoints.web.exposure.include: health,info,metrics,prometheus,mappings,beans,loggers,env,httptrace,configprops
+  endpoints.web.exposure.include: health,info,metrics,prometheus,mappings,beans,loggers,env,configprops
   endpoint.health.show-details: always
 
 spring:
