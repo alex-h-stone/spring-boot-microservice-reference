@@ -86,7 +86,18 @@ When the above requirements have been satisfied, to start the Pet Store microser
 
 Alternatively, you can execute all of the above by opening a terminal (IntelliJ) or command prompt (cmd) and executing
 the script:  
-WIP `.\cleanBuildTestAndRunLocally.ps1` WIP
+WIP Alex `.\cleanBuildTestAndRunLocally.ps1` WIP Alex
+
+To explore the microservice endpoints, you can view the Swagger UI
+at [http://localhost:{applicationPort}/swagger-ui/index.html](http://localhost:{applicationPort}/swagger-ui/index.html)
+where the applicationPort can be found
+in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
+
+You can also open the Postman collection  
+[spring-boot-microservice-template.postman_collection.json](api-test%2Fsrc%2Fmain%2Fresources%2Fspring-boot-microservice-template.postman_collection.json)
+and [local.postman_environment.json](api-test%2Fsrc%2Fmain%2Fresources%2Flocal.postman_environment.json)
+setting your environment variables (port numbers)
+using [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
 
 ---
 
