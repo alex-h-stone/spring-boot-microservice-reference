@@ -1,14 +1,16 @@
 package com.cgi.example.petstore.integration.utils;
 
-import java.util.Objects;
+import com.cgi.example.petstore.integration.BaseIntegrationTest;
+import java.net.URI;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.RequestEntity;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -18,27 +20,51 @@ public class WebClientExecutor {
 
   private final WebClient webClient;
 
-  public ResponseEntity<String> execute(RequestEntity<?> requestEntity) {
-    log.info("Request entity: [{}]", requestEntity);
-    WebClient.RequestBodySpec requestSpec =
-        webClient
-            .method(Objects.requireNonNull(requestEntity.getMethod()))
-            .uri(requestEntity.getUrl())
-            .headers(httpHeaders -> httpHeaders.addAll(requestEntity.getHeaders()));
+  public ResponseEntity<String> get(UriComponentsBuilder uriBuilder) {
+    WebClient.RequestHeadersSpec<?> request = webClient.get().uri(toURI(uriBuilder));
 
-    Object body = requestEntity.getBody();
-    if (Objects.nonNull(body)) {
-      requestSpec.bodyValue(body);
-    }
+    return execute(request);
+  }
 
-    ResponseEntity<String> responseEntity =
-        requestSpec
-            .exchangeToMono(response -> response.toEntity(String.class))
+  public ResponseEntity<String> patch(UriComponentsBuilder uriBuilder, Object body) {
+    WebClient.RequestHeadersSpec<?> request =
+        webClient.patch().uri(toURI(uriBuilder)).bodyValue(body);
+
+    return execute(request);
+  }
+
+  public ResponseEntity<String> delete(UriComponentsBuilder uriBuilder) {
+    WebClient.RequestHeadersSpec<?> request = webClient.delete().uri(toURI(uriBuilder));
+
+    return execute(request);
+  }
+
+  public ResponseEntity<String> post(UriComponentsBuilder uriBuilder, Object body) {
+    WebClient.RequestHeadersSpec<?> request =
+        webClient.post().uri(toURI(uriBuilder)).bodyValue(body);
+
+    return execute(request);
+  }
+
+  @NotNull private URI toURI(UriComponentsBuilder uriBuilder) {
+    return uriBuilder.build().toUri();
+  }
+
+  private ResponseEntity<String> execute(WebClient.RequestHeadersSpec<?> request) {
+
+    WebClient.RequestHeadersSpec<?> requestWithOAuthHeader =
+        request.header("Authorization", BaseIntegrationTest.getOAuth2AuthorizationHeader());
+
+    log.info("Request: [{}]", requestWithOAuthHeader);
+
+    ResponseEntity<String> response =
+        requestWithOAuthHeader
+            .exchangeToMono(clientResponse -> clientResponse.toEntity(String.class))
             .onErrorResume(onError())
             .block();
 
-    log.info("Response entity: [{}]", responseEntity);
-    return responseEntity;
+    log.info("Response: [{}]", response);
+    return response;
   }
 
   private Function<Throwable, Mono<? extends ResponseEntity<String>>> onError() {
