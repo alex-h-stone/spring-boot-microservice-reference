@@ -17,18 +17,19 @@ Spring Boot 3 based microservice template integrating features which address a m
 11. [Unit Tests](#unit-tests)
 12. [Integration Tests](#integration-tests)
 13. [Dynamic port allocation and discovery for local development](#dynamic-port-allocation-and-discovery-for-local-development)
-14. [Metrics Endpoint](#metrics-endpoint)
-15. [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
-16. [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wire-mock)
-17. [Logging of Requests and Responses](#logging-of-requests-and-responses)
-18. [Logging with a Mapped Diagnostic Context (MDC)](#logging-with-a-mapped-diagnostic-context-mdc)
-19. [Structured JSON logging](#structured-json-logging)
-20. [Execute Postman API test Collection as a Gradle task](#execute-postman-api-test-collection-as-a-gradle-task)
-21. [Load Testing](#load-testing)
-22. [Actuator Endpoints](#actuator-endpoints)
-23. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
-24. [Automated Code Style Formatting](#automated-code-style-formatting)
-25. [Notes](#notes)
+14. [OAuth2 Security Integration](#oauth2-security-integration)
+15. [Metrics Endpoint](#metrics-endpoint)
+16. [External REST API Call with Retry via Spring WebFlux](#external-rest-api-call-with-retry-via-spring-webflux)
+17. [Stubbing of External API Calls via WireMock](#stubbing-of-external-api-calls-via-wire-mock)
+18. [Logging of Requests and Responses](#logging-of-requests-and-responses)
+19. [Logging with a Mapped Diagnostic Context (MDC)](#logging-with-a-mapped-diagnostic-context-mdc)
+20. [Structured JSON logging](#structured-json-logging)
+21. [Execute Postman API test Collection as a Gradle task](#execute-postman-api-test-collection-as-a-gradle-task)
+22. [Load Testing](#load-testing)
+23. [Actuator Endpoints](#actuator-endpoints)
+24. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
+25. [Automated Code Style Formatting](#automated-code-style-formatting)
+26. [Notes](#notes)
 
 ---
 
@@ -77,7 +78,7 @@ When the above requirements have been satisfied, to start the Pet Store microser
    `./gradlew startEmbeddedWireMock`
 2. Start the in-memory MongoDB server:  
    `./gradlew startEmbeddedMongoDB`
-3. Start the mock OAuth2 server:  
+3. Start the in-memory OAuth2 server:  
    `./gradlew startEmbeddedOAuth2`
 4. Start the microservice:  
    `./gradlew bootRun --args='--spring.profiles.active=local'`
@@ -255,6 +256,7 @@ Wire Mock port.
 Port allocation and discovery includes:
 - Embedded Wire Mock `./gradlew startEmbeddedWireMock`
 - Embedded MongoDB `./gradlew startEmbeddedMongoDB`
+- Embedded OAuth2 server: `./gradlew startEmbeddedOAuth2`
 - Pet Store microservice `./gradlew bootRun --args='--spring.profiles.active=local'`
 - API Tests `./gradlew :api-test:run`
 - Load Tests `./gradlew :load-test:run`
@@ -272,7 +274,7 @@ for details of how to configure a `SecurityFilterChain` to allow both unauthenti
 and OAuth2 authenticated application API endpoints.
 
 Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gradle](build.gradle)) and the embedded
-OAuth2 mock
+OAuth2
 server [EmbeddedOAuth2.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedOAuth2.java).
 
 **Note**: That Spring OAuth2 configuration (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`) are resolved
