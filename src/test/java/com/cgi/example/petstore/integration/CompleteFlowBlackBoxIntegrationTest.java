@@ -1,14 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetAvailabilityStatus;
 import com.cgi.example.petstore.model.PetInformationItem;
@@ -17,18 +8,25 @@ import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
-import java.net.URI;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("integration")
 public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
@@ -43,13 +41,14 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
     String vaccinations =
         fileUtils.readFile(
             "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                    .withBody(vaccinations)
-                    .withStatus(HttpStatus.OK.value())));
+    wireMock()
+            .stubFor(
+                    WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                            .willReturn(
+                                    aResponse()
+                                            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                            .withBody(vaccinations)
+                                            .withStatus(HttpStatus.OK.value())));
 
     verifyNotPetsOfAnyStatusesAreAlreadyPresent();
 
@@ -67,10 +66,8 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private void verifyThePetHasBeenPurchased(String customerId, String petId) {
-    URI uri = uriBuilder.getPetStoreURIFor(petId).build().toUri();
-    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
     String expectedJsonBody =
         """
@@ -128,11 +125,8 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private String purchaseThePet(String petId) {
-    URI uri = uriBuilder.getPetStoreURIFor(petId).build().toUri();
-    RequestEntity<CustomerRequest> requestEntity =
-        new RequestEntity<>(testData.createCustomerRequest(), HttpMethod.POST, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.post(uri, testData.createCustomerRequest());
 
     String expectedJsonBody =
         """
@@ -192,8 +186,6 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private void updatePetDetails(String petId) {
-    URI uri = uriBuilder.getPetStoreBaseURI().build().toUri();
-
     PetPatchRequest petPatch = new PetPatchRequest();
     petPatch.setId(petId);
     petPatch.setName("Astro");
@@ -201,10 +193,8 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
     petPatch.setAdditionalInformation(additionalInformation);
 
-    RequestEntity<PetPatchRequest> requestEntity =
-        new RequestEntity<>(petPatch, HttpMethod.PATCH, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
+    ResponseEntity<String> response = webClientExecutor.patch(uri, petPatch);
 
     String expectedJsonBody =
         """
@@ -248,17 +238,12 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private void retrieveNewlyAddedPetByStatus(String petId) {
-    URI uri =
+    UriComponentsBuilder uri =
         uriBuilder
             .getPetStoreBaseURI()
             .pathSegment("findByStatus")
-            .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name())
-            .build()
-            .toUri();
-
-    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+                .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name());
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
     String expectedJsonBody =
         """
@@ -306,10 +291,8 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private void retrieveNewlyAddedPetById(String petId) {
-    URI uri = uriBuilder.getPetStoreURIFor(petId).build().toUri();
-    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
-
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
     String expectedJsonBody =
         """
@@ -354,11 +337,9 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
   private String addANewPet() {
     NewPetRequest petToAdd = testData.createNewPetRequest();
-    URI uri = uriBuilder.getPetStoreBaseURI().build().toUri();
-    RequestEntity<NewPetRequest> requestEntity =
-        new RequestEntity<>(petToAdd, HttpMethod.POST, uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
 
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    ResponseEntity<String> response = webClientExecutor.post(uri, petToAdd);
 
     String expectedJsonBody =
         """
@@ -405,16 +386,13 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
   }
 
   private void verifyNotPetsOfAnyStatusesAreAlreadyPresent() {
-    URI uri =
+    UriComponentsBuilder uri =
         uriBuilder
             .getPetStoreBaseURI()
             .pathSegment("findByStatus")
-            .queryParam("statuses", ALL_PET_STATUSES)
-            .build()
-            .toUri();
+                .queryParam("statuses", ALL_PET_STATUSES);
 
-    RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.GET, uri);
-    ResponseEntity<String> response = testRestTemplate.execute(requestEntity);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
     String expectedJsonBody = "{ }";
     String actualJsonBody = response.getBody();
