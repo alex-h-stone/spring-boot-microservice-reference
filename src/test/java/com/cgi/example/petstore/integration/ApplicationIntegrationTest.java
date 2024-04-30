@@ -1,5 +1,11 @@
 package com.cgi.example.petstore.integration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetAvailabilityStatus;
@@ -11,6 +17,9 @@ import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
@@ -20,35 +29,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @Tag("integration")
 class ApplicationIntegrationTest extends BaseIntegrationTest {
 
-    private final TestData testData = new TestData();
+  private final TestData testData = new TestData();
 
-    @Autowired
-    private PetRepository petRepository;
+  @Autowired private PetRepository petRepository;
 
-    @Test
-    void should_SuccessfullyAddPet() {
-        NewPetRequest petToAdd = testData.createNewPetRequest();
+  @Test
+  void should_SuccessfullyAddPet() {
+    NewPetRequest petToAdd = testData.createNewPetRequest();
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
-        ResponseEntity<String> response = webClientExecutor.post(uri, petToAdd);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
+    ResponseEntity<String> response = webClientExecutor.post(uri, petToAdd);
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                                       {
                         "availabilityStatus": "Available For Purchase",
                                         "vaccinationId": "AF54785412K",
@@ -66,33 +64,33 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                       }
                               """;
 
-        String actualJsonBody = response.getBody();
-        String actualGeneratedPetId = JsonPath.read(actualJsonBody, "$.petId");
+    String actualJsonBody = response.getBody();
+    String actualGeneratedPetId = JsonPath.read(actualJsonBody, "$.petId");
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
-                () -> assertThat(actualGeneratedPetId, not(isEmptyOrNullString())));
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+        () -> assertThat(actualGeneratedPetId, not(isEmptyOrNullString())));
 
-        List<PetDocument> actualAllPetDocuments = petRepository.findAll();
-        assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
-        PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(actualGeneratedPetId, actualPetDocument.getPetId());
-    }
+    List<PetDocument> actualAllPetDocuments = petRepository.findAll();
+    assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
+    PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
+    assertEquals(actualGeneratedPetId, actualPetDocument.getPetId());
+  }
 
-    @Test
-    void should_ReturnFido_When_CallingGetPetEndpoint() {
-        PetDocument petDocument = testData.createPetDocument();
-        String petId = petDocument.getPetId();
-        petRepository.save(petDocument);
+  @Test
+  void should_ReturnFido_When_CallingGetPetEndpoint() {
+    PetDocument petDocument = testData.createPetDocument();
+    String petId = petDocument.getPetId();
+    petRepository.save(petDocument);
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                                       {
                                         "petId": "KT1546",
                                         "vaccinationId": "AF54785412K",
@@ -102,40 +100,40 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                       }
                                 """;
 
-        String actualJsonBody = response.getBody();
+    String actualJsonBody = response.getBody();
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
-    }
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
+  }
 
-    @Test
-    void should_NotReturnPet_When_CallingGetPetEndpointForArchivedPet() {
-        PetDocument petDocument = testData.createPetDocument();
-        petDocument.setPersistenceStatus(PersistenceStatus.ARCHIVED.getValue());
-        String petId = petDocument.getPetId();
+  @Test
+  void should_NotReturnPet_When_CallingGetPetEndpointForArchivedPet() {
+    PetDocument petDocument = testData.createPetDocument();
+    petDocument.setPersistenceStatus(PersistenceStatus.ARCHIVED.getValue());
+    String petId = petDocument.getPetId();
 
-        petRepository.save(petDocument);
+    petRepository.save(petDocument);
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        assertAll(
-                assertions.assertStatusCode(response, HttpStatus.NOT_FOUND),
-                assertions.assertProblemJsonContentType(response));
-    }
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.NOT_FOUND),
+        assertions.assertProblemJsonContentType(response));
+  }
 
-    @Test
-    void should_ReturnNotFound_When_CallingGetPetWithUnknownPetId() {
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+  @Test
+  void should_ReturnNotFound_When_CallingGetPetWithUnknownPetId() {
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor("13");
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor("13");
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                              {
                                "type": "about:blank",
                                "title": "Not Found",
@@ -145,86 +143,87 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                              }
                         """;
 
-        String actualJsonBody = response.getBody();
+    String actualJsonBody = response.getBody();
 
-        assertAll(
-                assertions.assertStatusCode(response, HttpStatus.NOT_FOUND),
-                assertions.assertProblemJsonContentType(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
-    }
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.NOT_FOUND),
+        assertions.assertProblemJsonContentType(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
+  }
 
-    @Test
-    void should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted() {
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+  @Test
+  void should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted() {
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        String longPetId = "abcdefghijklmnopqrstuvwxyz0123456789";
-        assertThat("Failed precondition", longPetId.length(), Matchers.greaterThan(26));
+    String longPetId = "abcdefghijklmnopqrstuvwxyz0123456789";
+    assertThat("Failed precondition", longPetId.length(), Matchers.greaterThan(26));
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(longPetId);
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(longPetId);
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        int status = JsonPath.read(response.getBody(), "$.status");
-        String instance = JsonPath.read(response.getBody(), "$.instance");
-        String detail = JsonPath.read(response.getBody(), "$.detail");
+    int status = JsonPath.read(response.getBody(), "$.status");
+    String instance = JsonPath.read(response.getBody(), "$.instance");
+    String detail = JsonPath.read(response.getBody(), "$.detail");
 
-        assertAll(
-                assertions.assertStatusCode(response, HttpStatus.BAD_REQUEST),
-                assertions.assertProblemJsonContentType(response),
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
-                () ->
-                        assertEquals(
-                                "Handled by GlobalExceptionHandler: [getPetById.petId: size must be between 0 and 26]",
-                                detail),
-                () ->
-                        assertThat(
-                                instance,
-                                CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/" + longPetId)));
-    }
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.BAD_REQUEST),
+        assertions.assertProblemJsonContentType(response),
+        () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [getPetById.petId: size must be between 0 and 26]",
+                detail),
+        () ->
+            assertThat(
+                instance,
+                CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/" + longPetId)));
+  }
 
-    @Test
-    void should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation() {
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
+  @Test
+  void should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation() {
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.empty());
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor("666");
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor("666");
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        int status = JsonPath.read(response.getBody(), "$.status");
-        String instance = JsonPath.read(response.getBody(), "$.instance");
-        String detail = JsonPath.read(response.getBody(), "$.detail");
+    int status = JsonPath.read(response.getBody(), "$.status");
+    String instance = JsonPath.read(response.getBody(), "$.instance");
+    String detail = JsonPath.read(response.getBody(), "$.detail");
 
-        assertAll(
-                assertions.assertStatusCode(response, HttpStatus.BAD_REQUEST),
-                assertions.assertProblemJsonContentType(response),
-                () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
-                () ->
-                        assertEquals(
-                                "Handled by GlobalExceptionHandler: [Invalid Pet Id, the Id [666] is not permitted, found: [666]]",
-                                detail),
-                () ->
-                        assertThat(
-                                instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/666")));
-    }
+    assertAll(
+        assertions.assertStatusCode(response, HttpStatus.BAD_REQUEST),
+        assertions.assertProblemJsonContentType(response),
+        () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [Invalid Pet Id, the Id [666] is not permitted, found: [666]]",
+                detail),
+        () ->
+            assertThat(
+                instance, CoreMatchers.containsString(UriBuilder.PET_STORE_BASE_URL + "/666")));
+  }
 
-    @Test
-    void should_ReturnPetsWithMatchingStatuses_When_CallingFindByStatus() {
-        PetDocument petDocumentLassie =
-                createPetDocument("KT1546", "Lassie", PetAvailabilityStatus.PENDING_COLLECTION);
-        PetDocument petDocumentAstro = createPetDocument("ABC456", "Astro", PetAvailabilityStatus.SOLD);
-        PetDocument petDocumentBeethoven =
-                createPetDocument("XYZ987", "Beethoven", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE);
+  @Test
+  void should_ReturnPetsWithMatchingStatuses_When_CallingFindByStatus() {
+    PetDocument petDocumentLassie =
+        createPetDocument("KT1546", "Lassie", PetAvailabilityStatus.PENDING_COLLECTION);
+    PetDocument petDocumentAstro = createPetDocument("ABC456", "Astro", PetAvailabilityStatus.SOLD);
+    PetDocument petDocumentBeethoven =
+        createPetDocument("XYZ987", "Beethoven", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE);
 
-        petRepository.saveAll(Arrays.asList(petDocumentLassie, petDocumentAstro, petDocumentBeethoven));
+    petRepository.saveAll(Arrays.asList(petDocumentLassie, petDocumentAstro, petDocumentBeethoven));
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(3));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(3));
 
-        UriComponentsBuilder uri = uriBuilder
-                .getPetStoreBaseURI()
-                .pathSegment("findByStatus")
-                .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name());
-        ResponseEntity<String> response = webClientExecutor.get(uri);
+    UriComponentsBuilder uri =
+        uriBuilder
+            .getPetStoreBaseURI()
+            .pathSegment("findByStatus")
+            .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name());
+    ResponseEntity<String> response = webClientExecutor.get(uri);
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                                   {
                                     "pets": [
                                       {
@@ -241,34 +240,34 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                   }
                               """;
 
-        String actualJsonBody = response.getBody();
+    String actualJsonBody = response.getBody();
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
-    }
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
+  }
 
-    @Test
-    void should_UpdateExistingPetWithNewNameAndInformation_When_PatchEndpointIsCalled() {
-        PetDocument petDocumentBeethoven =
-                createPetDocument("XYZ987", "Beethoven", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE);
+  @Test
+  void should_UpdateExistingPetWithNewNameAndInformation_When_PatchEndpointIsCalled() {
+    PetDocument petDocumentBeethoven =
+        createPetDocument("XYZ987", "Beethoven", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE);
 
-        petRepository.save(petDocumentBeethoven);
+    petRepository.save(petDocumentBeethoven);
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        PetPatchRequest petPatch = new PetPatchRequest();
-        petPatch.setId("XYZ987");
-        petPatch.setName("Astro");
-        List<@Valid PetInformationItem> additionalInformation =
-                Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
-        petPatch.setAdditionalInformation(additionalInformation);
+    PetPatchRequest petPatch = new PetPatchRequest();
+    petPatch.setId("XYZ987");
+    petPatch.setName("Astro");
+    List<@Valid PetInformationItem> additionalInformation =
+        Collections.singletonList(testData.createPetInformationItem("Eye colour", "Green"));
+    petPatch.setAdditionalInformation(additionalInformation);
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
-        ResponseEntity<String> response = webClientExecutor.patch(uri, petPatch);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreBaseURI();
+    ResponseEntity<String> response = webClientExecutor.patch(uri, petPatch);
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                                     {
                         "availabilityStatus": "Available For Purchase",
                                       "petId": "XYZ987",
@@ -287,24 +286,24 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                     }
                                 """;
 
-        String actualJsonBody = response.getBody();
+    String actualJsonBody = response.getBody();
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
-    }
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody));
+  }
 
-    @Test
-    void should_SuccessfullyPurchaseAPet() {
-        PetDocument savedPetDocument = petRepository.save(testData.createPetDocument());
+  @Test
+  void should_SuccessfullyPurchaseAPet() {
+    PetDocument savedPetDocument = petRepository.save(testData.createPetDocument());
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(savedPetDocument.getPetId());
-        ResponseEntity<String> response = webClientExecutor.post(uri, testData.createCustomerRequest());
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(savedPetDocument.getPetId());
+    ResponseEntity<String> response = webClientExecutor.post(uri, testData.createCustomerRequest());
 
-        String expectedJsonBody =
-                """
+    String expectedJsonBody =
+        """
                                     {
                         "availabilityStatus": "Pending Collection",
                                       "owner": {
@@ -329,51 +328,51 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                     }
                                 """;
 
-        String actualJsonBody = response.getBody();
-        String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
+    String actualJsonBody = response.getBody();
+    String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
-                () -> assertThat(actualCustomerId, not(isEmptyOrNullString())));
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
+        () -> assertThat(actualCustomerId, not(isEmptyOrNullString())));
 
-        List<PetDocument> actualAllPetDocuments = petRepository.findAll();
-        assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
-        PetDocument allPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals("KT1546", allPetDocument.getPetId());
-    }
+    List<PetDocument> actualAllPetDocuments = petRepository.findAll();
+    assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
+    PetDocument allPetDocument = actualAllPetDocuments.getFirst();
+    assertEquals("KT1546", allPetDocument.getPetId());
+  }
 
-    @Test
-    void should_SuccessDeletePet() {
-        PetDocument petDocument = testData.createPetDocument();
-        String petId = petDocument.getPetId();
-        petRepository.save(petDocument);
+  @Test
+  void should_SuccessDeletePet() {
+    PetDocument petDocument = testData.createPetDocument();
+    String petId = petDocument.getPetId();
+    petRepository.save(petDocument);
 
-        assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
+    assertThat("Failed precondition", petRepository.findAll(), Matchers.iterableWithSize(1));
 
-        UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
-        ResponseEntity<String> response = webClientExecutor.delete(uri);
+    UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(petId);
+    ResponseEntity<String> response = webClientExecutor.delete(uri);
 
-        String deletionMessage = JsonPath.read(response.getBody(), "$.message");
+    String deletionMessage = JsonPath.read(response.getBody(), "$.message");
 
-        assertAll(
-                assertions.assertOkJsonResponse(response),
-                () -> assertEquals("Successfully archived the Pet with Id: KT1546", deletionMessage));
+    assertAll(
+        assertions.assertOkJsonResponse(response),
+        () -> assertEquals("Successfully archived the Pet with Id: KT1546", deletionMessage));
 
-        List<PetDocument> actualAllPetDocuments = petRepository.findAll();
-        assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
-        PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
-        assertEquals(PersistenceStatus.ARCHIVED.getValue(), actualPetDocument.getPersistenceStatus());
-    }
+    List<PetDocument> actualAllPetDocuments = petRepository.findAll();
+    assertThat(actualAllPetDocuments, Matchers.iterableWithSize(1));
+    PetDocument actualPetDocument = actualAllPetDocuments.getFirst();
+    assertEquals(PersistenceStatus.ARCHIVED.getValue(), actualPetDocument.getPersistenceStatus());
+  }
 
-    private PetDocument createPetDocument(
-            String petId, String name, PetAvailabilityStatus PetAvailabilityStatus) {
-        PetDocument petDocument = testData.createPetDocument(petId);
+  private PetDocument createPetDocument(
+      String petId, String name, PetAvailabilityStatus PetAvailabilityStatus) {
+    PetDocument petDocument = testData.createPetDocument(petId);
 
-        petDocument.setPetId(petId);
-        petDocument.setName(name);
-        petDocument.setPetStatus(PetAvailabilityStatus.getValue());
+    petDocument.setPetId(petId);
+    petDocument.setName(name);
+    petDocument.setPetStatus(PetAvailabilityStatus.getValue());
 
-        return petDocument;
-    }
+    return petDocument;
+  }
 }
