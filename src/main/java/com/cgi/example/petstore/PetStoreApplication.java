@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class PetStoreApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(PetStoreApplication.class, args);
+    SpringApplication springApplication = new SpringApplication(PetStoreApplication.class);
+    springApplication.run(args);
   }
 }
