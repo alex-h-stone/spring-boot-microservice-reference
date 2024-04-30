@@ -12,11 +12,27 @@ spring:
   data.mongodb:
     uri: ${MONGO_DB_URI}
     database: petStoreDatabase
+  security:
+    oauth2:
+      client:
+        registration:
+          oauth-instance:
+            client-id: ${OAUTH_CLIENT_ID:DummyClientId}
+            client-secret: ${OAUTH_CLIENT_SECRET:DummyClientSecret}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid
+        provider:
+          oauth-instance:
+            authorization-uri: ${OAUTH_HOST}/oauth2/authorize
+            token-uri: ${OAUTH_HOST}/oauth2/token
+            jwk-set-uri: ${OAUTH_HOST}/oauth2/jwks
+      resource-server.jwt.issuer-uri: ${OAUTH_HOST}/default
 
 logging.level:
   root: INFO
-  com.cgi.example.petstore.logging: INFO
-  org.springframework.web.filter: DEBUG
+  com.cgi.example.petstore: INFO
+  org.springframework: INFO
 
 external.apis.vaccinations:
   baseUrl: ${VACCINATIONS_URL}
