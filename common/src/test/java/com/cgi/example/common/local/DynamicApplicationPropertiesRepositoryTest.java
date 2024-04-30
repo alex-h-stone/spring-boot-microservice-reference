@@ -1,7 +1,6 @@
 package com.cgi.example.common.local;
 
 import com.cgi.example.common.DynamicApplicationFileProperties;
-import com.cgi.example.common.local.model.ApplicationModule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -17,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("unit")
 class DynamicApplicationPropertiesRepositoryTest {
-
-    private static final ApplicationModule APPLICATION_MODULE = ApplicationModule.APPLICATION_MAIN;
 
     private DynamicApplicationPropertiesRepository repository;
 
@@ -56,7 +53,7 @@ class DynamicApplicationPropertiesRepositoryTest {
     @Test
     void setApplicationPortShouldSuccessfullyPersist() {
         int applicationPort = 9099;
-        repository.setApplicationPort(APPLICATION_MODULE, applicationPort);
+        repository.setApplicationPort(this.getClass(), applicationPort);
 
         Integer actualApplicationPort = repository.getApplicationPort();
 
@@ -67,7 +64,7 @@ class DynamicApplicationPropertiesRepositoryTest {
     @Test
     void setManagementPortShouldSuccessfullyPersist() {
         int managementPort = 8099;
-        repository.setManagementPort(APPLICATION_MODULE, managementPort);
+        repository.setManagementPort(getClass(), managementPort);
 
         Integer actualManagementPort = repository.getManagementPort();
 
@@ -78,7 +75,7 @@ class DynamicApplicationPropertiesRepositoryTest {
     @Test
     void setWireMockPortShouldSuccessfullyPersist() {
         int wireMockPort = 8000;
-        repository.setWireMockPort(APPLICATION_MODULE, wireMockPort);
+        repository.setWireMockPort(getClass(), wireMockPort);
 
         Integer actualWireMockPort = repository.getWireMockPort();
 
@@ -89,7 +86,7 @@ class DynamicApplicationPropertiesRepositoryTest {
     @Test
     void setMongoDBPortShouldSuccessfullyPersist() {
         int mongoDBPort = 8000;
-        repository.setMongoDBPort(APPLICATION_MODULE, mongoDBPort);
+        repository.setMongoDBPort(getClass(), mongoDBPort);
 
         String connectionString = repository.getMongoDBConnectionString();
 
@@ -100,16 +97,16 @@ class DynamicApplicationPropertiesRepositoryTest {
     @Test
     void shouldBeAbleToSetAndGetAllPortNumbersIndependently() {
         int applicationPort = 9099;
-        repository.setApplicationPort(APPLICATION_MODULE, applicationPort);
+        repository.setApplicationPort(getClass(), applicationPort);
 
         int managementPort = 8099;
-        repository.setManagementPort(APPLICATION_MODULE, managementPort);
+        repository.setManagementPort(getClass(), managementPort);
 
         int wireMockPort = 8000;
-        repository.setWireMockPort(APPLICATION_MODULE, wireMockPort);
+        repository.setWireMockPort(getClass(), wireMockPort);
 
         int mongoDBPort = 7044;
-        repository.setMongoDBPort(APPLICATION_MODULE, mongoDBPort);
+        repository.setMongoDBPort(getClass(), mongoDBPort);
 
         assertEquals(3, Set.of(applicationPort, managementPort, wireMockPort).size(),
                 "Failed precondition, expected all port numbers to be unique");

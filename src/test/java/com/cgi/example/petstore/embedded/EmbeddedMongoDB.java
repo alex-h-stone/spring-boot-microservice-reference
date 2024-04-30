@@ -3,7 +3,6 @@ package com.cgi.example.petstore.embedded;
 import static com.cgi.example.petstore.utils.ProcessManagement.waitUntil;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.common.local.model.ApplicationModule;
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -48,7 +47,7 @@ public class EmbeddedMongoDB implements ManageableService {
     int port = serverAddress.getPort();
     log.info("Started Embedded MongoDB on {}:{}", host, port);
 
-    propertiesRepository.setMongoDBPort(ApplicationModule.APPLICATION_TEST, port);
+    propertiesRepository.setMongoDBPort(getClass(), port);
     blockAndWait();
   }
 

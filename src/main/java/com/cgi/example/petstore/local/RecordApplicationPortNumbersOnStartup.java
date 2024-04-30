@@ -1,7 +1,6 @@
 package com.cgi.example.petstore.local;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.common.local.model.ApplicationModule;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.context.WebServerApplicationContext;
@@ -18,7 +17,6 @@ public class RecordApplicationPortNumbersOnStartup
 
   private static final String APPLICATION_MANAGEMENT = "application:management";
   private static final String LOCAL_SERVER_PORT = "local.server.port";
-  private static final ApplicationModule APPLICATION_MODULE = ApplicationModule.APPLICATION_MAIN;
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
@@ -31,8 +29,8 @@ public class RecordApplicationPortNumbersOnStartup
       int applicationPortNumber = applicationPortNumber(applicationContext);
       int managementPortNumber = managementPortNumber(event);
 
-      propertiesRepository.setApplicationPort(APPLICATION_MODULE, applicationPortNumber);
-      propertiesRepository.setManagementPort(APPLICATION_MODULE, managementPortNumber);
+      propertiesRepository.setApplicationPort(getClass(), applicationPortNumber);
+      propertiesRepository.setManagementPort(getClass(), managementPortNumber);
     }
   }
 

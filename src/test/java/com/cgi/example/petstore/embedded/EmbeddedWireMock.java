@@ -5,7 +5,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.common.local.model.ApplicationModule;
 import com.cgi.example.petstore.utils.ProcessManagement;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -20,7 +19,7 @@ import org.springframework.http.MediaType;
 
 @Slf4j
 public class EmbeddedWireMock implements ManageableService {
-
+  // TODO merge EmbeddedWireMock and WireMockForIntegrationTests
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
   private final String defaultResponse;
@@ -44,7 +43,9 @@ public class EmbeddedWireMock implements ManageableService {
     WireMockConfiguration wireMockConfiguration =
         options()
             .dynamicPort()
+            .globalTemplating(true)
             .notifier(new ConsoleNotifier("WireMockConsoleLog", true))
+            .maxRequestJournalEntries(100)
             .networkTrafficListener(new ConsoleNotifyingWiremockNetworkTrafficListener());
     wireMockServer = new WireMockServer(wireMockConfiguration);
   }
@@ -72,7 +73,7 @@ public class EmbeddedWireMock implements ManageableService {
     int wireMockPort = wireMockServer.port();
     log.info("Started Embedded WireMockServer on port: {}", wireMockPort);
 
-    propertiesRepository.setWireMockPort(ApplicationModule.APPLICATION_TEST, wireMockPort);
+    propertiesRepository.setWireMockPort(getClass(), wireMockPort);
   }
 
   @Override
