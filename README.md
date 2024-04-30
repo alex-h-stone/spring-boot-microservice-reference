@@ -254,6 +254,18 @@ Port allocation and discovery includes:
 
 ---
 
+#### OAuth2 Security Integration
+
+See `spring.security.oauth2` in [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml) for the required
+application configuration changes.
+
+Also
+see [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java)
+for details of how to configure a `SecurityFilterChain` to allow both unauthenticated endpoints like Swagger,
+and OAuth2 authenticated application API endpoints.
+
+---
+
 #### Metrics Endpoint
 
 See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
