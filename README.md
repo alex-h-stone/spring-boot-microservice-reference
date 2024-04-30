@@ -77,11 +77,13 @@ When the above requirements have been satisfied, to start the Pet Store microser
    `./gradlew startEmbeddedWireMock`
 2. Start the in-memory MongoDB server:  
    `./gradlew startEmbeddedMongoDB`
-3. Start the microservice:  
+3. Start the mock OAuth2 server:  
+   `./gradlew startEmbeddedOAuth2`
+4. Start the microservice:  
    `./gradlew bootRun --args='--spring.profiles.active=local'`
-4. Execute the load tests:  
+5. Execute the load tests:  
    `./gradlew :load-test:run`
-5. Execute the API tests:  
+6. Execute the API tests:  
    `./gradlew :api-test:run`
 
 Alternatively, you can execute all of the above by opening a terminal (IntelliJ) or command prompt (cmd) and executing
@@ -237,12 +239,17 @@ or
 
 #### Dynamic port allocation and discovery for local development
 
-To improve developer efficiency, when running the microservice and associated dependencies like Wire Mock and Embedded
-MongoDB locally, all port numbers are assigned dynamically and subsequently discovered when needed via the
+To improve developer efficiency, when running the microservice and associated dependencies like Wire Mock, MongoDB
+and OAuth2 locally, all port numbers are assigned dynamically and subsequently discovered when needed via the
 [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
-For example, when you start the [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) the port number which it is listening on persisted so that 
-when you start the microservice (with the `local` profile) it will be automatically configured to use the correct 
+For example, when you start
+the [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) the
+dynamic port number (determined at runtime) which
+it is listening on is persisted
+to [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
+such that when you start the microservice (with the `local` profile) it will be automatically configured to use the
+correct
 Wire Mock port.
 
 Port allocation and discovery includes:
@@ -366,7 +373,6 @@ for implementation details.
 
 All required port numbers are configured dynamically in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java) using the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).   
 
-
 ---
 
 #### Actuator Endpoints
@@ -385,6 +391,8 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#act
 - GET http://localhost:8099/actuator/mappings
 
 Where `8099` is the Management Server Port `management.server.port`
+If running with the `local` profile all dynamic port numbers are recorded
+in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
 
 ---
 
@@ -399,8 +407,9 @@ endpoints are provided to provide live up-to-date API documentation.
 - http://localhost:8080/v3/api-docs.yaml
 - http://localhost:8080/v3/api-docs/springdoc
 
-
-Where `8080` is the Application Server Port `server.port`
+Where `8080` is the Application Server Port `server.port`.  
+If running with the `local` profile all dynamic port numbers are recorded
+in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
 
 ---
 

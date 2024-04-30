@@ -209,3 +209,12 @@ tasks.register('startEmbeddedMongoDB', JavaExec) {
     getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedMongoDB')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
+
+tasks.register('startEmbeddedOAuth2', JavaExec) {
+    group = 'application'
+    description = 'Start an in-memory OAuth2 server.'
+    classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
+    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedOAuth2')
+    jvmArgs '-Xms256m', '-Xmx1024m'
+}

@@ -12,6 +12,10 @@ public class EmbeddedOAuth2 implements ManageableService { // TODO do we need Ma
       new DynamicApplicationPropertiesRepository();
   private MockOAuth2Server mockOAuth2Server;
 
+  public static void main(String[] args) {
+    new EmbeddedOAuth2();
+  }
+
   public EmbeddedOAuth2() {
     start();
   }
