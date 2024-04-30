@@ -1,5 +1,13 @@
 package com.cgi.example.petstore.integration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetAvailabilityStatus;
 import com.cgi.example.petstore.model.PetInformationItem;
@@ -8,25 +16,16 @@ import com.cgi.example.petstore.utils.TestData;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("integration")
 public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
@@ -42,13 +41,13 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         fileUtils.readFile(
             "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
     wireMock()
-            .stubFor(
-                    WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-                            .willReturn(
-                                    aResponse()
-                                            .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                            .withBody(vaccinations)
-                                            .withStatus(HttpStatus.OK.value())));
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(vaccinations)
+                        .withStatus(HttpStatus.OK.value())));
 
     verifyNotPetsOfAnyStatusesAreAlreadyPresent();
 
@@ -242,7 +241,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         uriBuilder
             .getPetStoreBaseURI()
             .pathSegment("findByStatus")
-                .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name());
+            .queryParam("statuses", PetAvailabilityStatus.AVAILABLE_FOR_PURCHASE.name());
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
     String expectedJsonBody =
@@ -390,7 +389,7 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
         uriBuilder
             .getPetStoreBaseURI()
             .pathSegment("findByStatus")
-                .queryParam("statuses", ALL_PET_STATUSES);
+            .queryParam("statuses", ALL_PET_STATUSES);
 
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
