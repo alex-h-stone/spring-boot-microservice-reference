@@ -23,5 +23,5 @@ public class Port {
     private Instant modifiedAt;
 
     @JsonProperty
-    private ApplicationModule modifiedBy;
+    private String modifiedBy;
 }

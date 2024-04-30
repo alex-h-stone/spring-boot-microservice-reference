@@ -79,6 +79,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "org.wiremock:wiremock-standalone:$wireMockVersion"
     testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring31x:$embedMongoVersion"
+    testImplementation "no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion"
     testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
 }
 
