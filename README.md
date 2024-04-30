@@ -264,6 +264,19 @@ see [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetst
 for details of how to configure a `SecurityFilterChain` to allow both unauthenticated endpoints like Swagger,
 and OAuth2 authenticated application API endpoints.
 
+Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gradle](build.gradle)) and the embedded
+OAuth2 mock
+server [EmbeddedOAuth2.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedOAuth2.java).
+
+**Note**: That Spring OAuth2 configuration (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`) are resolved
+very
+early in the creation of the application context.  
+So to ensure that the system property `OAUTH_HOST` is overridden we
+define [EmbeddedOAuth2.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedOAuth2.java)
+as a `private static final` variable
+in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
+to ensure the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
+
 ---
 
 #### Metrics Endpoint
