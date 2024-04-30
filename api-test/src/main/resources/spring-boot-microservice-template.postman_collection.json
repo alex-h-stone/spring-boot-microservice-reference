@@ -501,6 +501,46 @@
 					"response": []
 				},
 				{
+					"name": "actuator/httptrace",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404); // TODO Fix this\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "{{acceptHeader}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{host}}:{{managementPort}}/actuator/httptrace",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{managementPort}}",
+							"path": [
+								"actuator",
+								"httptrace"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "actuator/mappings",
 					"event": [
 						{
@@ -543,6 +583,224 @@
 			]
 		},
 		{
+			"name": "OAuth2",
+			"item": [
+				{
+					"name": "openid-configuration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"openid-configuration has authorization_endpoint attribute\", function () {\r",
+									"    pm.expect(jsonData.authorization_endpoint).to.be.a('string').and.to.contain(\"/default/authorize\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"openid-configuration has token_endpoint attribute\", function () {\r",
+									"    pm.expect(jsonData.token_endpoint).to.be.a('string').and.to.contain(\"/default/token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}:{{oAuth2Port}}/default/.well-known/openid-configuration",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{oAuth2Port}}",
+							"path": [
+								"default",
+								".well-known",
+								"openid-configuration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "authorize",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302\", function () {\r",
+									"    pm.response.to.have.status(302);\r",
+									"});\r",
+									"\r",
+									"var locationHeader = pm.response.headers.get('location');\r",
+									"pm.test(\"location header has a code defined\", function () {\r",
+									"    pm.expect(locationHeader).to.be.a('string').and.to.contain(\"code=\");\r",
+									"});\r",
+									"\r",
+									"var extractedCode = locationHeader.match(/code=([^&]*)/)[1];\r",
+									"\r",
+									"pm.test(\"OAuth2 Code is String of at least 10 characters long\", function () {\r",
+									"    pm.expect(extractedCode).to.be.a('string').and.to.have.lengthOf.at.least(10);\r",
+									"});\r",
+									"pm.collectionVariables.set(\"oAuth2Code\", extractedCode);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followRedirects": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://{{host}}:{{oAuth2Port}}/default/authorize?response_type=code&client_id=SomeClientId&scope=openid&redirect_uri=%2F",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{oAuth2Port}}",
+							"path": [
+								"default",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "SomeClientId"
+								},
+								{
+									"key": "scope",
+									"value": "openid"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "%2F"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "default/token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var oAuth2Code = pm.collectionVariables.get(\"oAuth2Code\");\r",
+									"\r",
+									"pm.test(\"OAuth2 Code is String of at least 10 characters long\", function () {\r",
+									"    pm.expect(oAuth2Code).to.be.a('string').and.to.have.lengthOf.at.least(10);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Response body has token_type equal to Bearer\", function () {   \r",
+									"    pm.expect(jsonData.token_type).to.eql(\"Bearer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body has an access_token which is a String of at least 10 characters long\", function () {\r",
+									"    pm.expect(jsonData.access_token).to.be.a('string').and.to.have.lengthOf.at.least(10);\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"oAuth2AccessToken\", jsonData.access_token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "{{oAuth2Code}}",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "/",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "someClientId",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{host}}:{{oAuth2Port}}/default/token",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{oAuth2Port}}",
+							"path": [
+								"default",
+								"token"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Application",
 			"item": [
 				{
@@ -570,6 +828,22 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var oAuth2AccessToken = pm.collectionVariables.get(\"oAuth2AccessToken\");\r",
+									"\r",
+									"pm.test(\"A predefined oAuth2AccessToken has been set which is a String of at least 10 characters long\", function () {\r",
+									"    pm.expect(oAuth2AccessToken).to.be.a('string').and.to.have.lengthOf.at.least(10);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -579,6 +853,12 @@
 								"key": "Accept",
 								"value": "{{acceptHeader}}",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text",
+								"disabled": true
 							}
 						],
 						"body": {
@@ -972,6 +1252,38 @@
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{oAuth2AccessToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -1291,6 +1603,14 @@
 			"key": "acceptHeader",
 			"value": "application/json",
 			"type": "string"
+		},
+		{
+			"key": "oAuth2Code",
+			"value": ""
+		},
+		{
+			"key": "oAuth2AccessToken",
+			"value": ""
 		}
 	]
 }

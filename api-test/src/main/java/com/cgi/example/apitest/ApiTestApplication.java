@@ -33,12 +33,13 @@ public class ApiTestApplication {
 
         processBuilder.command("cmd", "/c", "newman",
                 "run", POSTMAN_COLLECTION,
-                "--reporters", "cli,htmlextra",
+                "--reporters", "cli,htmlextra,json",
                 "--reporter-htmlextra-export", reportFile.getAbsolutePath(),
                 "--environment", POSTMAN_ENVIRONMENT,
                 "--env-var", "applicationPort=" + propertiesRepository.getApplicationPort(),
                 "--env-var", "managementPort=" + propertiesRepository.getManagementPort(),
-                "--env-var", "wireMockPort=" + propertiesRepository.getWireMockPort());
+                "--env-var", "wireMockPort=" + propertiesRepository.getWireMockPort(),
+                "--env-var", "oAuth2Port=" + propertiesRepository.getOAuth2Port());
 
         Process process = startProcess(processBuilder);
 

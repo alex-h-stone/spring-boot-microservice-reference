@@ -49,8 +49,12 @@ public class DynamicApplicationPropertiesRepository {
         return String.format("mongodb://localhost:%d", portNumberOrNull(retrieve().getMongoDBPort()));
     }
 
+    public Integer getOAuth2Port() {
+        return portNumberOrNull(retrieve().getOAuth2Port());
+    }
+
     public String getOAuth2Host() {
-        return "http://localhost:" + portNumberOrNull(retrieve().getOAuth2Port());
+        return String.format("http://localhost:%d", getOAuth2Port());
     }
 
     public void setApplicationPort(Class<?> modifiedBy, int applicationPortNumber) {

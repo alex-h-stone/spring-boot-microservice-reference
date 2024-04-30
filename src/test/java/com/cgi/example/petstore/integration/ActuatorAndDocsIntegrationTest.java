@@ -1,12 +1,7 @@
 package com.cgi.example.petstore.integration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.jayway.jsonpath.JsonPath;
-import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,12 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("integration")
 class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
