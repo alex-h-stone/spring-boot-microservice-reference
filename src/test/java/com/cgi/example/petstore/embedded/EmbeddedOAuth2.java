@@ -4,6 +4,7 @@ import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
+import no.nav.security.mock.oauth2.OAuth2Config;
 
 @Slf4j
 public class EmbeddedOAuth2 implements ManageableService { // TODO do we need ManageableService?
@@ -22,7 +23,8 @@ public class EmbeddedOAuth2 implements ManageableService { // TODO do we need Ma
 
   @Override
   public void start() {
-    mockOAuth2Server = new MockOAuth2Server();
+    OAuth2Config config = new OAuth2Config(false);
+    mockOAuth2Server = new MockOAuth2Server(config);
 
     log.info("Starting Embedded OAuth2");
     mockOAuth2Server.start();
