@@ -1,7 +1,6 @@
 package com.cgi.example.common.local;
 
 import com.cgi.example.common.DynamicApplicationFileProperties;
-import com.cgi.example.common.local.model.ApplicationModule;
 import com.cgi.example.common.local.model.DynamicApplicationProperties;
 import com.cgi.example.common.local.model.Port;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,27 +49,37 @@ public class DynamicApplicationPropertiesRepository {
         return String.format("mongodb://localhost:%d", portNumberOrNull(retrieve().getMongoDBPort()));
     }
 
-    public void setApplicationPort(ApplicationModule applicationModule, int applicationPortNumber) {
+    public String getOAuth2Host() {
+        return "http://localhost:" + portNumberOrNull(retrieve().getOAuth2Port());
+    }
+
+    public void setApplicationPort(Class<?> modifiedBy, int applicationPortNumber) {
         DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setApplicationPort(createPort(applicationModule, applicationPortNumber));
+        applicationProperties.setApplicationPort(createPort(modifiedBy, applicationPortNumber));
         save(applicationProperties);
     }
 
-    public void setManagementPort(ApplicationModule applicationModule, int managementPortNumber) {
+    public void setManagementPort(Class<?> modifiedBy, int managementPortNumber) {
         DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setManagementPort(createPort(applicationModule, managementPortNumber));
+        applicationProperties.setManagementPort(createPort(modifiedBy, managementPortNumber));
         save(applicationProperties);
     }
 
-    public void setWireMockPort(ApplicationModule applicationModule, int wireMockPort) {
+    public void setWireMockPort(Class<?> modifiedBy, int wireMockPort) {
         DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setWireMockPort(createPort(applicationModule, wireMockPort));
+        applicationProperties.setWireMockPort(createPort(modifiedBy, wireMockPort));
         save(applicationProperties);
     }
 
-    public void setMongoDBPort(ApplicationModule applicationModule, int mongoDBPort) {
+    public void setMongoDBPort(Class<?> modifiedBy, int mongoDBPort) {
         DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setMongoDBPort(createPort(applicationModule, mongoDBPort));
+        applicationProperties.setMongoDBPort(createPort(modifiedBy, mongoDBPort));
+        save(applicationProperties);
+    }
+
+    public void setOAuth2Port(Class<?> modifiedBy, int oAuth2Port) {
+        DynamicApplicationProperties applicationProperties = retrieve();
+        applicationProperties.setOAuth2Port(createPort(modifiedBy, oAuth2Port));
         save(applicationProperties);
     }
 
@@ -122,14 +131,12 @@ public class DynamicApplicationPropertiesRepository {
         return new DynamicApplicationProperties();
     }
 
-    private Port createPort(ApplicationModule applicationModule,
+    private Port createPort(Class<?> modifiedBy,
                             int managementPortNumber) {
         Port managementPort = new Port();
         managementPort.setPort(managementPortNumber);
-        managementPort.setModifiedBy(applicationModule);
+        managementPort.setModifiedBy(modifiedBy.getCanonicalName());
         managementPort.setModifiedAt(Instant.now());
         return managementPort;
     }
-
-
 }

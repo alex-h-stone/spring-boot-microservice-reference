@@ -25,4 +25,7 @@ public class DynamicApplicationProperties {
 
     @JsonProperty
     private Port mongoDBPort;
+
+    @JsonProperty
+    private Port oAuth2Port;
 }
