@@ -29,8 +29,9 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_ReturnVaccinationDetailsForValidVaccinationId() {
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K")).willReturn(successResponse()));
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K")).willReturn(successResponse()));
 
     String validVaccinationId = "AF54785412K";
 
@@ -43,13 +44,14 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_ReturnEmptyOptionalForUnknownVaccinationId() {
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/Z6456INVALID"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                    .withBody(
-                        """
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/Z6456INVALID"))
+                .willReturn(
+                    aResponse()
+                        .withHeader("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+                        .withBody(
+                            """
                                 {
                                   "type": "about:blank",
                                   "title": "Not Found",
@@ -57,7 +59,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
                                   "detail": "Unable to find vaccinations for Id [Z6456INVALID]"
                                 }
                                 """)
-                    .withStatus(HttpStatus.NOT_FOUND.value())));
+                        .withStatus(HttpStatus.NOT_FOUND.value())));
 
     Optional<List<Vaccination>> optionalVaccinations = apiClient.getVaccinations("Z6456INVALID");
 
@@ -66,15 +68,16 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_RetryTwiceIfTheRequestFailsBeforeEventuallyFailing() {
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-            .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
     Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
 
     assertTrue(actualResponse.isEmpty());
     UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/AF54785412K"), false);
-    stubServer.verify(3, newRequestPattern(RequestMethod.GET, url));
+    wireMock().verify(3, newRequestPattern(RequestMethod.GET, url));
   }
 
   private ResponseDefinitionBuilder successResponse() {
@@ -91,28 +94,31 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   @Test
   void should_RetryTwiceIfTheRequestFailsBeforeEventuallySucceeding() {
     final String scenarioName = "RetryUntilSuccess";
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-            .inScenario(scenarioName)
-            .willSetStateTo("Second Call")
-            .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .inScenario(scenarioName)
+                .willSetStateTo("Second Call")
+                .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-            .inScenario(scenarioName)
-            .whenScenarioStateIs("Second Call")
-            .willSetStateTo("Third Call")
-            .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("Second Call")
+                .willSetStateTo("Third Call")
+                .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
     String body =
         fileUtils.readFile(
             "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
 
-    stubServer.stubFor(
-        WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-            .inScenario(scenarioName)
-            .whenScenarioStateIs("Third Call")
-            .willReturn(successResponse()));
+    wireMock()
+        .stubFor(
+            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+                .inScenario(scenarioName)
+                .whenScenarioStateIs("Third Call")
+                .willReturn(successResponse()));
 
     Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
 
@@ -120,6 +126,6 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
     List<Vaccination> vaccinations = actualResponse.get();
     assertThat(vaccinations, Matchers.iterableWithSize(3));
     UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/AF54785412K"), false);
-    stubServer.verify(3, newRequestPattern(RequestMethod.GET, url));
+    wireMock().verify(3, newRequestPattern(RequestMethod.GET, url));
   }
 }
