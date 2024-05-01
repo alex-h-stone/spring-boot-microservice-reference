@@ -75,11 +75,11 @@ Requirements to run locally:
 When the above requirements have been satisfied, to start the Pet Store microservice:
 
 1. Start the Wire Mock stub server:  
-   `./gradlew startEmbeddedWireMock`
+   `./gradlew startWireMockEmbedded`
 2. Start the in-memory MongoDB server:  
-   `./gradlew startEmbeddedMongoDB`
+   `./gradlew startMongoDBEmbedded`
 3. Start the in-memory OAuth2 server:  
-   `./gradlew startEmbeddedOAuth2`
+   `./gradlew startOAuth2Embedded`
 4. Start the microservice:  
    `./gradlew bootRun --args='--spring.profiles.active=local'`
 5. Execute the load tests:  
@@ -254,9 +254,10 @@ correct
 Wire Mock port.
 
 Port allocation and discovery includes:
-- Embedded Wire Mock `./gradlew startEmbeddedWireMock`
-- Embedded MongoDB `./gradlew startEmbeddedMongoDB`
-- Embedded OAuth2 server: `./gradlew startEmbeddedOAuth2`
+
+- Embedded Wire Mock `./gradlew startWireMockEmbedded`
+- Embedded MongoDB `./gradlew startMongoDBEmbedded`
+- Embedded OAuth2 server: `./gradlew startOAuth2Embedded`
 - Pet Store microservice `./gradlew bootRun --args='--spring.profiles.active=local'`
 - API Tests `./gradlew :api-test:run`
 - Load Tests `./gradlew :load-test:run`

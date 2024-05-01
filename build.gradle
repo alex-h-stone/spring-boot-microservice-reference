@@ -192,7 +192,7 @@ sourceSets {
     }
 }
 
-tasks.register('startEmbeddedWireMock', JavaExec) {
+tasks.register('startWireMockEmbedded', JavaExec) {
     group = 'application'
     description = 'Start a WireMockServer to be used as a stub for the external API calls.'
     classpath = sourceSets.test.runtimeClasspath
@@ -201,7 +201,7 @@ tasks.register('startEmbeddedWireMock', JavaExec) {
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
-tasks.register('startEmbeddedMongoDB', JavaExec) {
+tasks.register('startMongoDBEmbedded', JavaExec) {
     group = 'application'
     description = 'Start an in-memory Mongo DB server.'
     classpath = sourceSets.test.runtimeClasspath
@@ -210,7 +210,7 @@ tasks.register('startEmbeddedMongoDB', JavaExec) {
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
-tasks.register('startEmbeddedOAuth2', JavaExec) {
+tasks.register('startOAuth2Embedded', JavaExec) {
     group = 'application'
     description = 'Start an in-memory OAuth2 server.'
     classpath = sourceSets.test.runtimeClasspath

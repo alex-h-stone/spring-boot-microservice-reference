@@ -29,12 +29,15 @@ public class ApiTestApplication {
     private void start() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.redirectErrorStream(true);
-        File reportFile = reportFile();
+
+        File htmlReport = reportFile("html");
+        File jsonReport = reportFile("json");
 
         processBuilder.command("cmd", "/c", "newman",
                 "run", POSTMAN_COLLECTION,
                 "--reporters", "cli,htmlextra,json",
-                "--reporter-htmlextra-export", reportFile.getAbsolutePath(),
+                "--reporter-htmlextra-export", htmlReport.getAbsolutePath(),
+                "--reporter-json-export", jsonReport.getAbsolutePath(),
                 "--environment", POSTMAN_ENVIRONMENT,
                 "--env-var", "applicationPort=" + propertiesRepository.getApplicationPort(),
                 "--env-var", "managementPort=" + propertiesRepository.getManagementPort(),
@@ -45,20 +48,21 @@ public class ApiTestApplication {
 
         int exitCode = waitForProcessToComplete(process);
 
-        log.info("API tests completed with error code: {}", exitCode);
-        log.info("API test report has been saved to: {}", toClickableUriString.apply(reportFile));
+        log.info("API tests completed with exit code: {}", exitCode);
+        log.info("HTML test report has been saved to: {}", toClickableUriString.apply(htmlReport));
+        log.info("JSON test report has been saved to: {}", toClickableUriString.apply(jsonReport));
         if (exitCode != 0) {
-            System.err.println("API test failure, see the report: " + toClickableUriString.apply(reportFile));
+            System.err.println("API test failure, see reports above");
         }
         System.exit(exitCode);
     }
 
 
-    private File reportFile() {
+    private File reportFile(String fileExtension) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
-        String dateTime = dateTimeFormatter.format(LocalDateTime.now());
+        String creationTime = dateTimeFormatter.format(LocalDateTime.now());
 
-        String relativePath = "build/newman/api-test-report-%s.html".formatted(dateTime);
+        String relativePath = ("build/newman/api-test-report-%s.%s").formatted(creationTime, fileExtension);
 
         return Paths.get(relativePath).toFile();
     }
