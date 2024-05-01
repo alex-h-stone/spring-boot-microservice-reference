@@ -7,11 +7,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.SmartLifecycle;
 
 @Slf4j
-public class WireMockForIntegrationTests
-    implements SmartLifecycle { // TODO do we need SmartLifecycle
+public class WireMockForIntegrationTests {
 
   // TODO integrate with WireMockEmbedded
   private final WireMockEmbedded wireMock;
@@ -38,25 +36,5 @@ public class WireMockForIntegrationTests
 
   public WireMockServer get() {
     return wireMock.getWireMockServer();
-  }
-
-  @Override
-  public void start() {
-    wireMock.start();
-  }
-
-  @Override
-  public void stop() {
-    wireMock.stop();
-  }
-
-  @Override
-  public boolean isRunning() {
-    return wireMock.isRunning();
-  }
-
-  @Override
-  public int getPhase() {
-    return Integer.MIN_VALUE;
   }
 }

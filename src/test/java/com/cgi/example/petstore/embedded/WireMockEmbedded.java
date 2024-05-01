@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @Slf4j
-public class WireMockEmbedded implements ManageableService {
+public class WireMockEmbedded {
   // TODO merge WireMockEmbedded and WireMockForIntegrationTests
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
@@ -30,8 +30,7 @@ public class WireMockEmbedded implements ManageableService {
    * microservice locally you may want to stub external API calls using WireMock.
    */
   public static void main(String[] args) {
-    ManageableService wireMockServer = new WireMockEmbedded();
-    wireMockServer.start();
+    new WireMockEmbedded();
   }
 
   public WireMockEmbedded() {
@@ -48,9 +47,9 @@ public class WireMockEmbedded implements ManageableService {
             .maxRequestJournalEntries(100)
             .networkTrafficListener(new ConsoleNotifyingWiremockNetworkTrafficListener());
     wireMockServer = new WireMockServer(wireMockConfiguration);
+    start();
   }
 
-  @Override
   public void start() {
     if (isRunning()) {
       log.debug("Cannot start Embedded WireMock as it is already running");
@@ -76,20 +75,6 @@ public class WireMockEmbedded implements ManageableService {
     propertiesRepository.setWireMockPort(getClass(), wireMockPort);
   }
 
-  @Override
-  public void stop() {
-    if (!isRunning()) {
-      log.debug("Cannot stop Embedded WireMock as it has already stopped");
-      return;
-    }
-
-    log.info("Shutting down Embedded WireMock");
-    wireMockServer.stop();
-    ProcessManagement.waitUntil(() -> !isRunning());
-    log.info("Embedded WireMock has shut down");
-  }
-
-  @Override
   public boolean isRunning() {
     return wireMockServer.isRunning();
   }

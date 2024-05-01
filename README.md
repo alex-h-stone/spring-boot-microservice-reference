@@ -82,10 +82,10 @@ When the above requirements have been satisfied, to start the Pet Store microser
    `./gradlew startOAuth2Embedded`
 4. Start the microservice:  
    `./gradlew bootRun --args='--spring.profiles.active=local'`
-5. Execute the load tests:  
-   `./gradlew :load-test:run`
-6. Execute the API tests:  
+5. Execute the API tests:  
    `./gradlew :api-test:run`
+6. Execute the load tests:  
+   `./gradlew :load-test:run`
 
 Alternatively, you can execute all of the above by opening a terminal (IntelliJ) or command prompt (cmd) and executing
 the script:  
