@@ -1,6 +1,6 @@
 package com.cgi.example.loadtest.memory;
 
-import com.cgi.example.loadtest.HttpProtocolBuilders;
+import com.cgi.example.loadtest.util.HttpProtocolBuilders;
 import io.gatling.javaapi.core.CoreDsl;
 import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.core.ScenarioBuilder;

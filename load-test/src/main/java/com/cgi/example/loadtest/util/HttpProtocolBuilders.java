@@ -1,4 +1,4 @@
-package com.cgi.example.loadtest;
+package com.cgi.example.loadtest.util;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
 import io.gatling.javaapi.http.HttpDsl;
