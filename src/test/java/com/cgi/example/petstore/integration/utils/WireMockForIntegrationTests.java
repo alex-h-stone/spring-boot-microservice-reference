@@ -8,53 +8,51 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class WireMockForIntegrationTests
     implements SmartLifecycle { // TODO do we need SmartLifecycle
 
   // TODO integrate with WireMockEmbedded
-  private static final WireMockEmbedded WIRE_MOCK;
+  private final WireMockEmbedded wireMock;
 
-  static {
-    WIRE_MOCK = new WireMockEmbedded();
-    WIRE_MOCK.start();
+  public WireMockForIntegrationTests() {
+    wireMock = new WireMockEmbedded();
+    wireMock.start();
     DynamicApplicationPropertiesRepository propertiesRepository =
         new DynamicApplicationPropertiesRepository();
     SetSystemPropertiesForEmbeddedServices.configureWireMock(propertiesRepository);
   }
 
   public void resetAll() {
-    WIRE_MOCK.getWireMockServer().resetAll();
+    wireMock.getWireMockServer().resetAll();
   }
 
   public void stubFor(MappingBuilder mappingBuilder) {
-    WIRE_MOCK.getWireMockServer().stubFor(mappingBuilder);
+    wireMock.getWireMockServer().stubFor(mappingBuilder);
   }
 
   public void verify(int numberOfTimes, RequestPatternBuilder request) {
-    WIRE_MOCK.getWireMockServer().verify(numberOfTimes, request);
+    wireMock.getWireMockServer().verify(numberOfTimes, request);
   }
 
   public WireMockServer get() {
-    return WIRE_MOCK.getWireMockServer();
+    return wireMock.getWireMockServer();
   }
 
   @Override
   public void start() {
-    WIRE_MOCK.start();
+    wireMock.start();
   }
 
   @Override
   public void stop() {
-    WIRE_MOCK.stop();
+    wireMock.stop();
   }
 
   @Override
   public boolean isRunning() {
-    return WIRE_MOCK.isRunning();
+    return wireMock.isRunning();
   }
 
   @Override
