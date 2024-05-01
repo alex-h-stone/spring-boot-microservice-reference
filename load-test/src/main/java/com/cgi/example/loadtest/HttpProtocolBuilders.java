@@ -13,35 +13,37 @@ public class HttpProtocolBuilders {
     private static final String APPLICATION_JSON = "application/json";
     private static final String HOSTNAME = "localhost";
 
-    private static final int DEFAULT_APPLICATION_PORT = 8080;
-    private static final int DEFAULT_MANAGEMENT_PORT = 8099;
-
     private final DynamicApplicationPropertiesRepository propertiesRepository = new DynamicApplicationPropertiesRepository();
 
     public HttpProtocolBuilder createApplicationProtocol() {
         Integer applicationPort = propertiesRepository.getApplicationPort();
-
-        if (Objects.isNull(applicationPort)) {
-            log.info("Unable to determine the applicationPort from DynamicApplicationProperties so defaulting to: {}", DEFAULT_APPLICATION_PORT);
-            return createHttpProtocol(DEFAULT_APPLICATION_PORT);
-        }
-
-        return createHttpProtocol(applicationPort);
+        return createProtocolOrElseThrowException(applicationPort,
+                "Unable to determine the application port from DynamicApplicationProperties, is the microservice running?");
     }
 
     public HttpProtocolBuilder createManagementProtocol() {
         Integer managementPort = propertiesRepository.getManagementPort();
+        return createProtocolOrElseThrowException(managementPort,
+                "Unable to determine the management port from DynamicApplicationProperties, is the microservice running?");
+    }
 
+    public HttpProtocolBuilder createOAuth2Protocol() {
+        Integer oAuth2Port = propertiesRepository.getOAuth2Port();
+        return createProtocolOrElseThrowException(oAuth2Port,
+                "Unable to determine the OAuth2 port from DynamicApplicationProperties, is the microservice running?");
+    }
+
+    private HttpProtocolBuilder createProtocolOrElseThrowException(Integer managementPort, String exceptionMessage) {
         if (Objects.isNull(managementPort)) {
-            log.info("Unable to determine the managementPort from DynamicApplicationProperties so defaulting to: {}", DEFAULT_APPLICATION_PORT);
-            return createHttpProtocol(DEFAULT_MANAGEMENT_PORT);
+            throw new IllegalStateException(exceptionMessage);
         }
 
         return createHttpProtocol(managementPort);
     }
 
     private HttpProtocolBuilder createHttpProtocol(int portNumber) {
-        return HttpDsl.http.baseUrl("http://" + HOSTNAME + ":" + portNumber)
+        String baseUrl = "http://" + HOSTNAME + ":" + portNumber;
+        return HttpDsl.http.baseUrl(baseUrl)
                 .acceptHeader(APPLICATION_JSON)
                 .disableCaching()
                 .disableUrlEncoding()
