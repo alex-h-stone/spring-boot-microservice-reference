@@ -197,7 +197,7 @@ tasks.register('startWireMockEmbedded', JavaExec) {
     description = 'Start a WireMockServer to be used as a stub for the external API calls.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedWireMock')
+    getMainClass().set('com.cgi.example.petstore.embedded.WireMockEmbedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
@@ -206,7 +206,7 @@ tasks.register('startMongoDBEmbedded', JavaExec) {
     description = 'Start an in-memory Mongo DB server.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedMongoDB')
+    getMainClass().set('com.cgi.example.petstore.embedded.MongoDBEmbedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
@@ -215,6 +215,6 @@ tasks.register('startOAuth2Embedded', JavaExec) {
     description = 'Start an in-memory OAuth2 server.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.EmbeddedOAuth2')
+    getMainClass().set('com.cgi.example.petstore.embedded.OAuth2Embedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }

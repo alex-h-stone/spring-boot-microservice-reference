@@ -18,8 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @Slf4j
-public class EmbeddedWireMock implements ManageableService {
-  // TODO merge EmbeddedWireMock and WireMockForIntegrationTests
+public class WireMockEmbedded implements ManageableService {
+  // TODO merge WireMockEmbedded and WireMockForIntegrationTests
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
   private final String defaultResponse;
@@ -30,11 +30,11 @@ public class EmbeddedWireMock implements ManageableService {
    * microservice locally you may want to stub external API calls using WireMock.
    */
   public static void main(String[] args) {
-    ManageableService wireMockServer = new EmbeddedWireMock();
+    ManageableService wireMockServer = new WireMockEmbedded();
     wireMockServer.start();
   }
 
-  public EmbeddedWireMock() {
+  public WireMockEmbedded() {
     ResourceFileUtils resourceFileUtils = new ResourceFileUtils();
     this.defaultResponse =
         resourceFileUtils.readFile(

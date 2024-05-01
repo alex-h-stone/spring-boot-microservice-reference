@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration.utils;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.petstore.embedded.EmbeddedWireMock;
+import com.cgi.example.petstore.embedded.WireMockEmbedded;
 import com.cgi.example.petstore.local.SetSystemPropertiesForEmbeddedServices;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 public class WireMockForIntegrationTests
     implements SmartLifecycle { // TODO do we need SmartLifecycle
 
-  // TODO integrate with EmbeddedWireMock
-  private static final EmbeddedWireMock WIRE_MOCK;
+  // TODO integrate with WireMockEmbedded
+  private static final WireMockEmbedded WIRE_MOCK;
 
   static {
-    WIRE_MOCK = new EmbeddedWireMock();
+    WIRE_MOCK = new WireMockEmbedded();
     WIRE_MOCK.start();
     DynamicApplicationPropertiesRepository propertiesRepository =
         new DynamicApplicationPropertiesRepository();

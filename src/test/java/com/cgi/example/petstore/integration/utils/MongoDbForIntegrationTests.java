@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration.utils;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import com.cgi.example.petstore.embedded.EmbeddedMongoDB;
+import com.cgi.example.petstore.embedded.MongoDBEmbedded;
 import com.cgi.example.petstore.local.SetSystemPropertiesForEmbeddedServices;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MongoDbForIntegrationTests implements SmartLifecycle {
 
-  private static final EmbeddedMongoDB MONGO_DB;
+  private static final MongoDBEmbedded MONGO_DB;
 
   static {
-    MONGO_DB = new EmbeddedMongoDB();
+    MONGO_DB = new MongoDBEmbedded();
     MONGO_DB.start();
 
     DynamicApplicationPropertiesRepository propertiesRepository =

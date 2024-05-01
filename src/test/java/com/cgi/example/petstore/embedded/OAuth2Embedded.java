@@ -7,17 +7,17 @@ import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.OAuth2Config;
 
 @Slf4j
-public class EmbeddedOAuth2 implements ManageableService { // TODO do we need ManageableService?
+public class OAuth2Embedded implements ManageableService { // TODO do we need ManageableService?
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
   private MockOAuth2Server mockOAuth2Server;
 
   public static void main(String[] args) {
-    new EmbeddedOAuth2();
+    new OAuth2Embedded();
   }
 
-  public EmbeddedOAuth2() {
+  public OAuth2Embedded() {
     start();
   }
 

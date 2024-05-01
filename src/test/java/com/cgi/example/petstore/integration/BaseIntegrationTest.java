@@ -1,7 +1,7 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.PetStoreApplication;
-import com.cgi.example.petstore.embedded.EmbeddedOAuth2;
+import com.cgi.example.petstore.embedded.OAuth2Embedded;
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.integration.utils.WebClientExecutor;
 import com.cgi.example.petstore.integration.utils.WireMockForIntegrationTests;
@@ -25,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 public abstract class BaseIntegrationTest {
 
   private static final WireMockForIntegrationTests WIRE_MOCK = new WireMockForIntegrationTests();
-  private static final EmbeddedOAuth2 O_AUTH_2 = new EmbeddedOAuth2();
+  private static final OAuth2Embedded O_AUTH_2 = new OAuth2Embedded();
 
   protected final AssertionExecutables assertions = new AssertionExecutables();
   protected final ResourceFileUtils fileUtils = new ResourceFileUtils();

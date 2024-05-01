@@ -16,14 +16,14 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EmbeddedMongoDB implements ManageableService {
+public class MongoDBEmbedded implements ManageableService {
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
   private TransitionWalker.ReachedState<RunningMongodProcess> runningMongoDB;
 
   public static void main(String[] args) {
-    EmbeddedMongoDB mongoDB = new EmbeddedMongoDB();
+    MongoDBEmbedded mongoDB = new MongoDBEmbedded();
     mongoDB.start();
   }
 

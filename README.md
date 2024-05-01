@@ -245,7 +245,7 @@ and OAuth2 locally, all port numbers are assigned dynamically and subsequently d
 [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
 For example, when you start
-the [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) the
+the [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FWireMockEmbedded.java) the
 dynamic port number (determined at runtime) which
 it is listening on is persisted
 to [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
@@ -276,13 +276,13 @@ and OAuth2 authenticated application API endpoints.
 
 Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gradle](build.gradle)) and the embedded
 OAuth2
-server [EmbeddedOAuth2.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedOAuth2.java).
+server [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java).
 
 **Note**: That Spring OAuth2 configuration (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`) are resolved
 very
 early in the creation of the application context.  
 So to ensure that the system property `OAUTH_HOST` is overridden we
-define [EmbeddedOAuth2.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedOAuth2.java)
+define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java)
 as a `private static final` variable
 in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
 to ensure the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
@@ -307,7 +307,8 @@ for an example of making an external REST API call with retry logic using the Sp
 
 See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 
-Also see [EmbeddedWireMock.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FEmbeddedWireMock.java) for how to run a stand-alone embedded stub server for running a microservice 
+Also see [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FWireMockEmbedded.java)
+for how to run a stand-alone embedded stub server for running a microservice
 locally which has external API dependencies.
 
 In
