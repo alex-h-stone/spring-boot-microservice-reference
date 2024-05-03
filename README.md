@@ -375,7 +375,13 @@ There is also a metrics collection feature, which polls the JVM memory usage usi
 The metrics are recorded and reported on following the load test. See [MemoryUsageMetrics.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java) 
 for implementation details.
 
-All required port numbers are configured dynamically in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java) using the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).   
+All required port numbers are configured dynamically
+in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java)
+using
+the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
+
+See [docs.gatling.io](https://docs.gatling.io/reference/script/core/simulation/) for additional information about
+`Gatling`.
 
 ---
 

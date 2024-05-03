@@ -48,19 +48,19 @@ public class ApplicationScenario {
     public PopulationBuilder createWith(ConcurrentLinkedQueue<String> oAuth2BearerTokens) {
         HttpRequestActionBuilder addPet = HttpDsl.http("Add Pet")
                 .post("/api/v1/pet-store/pets")
-                .header("Authorization", "${oAuth2AuthorizationHeader}")
+                .header("Authorization", "#{oAuth2AuthorizationHeader}")
                 .body(StringBody(ADD_PET_REQUEST_BODY_JSON)).asJson()
                 .check(status().is(200))
                 .check(jsonPath("$.petId").saveAs("petId"));
 
         HttpRequestActionBuilder getPet = HttpDsl.http("Get Pet")
-                .get("/api/v1/pet-store/pets/${petId}")
-                .header("Authorization", "${oAuth2AuthorizationHeader}")
+                .get("/api/v1/pet-store/pets/#{petId}")
+                .header("Authorization", "#{oAuth2AuthorizationHeader}")
                 .check(status().is(200));
 
         HttpRequestActionBuilder deletePet = HttpDsl.http("Delete Pet")
-                .delete("/api/v1/pet-store/pets/${petId}")
-                .header("Authorization", "${oAuth2AuthorizationHeader}")
+                .delete("/api/v1/pet-store/pets/#{petId}")
+                .header("Authorization", "#{oAuth2AuthorizationHeader}")
                 .check(status().is(200));
 
         ScenarioBuilder applicationScenario = CoreDsl.scenario("Application scenario")

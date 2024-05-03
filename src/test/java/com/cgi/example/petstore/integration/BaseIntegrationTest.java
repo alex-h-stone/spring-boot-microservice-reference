@@ -2,11 +2,12 @@ package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.PetStoreApplication;
 import com.cgi.example.petstore.embedded.OAuth2Embedded;
+import com.cgi.example.petstore.embedded.WireMockEmbedded;
 import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.integration.utils.WebClientExecutor;
-import com.cgi.example.petstore.integration.utils.WireMockForIntegrationTests;
 import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("local")
 public abstract class BaseIntegrationTest {
 
-  private static final WireMockForIntegrationTests WIRE_MOCK = new WireMockForIntegrationTests();
+  private static final WireMockEmbedded WIRE_MOCK = new WireMockEmbedded();
   private static final OAuth2Embedded O_AUTH_2 = new OAuth2Embedded();
 
   protected final AssertionExecutables assertions = new AssertionExecutables();
@@ -48,8 +49,8 @@ public abstract class BaseIntegrationTest {
     dropAllMongoDBCollections();
   }
 
-  public WireMockForIntegrationTests wireMock() {
-    return WIRE_MOCK;
+  public WireMockServer wireMock() {
+    return WIRE_MOCK.getWireMockServer();
   }
 
   private void dropAllMongoDBCollections() {

@@ -57,7 +57,7 @@ public class RetrieveOAuth2Tokens {
 
         HttpRequestActionBuilder oAuth2Token = HttpDsl.http("OAuth2 get and store token")
                 .post("/default/token")
-                .body(StringBody("grant_type=authorization_code&code=${oAuth2Code}&redirect_uri=/&client_id=someClientId")).asFormUrlEncoded()
+                .body(StringBody("grant_type=authorization_code&code=#{oAuth2Code}&redirect_uri=/&client_id=someClientId")).asFormUrlEncoded()
                 .check(status().is(200))
                 .check(jsonPath("$.access_token").exists())
                 .check(jsonPath("$.access_token").validate("Store OAuth2 token", (accessToken, session) -> {
