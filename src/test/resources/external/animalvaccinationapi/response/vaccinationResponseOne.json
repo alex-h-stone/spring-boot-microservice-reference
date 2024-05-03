@@ -1,9 +1,0 @@
-{
-  "vaccinationId": "CF54785412K",
-  "vaccinations": [
-    {
-      "vaccinationName": "Parainfluenza",
-      "dateOfAdminister": "2017-07-21"
-    }
-  ]
-}

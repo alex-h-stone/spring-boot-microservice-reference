@@ -29,9 +29,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_ReturnVaccinationDetailsForValidVaccinationId() {
-    String validVaccinationId = "AF54785412K";
-
-    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations(validVaccinationId);
+    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
 
     assertTrue(actualResponse.isPresent());
     List<Vaccination> vaccinations = actualResponse.get();
@@ -55,9 +53,7 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   }
 
   private ResponseDefinitionBuilder successResponse() {
-    String body =
-        fileUtils.readFile(
-            "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
+    String body = fileUtils.readFile("wiremock\\__files\\vaccinationResponseMultiple.json");
 
     return aResponse()
         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -70,36 +66,32 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
     final String scenarioName = "RetryUntilSuccess";
     wireMock()
         .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+            WireMock.get(urlEqualTo("/vaccinations/RETRY54785412K"))
                 .inScenario(scenarioName)
                 .willSetStateTo("Second Call")
                 .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
     wireMock()
         .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+            WireMock.get(urlEqualTo("/vaccinations/RETRY54785412K"))
                 .inScenario(scenarioName)
                 .whenScenarioStateIs("Second Call")
                 .willSetStateTo("Third Call")
                 .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
 
-    String body =
-        fileUtils.readFile(
-            "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
-
     wireMock()
         .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
+            WireMock.get(urlEqualTo("/vaccinations/RETRY54785412K"))
                 .inScenario(scenarioName)
                 .whenScenarioStateIs("Third Call")
                 .willReturn(successResponse()));
 
-    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
+    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("RETRY54785412K");
 
     assertTrue(actualResponse.isPresent());
     List<Vaccination> vaccinations = actualResponse.get();
     assertThat(vaccinations, Matchers.iterableWithSize(3));
-    UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/AF54785412K"), false);
+    UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/RETRY54785412K"), false);
     wireMock().verify(3, newRequestPattern(RequestMethod.GET, url));
   }
 }
