@@ -1,7 +1,5 @@
 package com.cgi.example.petstore.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
@@ -13,7 +11,6 @@ import com.cgi.example.petstore.model.PetAvailabilityStatus;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetPatchRequest;
 import com.cgi.example.petstore.utils.TestData;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
 import java.util.Arrays;
@@ -22,8 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -37,18 +32,6 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_Successfully_Add_Modify_Find_Update_PurchaseAPet() {
-    String vaccinations =
-        fileUtils.readFile(
-            "external\\animalvaccinationapi\\response\\vaccinationResponseMultiple.json");
-    wireMock()
-        .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-                .willReturn(
-                    aResponse()
-                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(vaccinations)
-                        .withStatus(HttpStatus.OK.value())));
-
     verifyNotPetsOfAnyStatusesAreAlreadyPresent();
 
     String newPetId = addANewPet();

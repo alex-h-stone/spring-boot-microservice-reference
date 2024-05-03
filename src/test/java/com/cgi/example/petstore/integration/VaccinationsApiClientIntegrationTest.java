@@ -29,10 +29,6 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_ReturnVaccinationDetailsForValidVaccinationId() {
-    wireMock()
-        .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K")).willReturn(successResponse()));
-
     String validVaccinationId = "AF54785412K";
 
     Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations(validVaccinationId);
@@ -44,23 +40,6 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_ReturnEmptyOptionalForUnknownVaccinationId() {
-    wireMock()
-        .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/Z6456INVALID"))
-                .willReturn(
-                    aResponse()
-                        .withHeader("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                        .withBody(
-                            """
-                                {
-                                  "type": "about:blank",
-                                  "title": "Not Found",
-                                  "status": 404,
-                                  "detail": "Unable to find vaccinations for Id [Z6456INVALID]"
-                                }
-                                """)
-                        .withStatus(HttpStatus.NOT_FOUND.value())));
-
     Optional<List<Vaccination>> optionalVaccinations = apiClient.getVaccinations("Z6456INVALID");
 
     assertTrue(optionalVaccinations.isEmpty());
@@ -68,15 +47,10 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
   @Test
   void should_RetryTwiceIfTheRequestFailsBeforeEventuallyFailing() {
-    wireMock()
-        .stubFor(
-            WireMock.get(urlEqualTo("/vaccinations/AF54785412K"))
-                .willReturn(aResponse().withStatus(HttpStatus.GATEWAY_TIMEOUT.value())));
-
-    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("AF54785412K");
+    Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("Z504INVALID");
 
     assertTrue(actualResponse.isEmpty());
-    UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/AF54785412K"), false);
+    UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/Z504INVALID"), false);
     wireMock().verify(3, newRequestPattern(RequestMethod.GET, url));
   }
 

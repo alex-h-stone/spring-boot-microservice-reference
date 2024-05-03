@@ -311,9 +311,7 @@ Also see [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetst
 for how to run a stand-alone embedded stub server for running a microservice
 locally which has external API dependencies.
 
-In
-addition, [WireMockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWireMockForIntegrationTests.java)
-for how to utilise Wire Mock for automated integration tests.
+Along with the Wire Mock mapping and stub response files in [wiremock](src%2Ftest%2Fresources%2Fwiremock) directory.
 
 ---
 

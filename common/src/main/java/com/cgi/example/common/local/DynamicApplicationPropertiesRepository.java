@@ -95,7 +95,7 @@ public class DynamicApplicationPropertiesRepository {
     private DynamicApplicationProperties retrieve() {
         File file = pathToApplicationProperties.toFile();
         if (!file.exists()) {
-            log.info("Given the the file path [{}] unable to find: {}", file.getAbsolutePath(), toClickableUriString.apply(file));
+            log.debug("Given the the file path [{}] unable to find: {}", file.getAbsolutePath(), toClickableUriString.apply(file));
             return new DynamicApplicationProperties();
         }
 
@@ -106,7 +106,7 @@ public class DynamicApplicationPropertiesRepository {
         try {
             String dynamicApplicationPropertiesJson =
                     objectMapper.writeValueAsString(applicationProperties);
-            log.info("About to save dynamicApplicationProperties: {} to: {}",
+            log.debug("About to save dynamicApplicationProperties: {} to: {}",
                     applicationProperties, toClickableUriString.apply(pathToApplicationProperties.toFile()));
 
             Files.createDirectories(pathToApplicationProperties.getParent());
@@ -114,7 +114,7 @@ public class DynamicApplicationPropertiesRepository {
                     pathToApplicationProperties,
                     dynamicApplicationPropertiesJson,
                     StandardCharsets.UTF_8);
-            log.info("Successfully saved dynamicApplicationProperties: {}", toClickableUriString.apply(pathToApplicationProperties.toFile()));
+            log.debug("Successfully saved dynamicApplicationProperties: {}", toClickableUriString.apply(pathToApplicationProperties.toFile()));
         } catch (JsonProcessingException e) {
             log.warn("Unable to deserialise dynamicApplicationProperties: {}", e.getMessage(), e);
         } catch (IOException e) {
@@ -126,7 +126,7 @@ public class DynamicApplicationPropertiesRepository {
     private DynamicApplicationProperties readApplicationPropertiesFrom(Path applicationPropertiesPath) {
         try {
             String dynamicApplicationPropertiesJson = Files.readString(applicationPropertiesPath);
-            log.info("Retrieved dynamicApplicationProperties: {}", dynamicApplicationPropertiesJson);
+            log.debug("Retrieved dynamicApplicationProperties: {}", dynamicApplicationPropertiesJson);
 
             return objectMapper.readValue(dynamicApplicationPropertiesJson, DynamicApplicationProperties.class);
         } catch (IOException e) {
