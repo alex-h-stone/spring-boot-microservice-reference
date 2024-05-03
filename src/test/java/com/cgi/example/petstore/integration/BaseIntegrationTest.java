@@ -58,7 +58,6 @@ public abstract class BaseIntegrationTest {
     collectionNames.forEach(mongoTemplate::dropCollection);
   }
 
-  // TODO does this belong here?
   public static String getOAuth2AuthorizationHeader() {
     return "Bearer " + O_AUTH_2.issueToken();
   }

@@ -8,8 +8,11 @@ import no.nav.security.mock.oauth2.OAuth2Config;
 @Slf4j
 public class OAuth2Embedded {
 
+  private static final boolean NO_INTERACTIVE_LOGIN = false;
+
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
+
   private final MockOAuth2Server mockOAuth2Server;
 
   public static void main(String[] args) {
@@ -17,7 +20,7 @@ public class OAuth2Embedded {
   }
 
   public OAuth2Embedded() {
-    OAuth2Config config = new OAuth2Config(false);
+    OAuth2Config config = new OAuth2Config(NO_INTERACTIVE_LOGIN);
     mockOAuth2Server = new MockOAuth2Server(config);
 
     log.info("Starting Embedded OAuth2");
