@@ -29,6 +29,7 @@ Spring Boot 3 based microservice template integrating features which address a m
 23. [Actuator Endpoints](#actuator-endpoints)
 24. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
 25. [Automated Code Style Formatting](#automated-code-style-formatting)
+26. [Check for updates to dependencies](#check-for-updates-to-dependencies)
 26. [Notes](#notes)
 
 ---
@@ -432,6 +433,22 @@ And verified via:
 `./gradlew spotlessCheck`
 
 See `spotless` in [build.gradle](build.gradle) for details.
+
+---
+
+#### Check for updates to dependencies
+
+To check all dependencies for any updated versions use the `com.github.ben-manes.versions`
+plugin https://github.com/ben-manes/gradle-versions-plugin.  
+To execute it run the Gradle task and verify the output.  
+`./gradlew dependencyUpdates`
+
+You will see something like
+
+`The following dependencies have later milestone versions:`  
+`com.fasterxml.jackson.core:jackson-databind [2.17.0 -> 2.17.1]`  
+`jakarta.validation:jakarta.validation-api [3.0.2 -> 3.1.0-M2]`  
+`no.nav.security:mock-oauth2-server [2.0.0 -> 2.1.5]`
 
 ---
 

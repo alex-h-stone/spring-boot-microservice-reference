@@ -8,6 +8,7 @@ plugins {
     id 'org.springframework.boot' version "$springBootVersion"
     id 'org.openapi.generator' version "$openApiGeneratorVersion"
     id 'com.diffplug.spotless' version "$diffPlugSpotlessVersion"
+    id 'com.github.ben-manes.versions' version "$versionsPluginVersion"
 }
 
 apply plugin: 'io.spring.dependency-management'
