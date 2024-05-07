@@ -21,28 +21,22 @@ public class ApiTestApplication {
     private final DynamicApplicationPropertiesRepository propertiesRepository = new DynamicApplicationPropertiesRepository();
     private final ToClickableUriString toClickableUriString = new ToClickableUriString();
 
+    /**
+     * To run this main method directly, your working directory must be set to be spring-boot-microservice-template\api-test
+     * If using IntelliJ this is found under "Run/Debug Configurations".
+     *
+     * @param args Not used
+     */
     public static void main(String[] args) {
         ApiTestApplication apiTestApplication = new ApiTestApplication();
         apiTestApplication.start();
     }
 
     private void start() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.redirectErrorStream(true);
-
         File htmlReport = reportFile("html");
         File jsonReport = reportFile("json");
 
-        processBuilder.command("cmd", "/c", "newman",
-                "run", POSTMAN_COLLECTION,
-                "--reporters", "cli,htmlextra,json",
-                "--reporter-htmlextra-export", htmlReport.getAbsolutePath(),
-                "--reporter-json-export", jsonReport.getAbsolutePath(),
-                "--environment", POSTMAN_ENVIRONMENT,
-                "--env-var", "applicationPort=" + propertiesRepository.getApplicationPort(),
-                "--env-var", "managementPort=" + propertiesRepository.getManagementPort(),
-                "--env-var", "wireMockPort=" + propertiesRepository.getWireMockPort(),
-                "--env-var", "oAuth2Port=" + propertiesRepository.getOAuth2Port());
+        ProcessBuilder processBuilder = createProcessBuilder(htmlReport, jsonReport);
 
         Process process = startProcess(processBuilder);
 
@@ -55,6 +49,24 @@ public class ApiTestApplication {
             System.err.println("API test failure, see reports above");
         }
         System.exit(exitCode);
+    }
+
+    private ProcessBuilder createProcessBuilder(File htmlReport, File jsonReport) {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.redirectErrorStream(true);
+
+        processBuilder.command("cmd", "/c", "newman",
+                "run", POSTMAN_COLLECTION,
+                "--reporters", "cli,htmlextra,json",
+                "--reporter-htmlextra-export", htmlReport.getAbsolutePath(),
+                "--reporter-json-export", jsonReport.getAbsolutePath(),
+                "--environment", POSTMAN_ENVIRONMENT,
+                "--env-var", "applicationPort=" + propertiesRepository.getApplicationPort(),
+                "--env-var", "managementPort=" + propertiesRepository.getManagementPort(),
+                "--env-var", "wireMockPort=" + propertiesRepository.getWireMockPort(),
+                "--env-var", "oAuth2Port=" + propertiesRepository.getOAuth2Port());
+
+        return processBuilder;
     }
 
 
@@ -80,9 +92,12 @@ public class ApiTestApplication {
         try {
             log.info("Starting API tests");
             Process started = processBuilder.start();
+
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(started.getInputStream()))) {
-                reader.lines().forEach(log::info);
+                reader.lines()
+                        .forEach(log::info);
             }
+
             return started;
         } catch (IOException e) {
             log.error("IOException thrown when executing API tests: {}", e.getMessage(), e);

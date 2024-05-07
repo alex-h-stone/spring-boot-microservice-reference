@@ -23,10 +23,10 @@ public class OAuth2Embedded {
     OAuth2Config config = new OAuth2Config(NO_INTERACTIVE_LOGIN);
     mockOAuth2Server = new MockOAuth2Server(config);
 
-    log.info("Starting Embedded OAuth2");
+    log.info("Starting OAuth2 Embedded");
     mockOAuth2Server.start();
     int port = mockOAuth2Server.getConfig().getHttpServer().port();
-    log.info("Started Embedded OAuth2 on port: {}", port);
+    log.info("Started OAuth2 Embedded on port: {}", port);
 
     propertiesRepository.setOAuth2Port(getClass(), port);
   }

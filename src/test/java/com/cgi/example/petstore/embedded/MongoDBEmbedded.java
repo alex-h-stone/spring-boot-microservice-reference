@@ -30,14 +30,14 @@ public class MongoDBEmbedded implements ManageableService {
   @Override
   public void start() {
     if (isRunning()) {
-      log.debug("Cannot start Embedded MongoDB as it is already running");
+      log.debug("Cannot start MongoDB Embedded as it is already running");
       return;
     }
 
     ImmutableMongod mongoDB =
         Mongod.builder().net(Start.to(Net.class).initializedWith(Net.defaults())).build();
 
-    log.info("Starting Embedded MongoDB");
+    log.info("Starting MongoDB Embedded");
     executeAsDetachedThread(() -> runningMongoDB = mongoDB.start(Version.V4_4_18));
 
     waitUntil(this::isRunning);
@@ -45,7 +45,7 @@ public class MongoDBEmbedded implements ManageableService {
     ServerAddress serverAddress = runningMongoDB.current().getServerAddress();
     String host = serverAddress.getHost();
     int port = serverAddress.getPort();
-    log.info("Started Embedded MongoDB on {}:{}", host, port);
+    log.info("Started MongoDB Embedded on {}:{}", host, port);
 
     propertiesRepository.setMongoDBPort(getClass(), port);
     blockAndWait();
@@ -55,7 +55,7 @@ public class MongoDBEmbedded implements ManageableService {
     try {
       System.in.read();
     } catch (IOException e) {
-      String message = "Embedded MongoDB process is exiting: [%s]".formatted(e.getMessage());
+      String message = "MongoDB Embedded process is exiting: [%s]".formatted(e.getMessage());
       log.info(message, e);
       throw new RuntimeException(message, e);
     }
@@ -69,14 +69,14 @@ public class MongoDBEmbedded implements ManageableService {
   @Override
   public void stop() {
     if (!isRunning()) {
-      log.debug("Cannot stop Embedded MongoDB as it has already stopped");
+      log.debug("Cannot stop MongoDB Embedded  as it has already stopped");
       return;
     }
 
-    log.info("Shutting down Embedded MongoDB");
+    log.info("Shutting down MongoDB Embedded ");
     runningMongoDB.close();
     waitUntil(() -> !isRunning());
-    log.info("Embedded MongoDB has shut down");
+    log.info("MongoDB Embedded has shut down");
   }
 
   @Override
