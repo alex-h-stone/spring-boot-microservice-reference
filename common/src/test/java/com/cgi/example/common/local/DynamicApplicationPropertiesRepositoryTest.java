@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -95,6 +96,19 @@ class DynamicApplicationPropertiesRepositoryTest {
     }
 
     @Test
+    void setOAuth2PortShouldSuccessfullyPersist() {
+        int oAuth2Port = 8000;
+        repository.setOAuth2Port(getClass(), oAuth2Port);
+
+        Integer actualOAuth2Port = repository.getOAuth2Port();
+        String actualOAuth2Host = repository.getOAuth2Host();
+
+        assertEquals(oAuth2Port, actualOAuth2Port);
+        assertNotNull(actualOAuth2Host);
+        assertEquals("http://localhost:8000", actualOAuth2Host);
+    }
+
+    @Test
     void shouldBeAbleToSetAndGetAllPortNumbersIndependently() {
         int applicationPort = 9099;
         repository.setApplicationPort(getClass(), applicationPort);
@@ -108,12 +122,19 @@ class DynamicApplicationPropertiesRepositoryTest {
         int mongoDBPort = 7044;
         repository.setMongoDBPort(getClass(), mongoDBPort);
 
-        assertEquals(3, Set.of(applicationPort, managementPort, wireMockPort).size(),
+        int oAuth2Port = 6022;
+        repository.setOAuth2Port(getClass(), oAuth2Port);
+
+        assertEquals(4, Set.of(applicationPort, managementPort, wireMockPort, oAuth2Port).size(),
                 "Failed precondition, expected all port numbers to be unique");
 
-        assertEquals(applicationPort, repository.getApplicationPort());
-        assertEquals(managementPort, repository.getManagementPort());
-        assertEquals(wireMockPort, repository.getWireMockPort());
-        assertEquals("mongodb://localhost:7044", repository.getMongoDBConnectionString());
+        assertAll(
+                () -> assertEquals(applicationPort, repository.getApplicationPort()),
+                () -> assertEquals(managementPort, repository.getManagementPort()),
+                () -> assertEquals(wireMockPort, repository.getWireMockPort()),
+                () -> assertEquals("mongodb://localhost:7044", repository.getMongoDBConnectionString()),
+                () -> assertEquals(oAuth2Port, repository.getOAuth2Port()),
+                () -> assertEquals("http://localhost:6022", repository.getOAuth2Host())
+        );
     }
 }

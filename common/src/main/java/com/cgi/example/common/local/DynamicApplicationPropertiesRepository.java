@@ -1,8 +1,6 @@
 package com.cgi.example.common.local;
 
 import com.cgi.example.common.DynamicApplicationFileProperties;
-import com.cgi.example.common.local.model.DynamicApplicationProperties;
-import com.cgi.example.common.local.model.Port;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -135,12 +133,11 @@ public class DynamicApplicationPropertiesRepository {
         return new DynamicApplicationProperties();
     }
 
-    private Port createPort(Class<?> modifiedBy,
-                            int managementPortNumber) {
-        Port managementPort = new Port();
-        managementPort.setPort(managementPortNumber);
-        managementPort.setModifiedBy(modifiedBy.getCanonicalName());
-        managementPort.setModifiedAt(Instant.now());
-        return managementPort;
+    private Port createPort(Class<?> modifiedBy, int portNumber) {
+        return Port.builder()
+                .port(portNumber)
+                .modifiedBy(modifiedBy.getCanonicalName())
+                .modifiedAt(Instant.now())
+                .build();
     }
 }
