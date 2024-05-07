@@ -13,21 +13,23 @@ import de.flapdoodle.reverse.TransitionWalker;
 import de.flapdoodle.reverse.transitions.Start;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Slf4j
 public class MongoDBEmbedded {
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
+
   private TransitionWalker.ReachedState<RunningMongodProcess> runningMongoDB;
 
   public static void main(String[] args) {
-    MongoDBEmbedded mongoDB = new MongoDBEmbedded();
-    mongoDB.start();
+    new MongoDBEmbedded();
   }
 
-  public void start() {
+  public MongoDBEmbedded() {
     if (isRunning()) {
       log.debug("Cannot start MongoDB Embedded as it is already running");
       return;
@@ -41,16 +43,20 @@ public class MongoDBEmbedded {
 
     waitUntil(this::isRunning);
 
+    storeMongoDBPortNumber();
+    blockAndWait();
+  }
+
+  private void storeMongoDBPortNumber() {
     ServerAddress serverAddress = runningMongoDB.current().getServerAddress();
     String host = serverAddress.getHost();
     int port = serverAddress.getPort();
     log.info("Started MongoDB Embedded on {}:{}", host, port);
 
     propertiesRepository.setMongoDBPort(getClass(), port);
-    blockAndWait();
   }
 
-  private static void blockAndWait() {
+  private void blockAndWait() {
     try {
       System.in.read();
     } catch (IOException e) {
@@ -65,21 +71,15 @@ public class MongoDBEmbedded {
     detachedThread.start();
   }
 
-  public void stop() {
-    if (!isRunning()) {
-      log.debug("Cannot stop MongoDB Embedded  as it has already stopped");
-      return;
-    }
-
-    log.info("Shutting down MongoDB Embedded ");
-    runningMongoDB.close();
-    waitUntil(() -> !isRunning());
-    log.info("MongoDB Embedded has shut down");
-  }
-
-  public boolean isRunning() {
+  private boolean isRunning() {
     return Objects.nonNull(runningMongoDB)
         && Objects.nonNull(runningMongoDB.current())
         && runningMongoDB.current().isAlive();
+  }
+
+  public void resetAllUsing(MongoTemplate mongoTemplate) {
+    Set<String> collectionNames = mongoTemplate.getCollectionNames();
+
+    collectionNames.forEach(mongoTemplate::dropCollection);
   }
 }
