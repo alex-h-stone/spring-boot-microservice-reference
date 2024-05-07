@@ -278,14 +278,13 @@ Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gra
 OAuth2
 server [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java).
 
-**Note**: That Spring OAuth2 configuration (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`) are resolved
-very
-early in the creation of the application context.  
-So to ensure that the system property `OAUTH_HOST` is overridden we
-define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java)
-as a `private static final` variable
-in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
-to ensure the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
+**Note**: That Spring OAuth2 configuration properties (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`)
+are resolved very early in the creation of the application context.  
+To ensure that the system property `OAUTH_HOST` is overridden before the application context is created we
+define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java) as
+a `private static final` variable
+in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java).
+So the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
 
 ---
 
