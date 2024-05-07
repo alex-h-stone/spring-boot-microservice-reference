@@ -26,11 +26,11 @@ public class LoadSimulationDefinition extends Simulation {
         PopulationBuilder memoryUsageScenario = memoryUsageMetrics
                 .createMemoryMetricsPopulation(TIME_TO_RUN);
 
-        PopulationBuilder populationBuilder = new ApplicationScenario(REQUESTS_PER_SECOND, TIME_TO_RUN)
+        PopulationBuilder applicationScenario = new ApplicationScenario(REQUESTS_PER_SECOND, TIME_TO_RUN)
                 .createWith(oAuth2BearerTokens);
 
         PopulationBuilder completeScenario = retrieveOAuth2Tokens
-                .andThen(memoryUsageScenario, populationBuilder);
+                .andThen(memoryUsageScenario, applicationScenario);
 
         setUp(completeScenario);
     }

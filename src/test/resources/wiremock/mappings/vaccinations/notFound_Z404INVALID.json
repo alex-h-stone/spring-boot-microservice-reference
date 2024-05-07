@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 404,
-    "bodyFileName": "notFoundResponse_Z404INVALID.json",
+    "bodyFileName": "vaccinations/notFoundResponse_Z404INVALID.json",
     "headers": {
       "Content-Type": "application/json"
     }

@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.matching.RequestPatternBuilder.newRequestPattern;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.cgi.example.external.animalvaccination.model.Vaccination;
@@ -12,6 +13,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.PathTemplatePattern;
+import com.github.tomakehurst.wiremock.matching.UrlPathTemplatePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +55,9 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
   }
 
   private ResponseDefinitionBuilder successResponse() {
-    String body = fileUtils.readFile("wiremock\\__files\\vaccinationResponseMultiple.json");
+    String body =
+        fileUtils.readFile(
+            "wiremock\\__files\\vaccinations\\multipleVaccinationsResponse_AF54785412K.json");
 
     return aResponse()
         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -88,10 +92,15 @@ class VaccinationsApiClientIntegrationTest extends BaseIntegrationTest {
 
     Optional<List<Vaccination>> actualResponse = apiClient.getVaccinations("RETRY54785412K");
 
-    assertTrue(actualResponse.isPresent());
-    List<Vaccination> vaccinations = actualResponse.get();
-    assertThat(vaccinations, Matchers.iterableWithSize(3));
-    UrlPattern url = new UrlPattern(new PathTemplatePattern("/vaccinations/RETRY54785412K"), false);
-    wireMock().verify(3, newRequestPattern(RequestMethod.GET, url));
+    assertAll(
+        () -> assertTrue(actualResponse.isPresent()),
+        () -> assertThat(actualResponse.get(), Matchers.iterableWithSize(3)),
+        () ->
+            wireMock()
+                .verify(
+                    3,
+                    newRequestPattern(
+                        RequestMethod.GET,
+                        new UrlPathTemplatePattern("/vaccinations/RETRY54785412K"))));
   }
 }

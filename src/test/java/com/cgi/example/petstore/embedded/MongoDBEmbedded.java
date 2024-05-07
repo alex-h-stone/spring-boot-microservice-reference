@@ -16,7 +16,7 @@ import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MongoDBEmbedded implements ManageableService {
+public class MongoDBEmbedded {
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
       new DynamicApplicationPropertiesRepository();
@@ -27,7 +27,6 @@ public class MongoDBEmbedded implements ManageableService {
     mongoDB.start();
   }
 
-  @Override
   public void start() {
     if (isRunning()) {
       log.debug("Cannot start MongoDB Embedded as it is already running");
@@ -66,7 +65,6 @@ public class MongoDBEmbedded implements ManageableService {
     detachedThread.start();
   }
 
-  @Override
   public void stop() {
     if (!isRunning()) {
       log.debug("Cannot stop MongoDB Embedded  as it has already stopped");
@@ -79,7 +77,6 @@ public class MongoDBEmbedded implements ManageableService {
     log.info("MongoDB Embedded has shut down");
   }
 
-  @Override
   public boolean isRunning() {
     return Objects.nonNull(runningMongoDB)
         && Objects.nonNull(runningMongoDB.current())

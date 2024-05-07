@@ -5,7 +5,7 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "vaccinationResponseMultiple.json",
+    "bodyFileName": "vaccinations/multipleVaccinationsResponse_AF54785412K.json",
     "headers": {
       "Content-Type": "application/json"
     }
