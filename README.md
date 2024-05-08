@@ -329,11 +329,26 @@ and the `@LogMethodResponse` to log the method return object.
 #### Logging with a Mapped Diagnostic Context (MDC)
 
 To improve the traceability of user actions when looking at the microservice logs there is a Mapped Diagnostic Context (MDC).
-This class [MappedDiagnosticContextFilter.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FMappedDiagnosticContextFilter.java)
-ensures that every log statement includes both the `userId` and `remoteAddress`.  
-Making retrieving logs for a specific user or remote system trivial.
+All MDC keys are defined in 1 central
+place [MappedDiagnosticContextKey.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKey.java),
+along with the logic to clear the MDC.  
+Calling `MDC.remove()` for only the required keys has a very slight performance improvement over calling `MDC.clear()`.
 
-Consider also including a unique session Id in the MDC, provided by an API Gateway.
+The
+class [ClearMappedDiagnosticContextWhenDone.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FClearMappedDiagnosticContextWhenDone.java)
+ensures that the MDC for the thread is cleared down after each request.
+
+The
+class [AddRequestIdToMappedDiagnosticContext.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddRequestIdToMappedDiagnosticContext.java)
+and the associated `addRequestIdToLoggingFilter` configuration
+in [WebConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
+adds a unique `requestId` (UUID) to the MDC for each request.
+
+The
+class [AddUsernameToMappedDiagnosticContext.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUsernameToMappedDiagnosticContext.java)
+and the associated `addInterceptors` configuration
+in [WebConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
+includes the `username`, which is derived from the `HttpServletRequest Principal`.
 
 ---
 
