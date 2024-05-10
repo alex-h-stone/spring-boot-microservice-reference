@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.controller;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -41,8 +42,9 @@ class PetStoreControllerTest {
 
     ResponseEntity<PetResponse> response = controller.addPet(newPetRequest);
 
-    verify(service).addToPetStore(newPetRequest);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(service).addToPetStore(newPetRequest),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 
   @Test
@@ -51,9 +53,10 @@ class PetStoreControllerTest {
 
     ResponseEntity<PetDeletionResponse> response = controller.deletePetById(petId);
 
-    verify(validator).validatePetId(petId);
-    verify(service).deletePetFromPetStore(petId);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(validator).validatePetId(petId),
+        () -> verify(service).deletePetFromPetStore(petId),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 
   @Test
@@ -63,8 +66,9 @@ class PetStoreControllerTest {
 
     ResponseEntity<MultiplePetsResponse> response = controller.findPetsByStatus(statuses);
 
-    verify(service).retrieveAllPetsWithAStatusMatching(statuses);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(service).retrieveAllPetsWithAStatusMatching(statuses),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 
   @Test
@@ -73,9 +77,10 @@ class PetStoreControllerTest {
 
     ResponseEntity<PetResponse> response = controller.getPetById(petId);
 
-    verify(validator).validatePetId(petId);
-    verify(service).retrievePetDetails(petId);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(validator).validatePetId(petId),
+        () -> verify(service).retrievePetDetails(petId),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 
   @Test
@@ -85,9 +90,10 @@ class PetStoreControllerTest {
 
     ResponseEntity<PetResponse> response = controller.purchasePet(petId, customerRequest);
 
-    verify(validator).validatePetId(petId);
-    verify(service).purchase(petId, customerRequest);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(validator).validatePetId(petId),
+        () -> verify(service).purchase(petId, customerRequest),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 
   @Test
@@ -98,8 +104,9 @@ class PetStoreControllerTest {
 
     ResponseEntity<PetResponse> response = controller.patchPet(petPatch);
 
-    verify(validator).validatePetId(petId);
-    verify(service).patch(petPatch);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertAll(
+        () -> verify(validator).validatePetId(petId),
+        () -> verify(service).patch(petPatch),
+        () -> assertEquals(HttpStatus.OK, response.getStatusCode()));
   }
 }

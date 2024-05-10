@@ -1,5 +1,6 @@
 package com.cgi.example.petstore.logging.mdc;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,8 +50,9 @@ class AddUsernameToMappedDiagnosticContextTest {
 
     boolean preHandleResult = interceptor.preHandle(httpRequest, httpResponse, mockHandler);
 
-    assertTrue(preHandleResult);
-    assertEquals(expectedUsername, getUsernameFromMdc());
+    assertAll(
+        () -> assertTrue(preHandleResult),
+        () -> assertEquals(expectedUsername, getUsernameFromMdc()));
   }
 
   private String getUsernameFromMdc() {
