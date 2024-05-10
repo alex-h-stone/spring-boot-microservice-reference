@@ -1,8 +1,9 @@
 package com.cgi.example.petstore.exception.handler;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cgi.example.petstore.exception.AbstractApplicationException;
+import com.cgi.example.petstore.exception.ApplicationException;
 import com.cgi.example.petstore.exception.ValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -25,16 +26,18 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  void given_ApplicationException_Should_ReturnPopulatedProblemDetail() {
-    AbstractApplicationException applicationException =
-        new AbstractApplicationException("Custom error message", HttpStatus.BAD_GATEWAY) {};
+  void given_AbstractApplicationException_Should_ReturnPopulatedProblemDetail() {
+    ApplicationException applicationException =
+        new ApplicationException("Custom error message", HttpStatus.BAD_GATEWAY);
 
     ProblemDetail actualProblemDetail = handler.onApplicationException(applicationException);
 
-    assertEquals(HttpStatus.BAD_GATEWAY.value(), actualProblemDetail.getStatus());
-    assertEquals(
-        "Handled by GlobalExceptionHandler: [Custom error message]",
-        actualProblemDetail.getDetail());
+    assertAll(
+        () -> assertEquals(HttpStatus.BAD_GATEWAY.value(), actualProblemDetail.getStatus()),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [Custom error message]",
+                actualProblemDetail.getDetail()));
   }
 
   @Test
@@ -43,9 +46,12 @@ class GlobalExceptionHandlerTest {
 
     ProblemDetail actualProblemDetail = handler.onValidationException(validationException);
 
-    assertEquals(HttpStatus.BAD_REQUEST.value(), actualProblemDetail.getStatus());
-    assertEquals(
-        "Handled by GlobalExceptionHandler: [Validation failed]", actualProblemDetail.getDetail());
+    assertAll(
+        () -> assertEquals(HttpStatus.BAD_REQUEST.value(), actualProblemDetail.getStatus()),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [Validation failed]",
+                actualProblemDetail.getDetail()));
   }
 
   @Test
@@ -58,10 +64,12 @@ class GlobalExceptionHandlerTest {
     ProblemDetail actualProblemDetail =
         handler.onConstraintViolationException(constraintViolationException);
 
-    assertEquals(HttpStatus.BAD_REQUEST.value(), actualProblemDetail.getStatus());
-    assertEquals(
-        "Handled by GlobalExceptionHandler: [A constraint violation occurred]",
-        actualProblemDetail.getDetail());
+    assertAll(
+        () -> assertEquals(HttpStatus.BAD_REQUEST.value(), actualProblemDetail.getStatus()),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [A constraint violation occurred]",
+                actualProblemDetail.getDetail()));
   }
 
   @Test
@@ -70,9 +78,12 @@ class GlobalExceptionHandlerTest {
 
     ProblemDetail actualProblemDetail = handler.onThrowable(throwable);
 
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), actualProblemDetail.getStatus());
-    assertEquals(
-        "Handled by GlobalExceptionHandler: [An internal server error occurred.]",
-        actualProblemDetail.getDetail());
+    assertAll(
+        () ->
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), actualProblemDetail.getStatus()),
+        () ->
+            assertEquals(
+                "Handled by GlobalExceptionHandler: [An internal server error occurred.]",
+                actualProblemDetail.getDetail()));
   }
 }

@@ -12,7 +12,9 @@ import com.cgi.example.petstore.service.pet.PetDocument;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("Not a test class")
 public class TestData {
 
   private static final String PET_ID = "KT1546";

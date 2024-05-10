@@ -1,13 +1,13 @@
 package com.cgi.example.petstore.integration;
 
 import com.cgi.example.petstore.PetStoreApplication;
-import com.cgi.example.petstore.embedded.MongoDBEmbedded;
-import com.cgi.example.petstore.embedded.OAuth2Embedded;
-import com.cgi.example.petstore.embedded.WireMockEmbedded;
-import com.cgi.example.petstore.integration.utils.UriBuilder;
-import com.cgi.example.petstore.integration.utils.WebClientExecutor;
 import com.cgi.example.petstore.utils.AssertionExecutables;
 import com.cgi.example.petstore.utils.ResourceFileUtils;
+import com.cgi.example.petstore.utils.UriBuilder;
+import com.cgi.example.petstore.utils.WebClientExecutor;
+import com.cgi.example.petstore.utils.embedded.MongoDBEmbedded;
+import com.cgi.example.petstore.utils.embedded.OAuth2Embedded;
+import com.cgi.example.petstore.utils.embedded.WireMockEmbedded;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

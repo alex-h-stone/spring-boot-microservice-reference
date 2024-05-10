@@ -30,7 +30,8 @@ Spring Boot 3 based microservice template integrating features which address a m
 24. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
 25. [Automated Code Style Formatting](#automated-code-style-formatting)
 26. [Check for updates to dependencies](#check-for-updates-to-dependencies)
-26. [Notes](#notes)
+27. [Architecture Unit Tests](#architecture-unit-tests)
+28. [Notes](#notes)
 
 ---
 
@@ -166,9 +167,11 @@ client library. Although the out-of-the-box features of `MongoRepository` and `@
 
 #### Exception Handling
 
-Any exceptions which are thrown by the microservice will be caught and handled by the `GlobalExceptionHandler`.
-All application exceptions extend `AbstractApplicationException` which allows you to specify both a message and 
-the HTTP status code which should be used in the response.
+Any exceptions which are thrown by the microservice will be caught and handled by
+the [GlobalExceptionHandler.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexception%2Fhandler%2FGlobalExceptionHandler.java).
+All application exceptions
+extend [ApplicationException.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexception%2FApplicationException.java)
+which allows you to specify both a message and the HTTP status code which should be used in the response.
 
 ---
 
@@ -246,7 +249,8 @@ and OAuth2 locally, all port numbers are assigned dynamically and subsequently d
 [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
 For example, when you start
-the [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FWireMockEmbedded.java) the
+the [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
+the
 dynamic port number (determined at runtime) which
 it is listening on is persisted
 to [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
@@ -277,12 +281,13 @@ and OAuth2 authenticated application API endpoints.
 
 Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gradle](build.gradle)) and the embedded
 OAuth2
-server [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java).
+server [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java).
 
 **Note**: That Spring OAuth2 configuration properties (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`)
 are resolved very early in the creation of the application context.  
 To ensure that the system property `OAUTH_HOST` is overridden before the application context is created we
-define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FOAuth2Embedded.java) as
+define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java)
+as
 a `private static final` variable
 in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java).
 So the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
@@ -307,7 +312,8 @@ for an example of making an external REST API call with retry logic using the Sp
 
 See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 
-Also see [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fembedded%2FWireMockEmbedded.java)
+Also
+see [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
 for how to run a stand-alone embedded stub server for running a microservice
 locally which has external API dependencies.
 
@@ -317,10 +323,11 @@ Along with the Wire Mock mapping and stub response files in [wiremock](src%2Ftes
 
 #### Logging of requests and responses
 
-See [RequestLoggingFilterConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FRequestLoggingFilterConfiguration.java) 
-for the required config to log requests using the `CommonsRequestLoggingFilter`.
+See [RequestLoggingFilterConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2FRequestLoggingFilterConfiguration.java)
+for the required config to log requests using the `org.springframework.web.filter.CommonsRequestLoggingFilter`.
 
-Also consider the use of AOP [LoggingAspects.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2FLoggingAspects.java) 
+Also consider the use of
+AOP [LoggingAspects.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Faspects%2FLoggingAspects.java)
 and the `@LogMethodArguments` annotations to log method arguments,
 and the `@LogMethodResponse` to log the method return object.
 
@@ -464,6 +471,17 @@ You will see something like
 `com.fasterxml.jackson.core:jackson-databind [2.17.0 -> 2.17.1]`  
 `jakarta.validation:jakarta.validation-api [3.0.2 -> 3.1.0-M2]`  
 `no.nav.security:mock-oauth2-server [2.0.0 -> 2.1.5]`
+
+---
+
+#### Architecture Unit Tests
+
+There are also automated unit tests to verify various aspects of the software architecture.  
+e.g. All test classes which are not annotation with `@Disabled` should have class names ending in `Test`.
+
+This is has been implemented using `com.tngtech.archunit:archunit-junit5` and examples can be seen
+in [ApplicationArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FApplicationArchitectureTest.java)
+and [TestArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FTestArchitectureTest.java).
 
 ---
 

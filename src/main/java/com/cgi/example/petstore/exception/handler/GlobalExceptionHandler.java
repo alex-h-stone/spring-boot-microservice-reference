@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.exception.handler;
 
-import com.cgi.example.petstore.exception.AbstractApplicationException;
+import com.cgi.example.petstore.exception.ApplicationException;
 import com.cgi.example.petstore.exception.ValidationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(AbstractApplicationException.class)
-  public ProblemDetail onApplicationException(AbstractApplicationException exception) {
+  @ExceptionHandler(ApplicationException.class)
+  public ProblemDetail onApplicationException(ApplicationException exception) {
     ProblemDetail problemDetail =
         createProblemDetail(exception.getResponseMessage(), exception.getHttpResponseCode());
 

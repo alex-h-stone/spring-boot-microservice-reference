@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cgi.example.petstore.integration.utils.UriBuilder;
 import com.cgi.example.petstore.model.NewPetRequest;
 import com.cgi.example.petstore.model.PetAvailabilityStatus;
 import com.cgi.example.petstore.model.PetInformationItem;
@@ -15,6 +14,7 @@ import com.cgi.example.petstore.service.pet.PersistenceStatus;
 import com.cgi.example.petstore.service.pet.PetDocument;
 import com.cgi.example.petstore.service.pet.PetRepository;
 import com.cgi.example.petstore.utils.TestData;
+import com.cgi.example.petstore.utils.UriBuilder;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.validation.Valid;
 import java.util.Arrays;

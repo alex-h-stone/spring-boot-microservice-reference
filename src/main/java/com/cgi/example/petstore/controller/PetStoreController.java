@@ -2,8 +2,8 @@ package com.cgi.example.petstore.controller;
 
 import com.cgi.example.petstore.api.PetsApi;
 import com.cgi.example.petstore.controller.validation.PetIdValidator;
-import com.cgi.example.petstore.logging.LogMethodArguments;
-import com.cgi.example.petstore.logging.LogMethodResponse;
+import com.cgi.example.petstore.logging.aspects.LogMethodArguments;
+import com.cgi.example.petstore.logging.aspects.LogMethodResponse;
 import com.cgi.example.petstore.model.CustomerRequest;
 import com.cgi.example.petstore.model.MultiplePetsResponse;
 import com.cgi.example.petstore.model.NewPetRequest;

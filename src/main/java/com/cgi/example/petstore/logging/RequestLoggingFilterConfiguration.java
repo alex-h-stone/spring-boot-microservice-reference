@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.config;
+package com.cgi.example.petstore.logging;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

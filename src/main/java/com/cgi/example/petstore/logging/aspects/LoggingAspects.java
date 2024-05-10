@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.logging;
+package com.cgi.example.petstore.logging.aspects;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspects {
 
-  @Before("@annotation(com.cgi.example.petstore.logging.LogMethodArguments)")
+  @Before("@annotation(com.cgi.example.petstore.logging.aspects.LogMethodArguments)")
   public void logMethodArgumentsAdvice(JoinPoint joinPoint) {
     if (log.isInfoEnabled()) {
       Object[] argumentsArray = Objects.requireNonNullElse(joinPoint.getArgs(), new Object[] {});
@@ -31,7 +31,7 @@ public class LoggingAspects {
   }
 
   @AfterReturning(
-      value = "@annotation(com.cgi.example.petstore.logging.LogMethodResponse)",
+      value = "@annotation(com.cgi.example.petstore.logging.aspects.LogMethodResponse)",
       returning = "methodResponse")
   public void logMethodResponseAdvice(JoinPoint joinPoint, Object methodResponse) {
     if (log.isInfoEnabled()) {

@@ -1,11 +1,13 @@
-package com.cgi.example.petstore.integration.utils;
+package com.cgi.example.petstore.utils;
 
 import java.util.Objects;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
+@Disabled("Not a test class")
 public class UriBuilder {
 
   public static final String PET_STORE_BASE_URL = "api/v1/pet-store/pets";

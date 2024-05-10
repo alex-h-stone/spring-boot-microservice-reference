@@ -3,7 +3,9 @@ package com.cgi.example.petstore.utils;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("Not a test class")
 public class ProcessManagement {
 
   private static final long THREE_SECOND_TIME_OUT = 3;

@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.integration.utils;
+package com.cgi.example.petstore.utils;
 
 import com.cgi.example.petstore.integration.BaseIntegrationTest;
 import java.net.URI;
@@ -6,6 +6,7 @@ import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Disabled("Not a test class")
 public class WebClientExecutor {
 
   private final WebClient webClient;

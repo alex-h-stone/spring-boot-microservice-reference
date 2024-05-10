@@ -1,11 +1,13 @@
-package com.cgi.example.petstore.embedded;
+package com.cgi.example.petstore.utils.embedded;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.OAuth2Config;
+import org.junit.jupiter.api.Disabled;
 
 @Slf4j
+@Disabled("Not a test class")
 public class OAuth2Embedded {
 
   private static final boolean NO_INTERACTIVE_LOGIN = false;

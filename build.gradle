@@ -82,6 +82,7 @@ dependencies {
     testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring31x:$embedMongoVersion"
     testImplementation "no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion"
     testImplementation "org.hamcrest:hamcrest-all:$harmcrestVersion"
+    testImplementation "com.tngtech.archunit:archunit-junit5:$archunitVersion"
 }
 
 springBoot {
@@ -198,7 +199,7 @@ tasks.register('startWireMockEmbedded', JavaExec) {
     description = 'Start a WireMockServer to be used as a stub for the external API calls.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.WireMockEmbedded')
+    getMainClass().set('com.cgi.example.petstore.utils.embedded.WireMockEmbedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
@@ -207,7 +208,7 @@ tasks.register('startMongoDBEmbedded', JavaExec) {
     description = 'Start an in-memory Mongo DB server.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.MongoDBEmbedded')
+    getMainClass().set('com.cgi.example.petstore.utils.embedded.MongoDBEmbedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }
 
@@ -216,6 +217,6 @@ tasks.register('startOAuth2Embedded', JavaExec) {
     description = 'Start an in-memory OAuth2 server.'
     classpath = sourceSets.test.runtimeClasspath
     standardInput = System.in
-    getMainClass().set('com.cgi.example.petstore.embedded.OAuth2Embedded')
+    getMainClass().set('com.cgi.example.petstore.utils.embedded.OAuth2Embedded')
     jvmArgs '-Xms256m', '-Xmx1024m'
 }

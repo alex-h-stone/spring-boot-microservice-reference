@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.embedded;
+package com.cgi.example.petstore.utils.embedded;
 
 import static com.cgi.example.petstore.utils.ProcessManagement.waitUntil;
 
@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Slf4j
+@Disabled("Not a test class")
 public class MongoDBEmbedded {
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =

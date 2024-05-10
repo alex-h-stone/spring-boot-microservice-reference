@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cgi.example.petstore.integration.utils.UriBuilder;
+import com.cgi.example.petstore.utils.UriBuilder;
 import com.jayway.jsonpath.JsonPath;
 import java.util.Set;
 import org.hamcrest.Matchers;

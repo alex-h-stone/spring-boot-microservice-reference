@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.embedded;
+package com.cgi.example.petstore.utils.embedded;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
 import com.cgi.example.petstore.utils.ProcessManagement;
@@ -8,8 +8,10 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.http.trafficlistener.ConsoleNotifyingWiremockNetworkTrafficListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 
 @Slf4j
+@Disabled("Not a test class")
 public class WireMockEmbedded {
 
   private final DynamicApplicationPropertiesRepository propertiesRepository =
