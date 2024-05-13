@@ -9,6 +9,7 @@ plugins {
     id 'org.openapi.generator' version "$openApiGeneratorVersion"
     id 'com.diffplug.spotless' version "$diffPlugSpotlessVersion"
     id 'com.github.ben-manes.versions' version "$versionsPluginVersion"
+    id 'com.gorylenko.gradle-git-properties' version "$gitPropertiesPluginVersion"
 }
 
 apply plugin: 'io.spring.dependency-management'

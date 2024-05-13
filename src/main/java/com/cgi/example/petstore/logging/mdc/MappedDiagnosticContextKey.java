@@ -24,7 +24,7 @@ public enum MappedDiagnosticContextKey {
   }
 
   public void put(String value) {
-    log.debug("Adding the {} {} to the MDC", mdcKey, value);
     MDC.put(mdcKey, value);
+    log.debug("Added the MDC key {} with a value of {}", mdcKey, value);
   }
 }

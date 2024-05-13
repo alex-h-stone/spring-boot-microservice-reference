@@ -74,6 +74,8 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     String artifact = JsonPath.read(response.getBody(), "$.build.artifact");
     String name = JsonPath.read(response.getBody(), "$.build.name");
     String group = JsonPath.read(response.getBody(), "$.build.group");
+    String gitBranch = JsonPath.read(response.getBody(), "$.git.branch");
+    String gitCommitId = JsonPath.read(response.getBody(), "$.git.commit.id");
 
     assertAll(
         assertions.assertStatusCode(response, HttpStatus.OK),
@@ -83,7 +85,9 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
                 "Spring Boot Template Service modeled on an online Pet Store.", description),
         () -> assertEquals("spring-boot-microservice-template", artifact),
         () -> assertEquals("spring-boot-microservice-template", name),
-        () -> assertEquals("com.cgi.example", group));
+        () -> assertEquals("com.cgi.example", group),
+        () -> assertThat(gitCommitId.length(), Matchers.greaterThanOrEqualTo(7)),
+        () -> assertThat(gitBranch, Matchers.not(Matchers.isEmptyOrNullString())));
   }
 
   @ParameterizedTest

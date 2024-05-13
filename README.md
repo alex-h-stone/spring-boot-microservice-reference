@@ -485,6 +485,22 @@ and [TestArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetsto
 
 ---
 
+#### Verifiable Git commit hash
+
+By utilising the `com.gorylenko.gradle-git-properties` plugin the Git commit hash is included in the Spring `/info`
+actuator endpoint.
+
+e.g.
+`"git": {
+"branch": "master",
+"commit": {
+"id": "0f10edc",
+"time": "2024-05-13T18:34:31Z"
+}
+}`
+
+---
+
 ### Notes
 
 #### Installing Node.js and Newman
