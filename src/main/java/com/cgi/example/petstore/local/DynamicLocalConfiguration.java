@@ -18,7 +18,7 @@ public class DynamicLocalConfiguration
   private final DynamicApplicationPropertiesRepository propertiesRepository;
 
   public DynamicLocalConfiguration() {
-    this(new DynamicApplicationPropertiesRepository());
+    propertiesRepository = new DynamicApplicationPropertiesRepository();
   }
 
   // Constructor for injecting DynamicApplicationPropertiesRepository dependency to facilitate unit
@@ -32,7 +32,9 @@ public class DynamicLocalConfiguration
   public void initialize(ConfigurableApplicationContext applicationContext) {
     log.info("About to set Dynamic Local Configuration");
 
-    SetSystemPropertiesForEmbeddedServices.apply(propertiesRepository);
+    SetSystemPropertiesForEmbeddedServices embeddedServices =
+        new SetSystemPropertiesForEmbeddedServices();
+    embeddedServices.apply(propertiesRepository);
 
     log.info("Completed setting Dynamic Local Configuration");
   }

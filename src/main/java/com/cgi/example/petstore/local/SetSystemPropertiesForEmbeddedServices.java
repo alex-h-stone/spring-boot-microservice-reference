@@ -1,46 +1,38 @@
 package com.cgi.example.petstore.local;
 
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
-import java.util.Objects;
+import com.cgi.example.petstore.config.PetStoreSystemProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SetSystemPropertiesForEmbeddedServices {
 
-  private static final String VACCINATIONS_URL = "VACCINATIONS_URL";
-  private static final String MONGO_DB_URI = "MONGO_DB_URI";
-  private static final String OAUTH_HOST = "OAUTH_HOST";
+  private static final String DUMMY_CLIENT_ID = "DummyClientId";
+  private static final String DUMMY_CLIENT_SECRET = "DummyClientSecret";
+  private static final String WIRE_MOCK_HOST_FORMAT = "http://localhost:%d";
 
-  public static void apply(DynamicApplicationPropertiesRepository propertiesRepository) {
+  public void apply(DynamicApplicationPropertiesRepository propertiesRepository) {
     configureWireMock(propertiesRepository);
     configureMongoDB(propertiesRepository);
     configureOAuth2(propertiesRepository);
   }
 
-  public static void configureMongoDB(DynamicApplicationPropertiesRepository propertiesRepository) {
-    setSystemPropertyIfAbsent(MONGO_DB_URI, propertiesRepository.getMongoDBConnectionString());
+  private void configureMongoDB(DynamicApplicationPropertiesRepository propertiesRepository) {
+    String mongoDBConnectionString = propertiesRepository.getMongoDBConnectionString();
+    PetStoreSystemProperty.MONGO_DB_URI.setSystemPropertyIfAbsent(mongoDBConnectionString);
   }
 
-  public static void configureWireMock(
-      DynamicApplicationPropertiesRepository propertiesRepository) {
-    setSystemPropertyIfAbsent(
-        VACCINATIONS_URL, "http://localhost:" + propertiesRepository.getWireMockPort());
+  private void configureWireMock(DynamicApplicationPropertiesRepository propertiesRepository) {
+    String newSystemPropertyValue =
+        WIRE_MOCK_HOST_FORMAT.formatted(propertiesRepository.getWireMockPort());
+    PetStoreSystemProperty.VACCINATIONS_URL.setSystemPropertyIfAbsent(newSystemPropertyValue);
   }
 
-  public static void configureOAuth2(DynamicApplicationPropertiesRepository propertiesRepository) {
-    setSystemPropertyIfAbsent(OAUTH_HOST, propertiesRepository.getOAuth2Host());
-  }
+  private void configureOAuth2(DynamicApplicationPropertiesRepository propertiesRepository) {
+    String oAuth2Host = propertiesRepository.getOAuth2Host();
+    PetStoreSystemProperty.OAUTH_HOST.setSystemPropertyIfAbsent(oAuth2Host);
 
-  private static void setSystemPropertyIfAbsent(
-      String systemPropertyKey, String systemPropertyValue) {
-    String property = System.getProperty(systemPropertyKey);
-    if (Objects.nonNull(property)) {
-      log.info(
-          "Not setting system property {} as it has already been set with a value of [{}]",
-          systemPropertyKey,
-          property);
-    } else {
-      System.setProperty(systemPropertyKey, systemPropertyValue);
-    }
+    PetStoreSystemProperty.OAUTH_CLIENT_ID.setSystemPropertyIfAbsent(DUMMY_CLIENT_ID);
+    PetStoreSystemProperty.OAUTH_CLIENT_SECRET.setSystemPropertyIfAbsent(DUMMY_CLIENT_SECRET);
   }
 }
