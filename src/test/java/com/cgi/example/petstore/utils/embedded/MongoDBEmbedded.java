@@ -62,9 +62,7 @@ public class MongoDBEmbedded {
     try {
       System.in.read();
     } catch (IOException e) {
-      String message = "MongoDB Embedded process is exiting: [%s]".formatted(e.getMessage());
-      log.info(message, e);
-      throw new RuntimeException(message, e);
+      log.info("MongoDB Embedded process is exiting: [{}]", e.getMessage(), e);
     }
   }
 
