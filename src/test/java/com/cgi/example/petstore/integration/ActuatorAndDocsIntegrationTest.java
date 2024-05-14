@@ -2,7 +2,6 @@ package com.cgi.example.petstore.integration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.cgi.example.petstore.utils.UriBuilder;
 import com.jayway.jsonpath.JsonPath;
@@ -54,40 +53,55 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     UriComponentsBuilder uri = uriBuilder.getManagementURIFor("actuator/health");
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
-    String status = JsonPath.read(response.getBody(), "$.status");
-    String pingStatus = JsonPath.read(response.getBody(), "$.components.ping.status");
-
+    String responseBody = response.getBody();
     assertAll(
         assertions.assertStatusCode(response, HttpStatus.OK),
         assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
-        () -> assertEquals("UP", status),
-        () -> assertEquals("UP", pingStatus));
+        assertions.assertJsonPathEquals("UP", "$.status", responseBody),
+        assertions.assertJsonPathEquals("UP", "$.components.ping.status", responseBody));
   }
 
   @Test
-  void actuatorInfoEndpointShouldIncludeDescriptionArtifactNameAndGroup() {
+  void actuatorInfoEndpointShouldIncludeArtifactAndGitDetails() {
     UriComponentsBuilder uri = uriBuilder.getManagementURIFor("actuator/info");
 
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
-    String description = JsonPath.read(response.getBody(), "$.build.description");
-    String artifact = JsonPath.read(response.getBody(), "$.build.artifact");
-    String name = JsonPath.read(response.getBody(), "$.build.name");
-    String group = JsonPath.read(response.getBody(), "$.build.group");
-    String gitBranch = JsonPath.read(response.getBody(), "$.git.branch");
-    String gitCommitId = JsonPath.read(response.getBody(), "$.git.commit.id");
+    String responseBody = response.getBody();
 
     assertAll(
         assertions.assertStatusCode(response, HttpStatus.OK),
         assertions.assertContentType(response, "application/vnd.spring-boot.actuator.v3+json"),
+        // JSON body, build attribute
+        assertions.assertJsonPathEquals("21", "$.build.java.version", responseBody),
+        assertions.assertJsonPathEquals(
+            "Spring Boot Template Service modeled on an online Pet Store.",
+            "$.build.description",
+            responseBody),
+        assertions.assertJsonPathEquals(
+            "spring-boot-microservice-template", "$.build.artifact", responseBody),
+        assertions.assertJsonPathEquals(
+            "spring-boot-microservice-template", "$.build.name", responseBody),
+        assertions.assertJsonPathEquals("com.cgi.example", "$.build.group", responseBody),
+        // JSON body, git attribute
         () ->
-            assertEquals(
-                "Spring Boot Template Service modeled on an online Pet Store.", description),
-        () -> assertEquals("spring-boot-microservice-template", artifact),
-        () -> assertEquals("spring-boot-microservice-template", name),
-        () -> assertEquals("com.cgi.example", group),
-        () -> assertThat(gitCommitId.length(), Matchers.greaterThanOrEqualTo(7)),
-        () -> assertThat(gitBranch, Matchers.not(Matchers.isEmptyOrNullString())));
+            assertThat(
+                JsonPath.<String>read(responseBody, "$.git.commit.id").length(),
+                Matchers.equalTo(40)),
+        () ->
+            assertThat(
+                JsonPath.read(responseBody, "$.git.build.version"),
+                Matchers.not(Matchers.isEmptyOrNullString())),
+        () ->
+            assertThat(
+                JsonPath.read(responseBody, "$.git.branch"),
+                Matchers.not(Matchers.isEmptyOrNullString())),
+        () ->
+            assertThat(JsonPath.read(responseBody, "$.git.tags"), Matchers.containsString("0.9.0")),
+        () ->
+            assertThat(
+                JsonPath.read(responseBody, "$.git.remote.origin.url"),
+                Matchers.containsString("spring-boot-microservice-template.git")));
   }
 
   @ParameterizedTest
@@ -132,13 +146,12 @@ class ActuatorAndDocsIntegrationTest extends BaseIntegrationTest {
     UriComponentsBuilder uri = uriBuilder.getApplicationURIFor("v3/api-docs/swagger-config");
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
-    int numberOfURLs = JsonPath.read(response.getBody(), "$.urls.length()");
-    String url = JsonPath.read(response.getBody(), "$.urls[0].url");
+    String responseBody = response.getBody();
 
     assertAll(
         assertions.assertOkJsonResponse(response),
-        () -> assertEquals(1, numberOfURLs),
-        () -> assertEquals("/v3/api-docs/springdoc", url));
+        assertions.assertJsonPathEquals(1, "$.urls.length()", responseBody),
+        assertions.assertJsonPathEquals("/v3/api-docs/springdoc", "$.urls[0].url", responseBody));
   }
 
   @Test

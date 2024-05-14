@@ -161,18 +161,17 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
     UriComponentsBuilder uri = uriBuilder.getPetStoreURIFor(longPetId);
     ResponseEntity<String> response = webClientExecutor.get(uri);
 
-    int status = JsonPath.read(response.getBody(), "$.status");
-    String instance = JsonPath.read(response.getBody(), "$.instance");
-    String detail = JsonPath.read(response.getBody(), "$.detail");
+    String responseBody = response.getBody();
+    String instance = JsonPath.read(responseBody, "$.instance");
 
     assertAll(
         assertions.assertStatusCode(response, HttpStatus.BAD_REQUEST),
         assertions.assertProblemJsonContentType(response),
-        () -> assertEquals(HttpStatus.BAD_REQUEST.value(), status),
-        () ->
-            assertEquals(
-                "Handled by GlobalExceptionHandler: [getPetById.petId: size must be between 0 and 26]",
-                detail),
+        assertions.assertJsonPathEquals(HttpStatus.BAD_REQUEST.value(), "$.status", responseBody),
+        assertions.assertJsonPathEquals(
+            "Handled by GlobalExceptionHandler: [getPetById.petId: size must be between 0 and 26]",
+            "$.detail",
+            responseBody),
         () ->
             assertThat(
                 instance,

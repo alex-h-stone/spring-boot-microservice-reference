@@ -6,6 +6,7 @@ management:
   server.port: 8099
   endpoints.web.exposure.include: health,info,metrics,prometheus,mappings,beans,loggers,env,configprops
   endpoint.health.show-details: always
+  info.git.mode: full
 
 spring:
   jackson.mapper.sort-properties-alphabetically: true

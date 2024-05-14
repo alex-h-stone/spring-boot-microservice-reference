@@ -3,6 +3,7 @@ package com.cgi.example.petstore.utils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.jayway.jsonpath.JsonPath;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
@@ -43,6 +44,13 @@ public class AssertionExecutables {
     return () -> {
       assertStatusCodeCommon(response, HttpStatus.OK);
       assertJsonContentType(response).execute();
+    };
+  }
+
+  public Executable assertJsonPathEquals(Object expectedValue, String jsonPath, String actualJson) {
+    return () -> {
+      Object actualJsonPathValue = JsonPath.read(actualJson, jsonPath);
+      assertEquals(expectedValue, actualJsonPathValue);
     };
   }
 

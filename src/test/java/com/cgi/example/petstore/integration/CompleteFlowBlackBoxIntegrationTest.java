@@ -53,48 +53,48 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                      {
-                        "vaccinations": [
-                          {
-                            "name": "Parainfluenza",
-                            "dateOfAdminister": "2017-07-21"
-                          },
-                          {
-                            "name": "Bordetella bronchiseptica",
-                            "dateOfAdminister": "2017-09-05"
-                          },
-                          {
-                            "name": "Canine Adenovirus",
-                            "dateOfAdminister": "2016-01-25"
-                          }
-                        ],
-                        "availabilityStatus": "Pending Collection",
-                        "owner": {
-                          "username": "alex.stone",
-                          "firstName": "Alex",
-                          "lastName": "Stone",
-                          "email": "alex.stone@cgi.com",
-                          "address": {
-                            "street": "40 Princes Street",
-                            "city": "Edinburgh",
-                            "postCode": "EH2 2BY",
-                            "country": "United Kingdom"
-                          }
-                        },
-                        "vaccinationId": "AF54785412K",
-                        "name": "Astro",
-                        "petType": "Dog",
-                        "photoUrls": [
-                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                        ],
-                        "additionalInformation": [
-                          {
-                            "name": "Eye colour",
-                            "description": "Green"
-                          }
-                        ]
-                      }
-                """;
+                              {
+                                "vaccinations": [
+                                  {
+                                    "name": "Parainfluenza",
+                                    "dateOfAdminister": "2017-07-21"
+                                  },
+                                  {
+                                    "name": "Bordetella bronchiseptica",
+                                    "dateOfAdminister": "2017-09-05"
+                                  },
+                                  {
+                                    "name": "Canine Adenovirus",
+                                    "dateOfAdminister": "2016-01-25"
+                                  }
+                                ],
+                                "availabilityStatus": "Pending Collection",
+                                "owner": {
+                                  "username": "alex.stone",
+                                  "firstName": "Alex",
+                                  "lastName": "Stone",
+                                  "email": "alex.stone@cgi.com",
+                                  "address": {
+                                    "street": "40 Princes Street",
+                                    "city": "Edinburgh",
+                                    "postCode": "EH2 2BY",
+                                    "country": "United Kingdom"
+                                  }
+                                },
+                                "vaccinationId": "AF54785412K",
+                                "name": "Astro",
+                                "petType": "Dog",
+                                "photoUrls": [
+                                  "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                                ],
+                                "additionalInformation": [
+                                  {
+                                    "name": "Eye colour",
+                                    "description": "Green"
+                                  }
+                                ]
+                              }
+                        """;
 
     String actualJsonBody = response.getBody();
     String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
@@ -112,48 +112,48 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                      {
-                        "vaccinations": [
-                          {
-                            "name": "Parainfluenza",
-                            "dateOfAdminister": "2017-07-21"
-                          },
-                          {
-                            "name": "Bordetella bronchiseptica",
-                            "dateOfAdminister": "2017-09-05"
-                          },
-                          {
-                            "name": "Canine Adenovirus",
-                            "dateOfAdminister": "2016-01-25"
-                          }
-                        ],
-                        "availabilityStatus": "Pending Collection",
-                        "owner": {
-                          "username": "alex.stone",
-                          "firstName": "Alex",
-                          "lastName": "Stone",
-                          "email": "alex.stone@cgi.com",
-                          "address": {
-                            "street": "40 Princes Street",
-                            "city": "Edinburgh",
-                            "postCode": "EH2 2BY",
-                            "country": "United Kingdom"
-                          }
-                        },
-                        "vaccinationId": "AF54785412K",
-                        "name": "Astro",
-                        "petType": "Dog",
-                        "photoUrls": [
-                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                        ],
-                        "additionalInformation": [
-                          {
-                            "name": "Eye colour",
-                            "description": "Green"
-                          }
-                        ]
-                      }
-                """;
+                              {
+                                "vaccinations": [
+                                  {
+                                    "name": "Parainfluenza",
+                                    "dateOfAdminister": "2017-07-21"
+                                  },
+                                  {
+                                    "name": "Bordetella bronchiseptica",
+                                    "dateOfAdminister": "2017-09-05"
+                                  },
+                                  {
+                                    "name": "Canine Adenovirus",
+                                    "dateOfAdminister": "2016-01-25"
+                                  }
+                                ],
+                                "availabilityStatus": "Pending Collection",
+                                "owner": {
+                                  "username": "alex.stone",
+                                  "firstName": "Alex",
+                                  "lastName": "Stone",
+                                  "email": "alex.stone@cgi.com",
+                                  "address": {
+                                    "street": "40 Princes Street",
+                                    "city": "Edinburgh",
+                                    "postCode": "EH2 2BY",
+                                    "country": "United Kingdom"
+                                  }
+                                },
+                                "vaccinationId": "AF54785412K",
+                                "name": "Astro",
+                                "petType": "Dog",
+                                "photoUrls": [
+                                  "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                                ],
+                                "additionalInformation": [
+                                  {
+                                    "name": "Eye colour",
+                                    "description": "Green"
+                                  }
+                                ]
+                              }
+                        """;
 
     String actualJsonBody = response.getBody();
     String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");
@@ -180,36 +180,36 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                 {
-                   "vaccinations": [
-                     {
-                       "name": "Parainfluenza",
-                       "dateOfAdminister": "2017-07-21"
-                     },
-                     {
-                       "name": "Bordetella bronchiseptica",
-                       "dateOfAdminister": "2017-09-05"
-                     },
-                     {
-                       "name": "Canine Adenovirus",
-                       "dateOfAdminister": "2016-01-25"
-                     }
-                   ],
-                   "availabilityStatus": "Available For Purchase",
-                   "vaccinationId": "AF54785412K",
-                   "name": "Astro",
-                   "petType": "Dog",
-                   "photoUrls": [
-                     "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                   ],
-                   "additionalInformation": [
-                     {
-                       "name": "Eye colour",
-                       "description": "Green"
-                     }
-                   ]
-                 }
-                """;
+                         {
+                           "vaccinations": [
+                             {
+                               "name": "Parainfluenza",
+                               "dateOfAdminister": "2017-07-21"
+                             },
+                             {
+                               "name": "Bordetella bronchiseptica",
+                               "dateOfAdminister": "2017-09-05"
+                             },
+                             {
+                               "name": "Canine Adenovirus",
+                               "dateOfAdminister": "2016-01-25"
+                             }
+                           ],
+                           "availabilityStatus": "Available For Purchase",
+                           "vaccinationId": "AF54785412K",
+                           "name": "Astro",
+                           "petType": "Dog",
+                           "photoUrls": [
+                             "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                           ],
+                           "additionalInformation": [
+                             {
+                               "name": "Eye colour",
+                               "description": "Green"
+                             }
+                           ]
+                         }
+                        """;
 
     String actualJsonBody = response.getBody();
 
@@ -229,47 +229,47 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                   {
-                     "pets": [
-                       {
-                         "vaccinations": [
                            {
-                             "name": "Parainfluenza",
-                             "dateOfAdminister": "2017-07-21"
-                           },
-                           {
-                             "name": "Bordetella bronchiseptica",
-                             "dateOfAdminister": "2017-09-05"
-                           },
-                           {
-                             "name": "Canine Adenovirus",
-                             "dateOfAdminister": "2016-01-25"
+                             "pets": [
+                               {
+                                 "vaccinations": [
+                                   {
+                                     "name": "Parainfluenza",
+                                     "dateOfAdminister": "2017-07-21"
+                                   },
+                                   {
+                                     "name": "Bordetella bronchiseptica",
+                                     "dateOfAdminister": "2017-09-05"
+                                   },
+                                   {
+                                     "name": "Canine Adenovirus",
+                                     "dateOfAdminister": "2016-01-25"
+                                   }
+                                 ],
+                                 "availabilityStatus": "Available For Purchase",
+                                 "vaccinationId": "AF54785412K",
+                                 "name": "Fido",
+                                 "petType": "Dog",
+                                 "photoUrls": [
+                                   "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                                 ],
+                                 "additionalInformation": [
+                                   {
+                                     "name": "Personality",
+                                     "description": "Energetic"
+                                   }
+                                 ]
+                               }
+                             ]
                            }
-                         ],
-                         "availabilityStatus": "Available For Purchase",
-                         "vaccinationId": "AF54785412K",
-                         "name": "Fido",
-                         "petType": "Dog",
-                         "photoUrls": [
-                           "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                         ],
-                         "additionalInformation": [
-                           {
-                             "name": "Personality",
-                             "description": "Energetic"
-                           }
-                         ]
-                       }
-                     ]
-                   }
-                """;
+                        """;
 
     String actualJsonBody = response.getBody();
 
     assertAll(
         assertions.assertOkJsonResponse(response),
         assertions.assertLenientJsonEquals(expectedJsonBody, actualJsonBody),
-        () -> assertEquals(petId, JsonPath.read(actualJsonBody, "$.pets[0].petId")));
+        assertions.assertJsonPathEquals(petId, "$.pets[0].petId", actualJsonBody));
   }
 
   private void retrieveNewlyAddedPetById(String petId) {
@@ -278,36 +278,36 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                      {
-                        "vaccinations": [
-                          {
-                            "name": "Parainfluenza",
-                            "dateOfAdminister": "2017-07-21"
-                          },
-                          {
-                            "name": "Bordetella bronchiseptica",
-                            "dateOfAdminister": "2017-09-05"
-                          },
-                          {
-                            "name": "Canine Adenovirus",
-                            "dateOfAdminister": "2016-01-25"
-                          }
-                        ],
-                        "availabilityStatus": "Available For Purchase",
-                        "vaccinationId": "AF54785412K",
-                        "name": "Fido",
-                        "petType": "Dog",
-                        "photoUrls": [
-                          "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                        ],
-                        "additionalInformation": [
-                          {
-                            "name": "Personality",
-                            "description": "Energetic"
-                          }
-                        ]
-                      }
-                """;
+                              {
+                                "vaccinations": [
+                                  {
+                                    "name": "Parainfluenza",
+                                    "dateOfAdminister": "2017-07-21"
+                                  },
+                                  {
+                                    "name": "Bordetella bronchiseptica",
+                                    "dateOfAdminister": "2017-09-05"
+                                  },
+                                  {
+                                    "name": "Canine Adenovirus",
+                                    "dateOfAdminister": "2016-01-25"
+                                  }
+                                ],
+                                "availabilityStatus": "Available For Purchase",
+                                "vaccinationId": "AF54785412K",
+                                "name": "Fido",
+                                "petType": "Dog",
+                                "photoUrls": [
+                                  "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                                ],
+                                "additionalInformation": [
+                                  {
+                                    "name": "Personality",
+                                    "description": "Energetic"
+                                  }
+                                ]
+                              }
+                        """;
 
     String actualJsonBody = response.getBody();
 
@@ -325,36 +325,36 @@ public class CompleteFlowBlackBoxIntegrationTest extends BaseIntegrationTest {
 
     String expectedJsonBody =
         """
-                     {
-                       "vaccinations": [
-                         {
-                           "name": "Parainfluenza",
-                           "dateOfAdminister": "2017-07-21"
-                         },
-                         {
-                           "name": "Bordetella bronchiseptica",
-                           "dateOfAdminister": "2017-09-05"
-                         },
-                         {
-                           "name": "Canine Adenovirus",
-                           "dateOfAdminister": "2016-01-25"
-                         }
-                       ],
-                       "availabilityStatus": "Available For Purchase",
-                       "vaccinationId": "AF54785412K",
-                       "name": "Fido",
-                       "petType": "Dog",
-                       "photoUrls": [
-                         "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
-                       ],
-                       "additionalInformation": [
-                         {
-                           "name": "Personality",
-                           "description": "Energetic"
-                         }
-                       ]
-                     }
-                """;
+                             {
+                               "vaccinations": [
+                                 {
+                                   "name": "Parainfluenza",
+                                   "dateOfAdminister": "2017-07-21"
+                                 },
+                                 {
+                                   "name": "Bordetella bronchiseptica",
+                                   "dateOfAdminister": "2017-09-05"
+                                 },
+                                 {
+                                   "name": "Canine Adenovirus",
+                                   "dateOfAdminister": "2016-01-25"
+                                 }
+                               ],
+                               "availabilityStatus": "Available For Purchase",
+                               "vaccinationId": "AF54785412K",
+                               "name": "Fido",
+                               "petType": "Dog",
+                               "photoUrls": [
+                                 "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
+                               ],
+                               "additionalInformation": [
+                                 {
+                                   "name": "Personality",
+                                   "description": "Energetic"
+                                 }
+                               ]
+                             }
+                        """;
 
     String actualJsonBody = response.getBody();
     String actualPetId = extractPetId(actualJsonBody);

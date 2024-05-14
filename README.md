@@ -31,7 +31,8 @@ Spring Boot 3 based microservice template integrating features which address a m
 25. [Automated Code Style Formatting](#automated-code-style-formatting)
 26. [Check for updates to dependencies](#check-for-updates-to-dependencies)
 27. [Architecture Unit Tests](#architecture-unit-tests)
-28. [Notes](#notes)
+28. [Verifiable Git commit id](#verifiable-git-commit-id)
+29. [Notes](#notes)
 
 ---
 
@@ -485,19 +486,40 @@ and [TestArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetsto
 
 ---
 
-#### Verifiable Git commit hash
+#### Verifiable Git commit id
 
-By utilising the `com.gorylenko.gradle-git-properties` plugin the Git commit hash is included in the Spring `/info`
-actuator endpoint.
+It is often useful to be able to verify which version of a service is running on a given host/environment.
+By utilising the `com.gorylenko.gradle-git-properties` plugin the Git commit id, branch and build tags are
+included in the Spring `/info` actuator endpoint.
+
+The Git attributes included are determined by the `gitProperties` attribute in the [build.gradle](build.gradle)
+and the `management.info.git.mode: full` application configuration in
+the [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml).
+
+This is tested by `actuatorInfoEndpointShouldIncludeArtifactAndGitDetails`
+in [ActuatorAndDocsIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FActuatorAndDocsIntegrationTest.java).
 
 e.g.
-`"git": {
-"branch": "master",
-"commit": {
-"id": "0f10edc",
-"time": "2024-05-13T18:34:31Z"
+
+```json
+{
+   "git": {
+      "branch": "master",
+      "tags": "0.9.0",
+      "commit": {
+         "id": "fcdd60b6c2fa16fb4b3fe31e39084815a5284692"
+      },
+      "build": {
+         "version": "1.0.0-SNAPSHOT"
+      },
+      "remote": {
+         "origin": {
+            "url": "https://pauksource.ent.cgi.com/gitlab/uka/SBUDCDADA/dsc-ds-development-best-practice/spring-boot-microservice-template.git"
+         }
+      }
+   }
 }
-}`
+```
 
 ---
 

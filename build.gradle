@@ -97,6 +97,10 @@ springBoot {
     }
 }
 
+gitProperties {
+    keys = ['git.branch', 'git.commit.id', 'git.build.version', 'git.tags', 'git.remote.origin.url']
+}
+
 jacocoTestReport {
     dependsOn test
     reports {
