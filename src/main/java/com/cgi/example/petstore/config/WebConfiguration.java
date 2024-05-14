@@ -1,6 +1,6 @@
 package com.cgi.example.petstore.config;
 
-import com.cgi.example.petstore.logging.mdc.AddRequestIdToMappedDiagnosticContext;
+import com.cgi.example.petstore.logging.mdc.AddUniqueRequestIdToMappedDiagnosticContextAndResponse;
 import com.cgi.example.petstore.logging.mdc.AddUsernameToMappedDiagnosticContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -20,10 +20,10 @@ public class WebConfiguration implements WebMvcConfigurer {
   }
 
   @Bean
-  public FilterRegistrationBean<AddRequestIdToMappedDiagnosticContext> addRequestIdToLoggingFilter(
-      @Autowired AddRequestIdToMappedDiagnosticContext filter) {
+  public FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse> addRequestIdToLoggingFilter(
+          @Autowired AddUniqueRequestIdToMappedDiagnosticContextAndResponse filter) {
 
-    FilterRegistrationBean<AddRequestIdToMappedDiagnosticContext> registrationBean =
+    FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse> registrationBean =
         new FilterRegistrationBean<>();
 
     registrationBean.setFilter(filter);

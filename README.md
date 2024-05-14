@@ -347,10 +347,10 @@ class [ClearMappedDiagnosticContextWhenDone.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%
 ensures that the MDC for the thread is cleared down after each request.
 
 The
-class [AddRequestIdToMappedDiagnosticContext.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddRequestIdToMappedDiagnosticContext.java)
+class [AddUniqueRequestIdToMappedDiagnosticContextAndResponse.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUniqueRequestIdToMappedDiagnosticContextAndResponse.java)
 and the associated `addRequestIdToLoggingFilter` configuration
 in [WebConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
-adds a unique `requestId` (UUID) to the MDC for each request.
+adds a unique `requestId` (UUID) to the MDC for each request and includes the same id as a header in the response.
 
 The
 class [AddUsernameToMappedDiagnosticContext.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUsernameToMappedDiagnosticContext.java)
