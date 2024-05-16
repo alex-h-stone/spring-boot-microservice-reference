@@ -20,11 +20,12 @@ public class WebConfiguration implements WebMvcConfigurer {
   }
 
   @Bean
-  public FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse> addRequestIdToLoggingFilter(
+  public FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse>
+      addRequestIdToLoggingFilter(
           @Autowired AddUniqueRequestIdToMappedDiagnosticContextAndResponse filter) {
 
-    FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse> registrationBean =
-        new FilterRegistrationBean<>();
+    FilterRegistrationBean<AddUniqueRequestIdToMappedDiagnosticContextAndResponse>
+        registrationBean = new FilterRegistrationBean<>();
 
     registrationBean.setFilter(filter);
     registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
