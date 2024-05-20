@@ -58,7 +58,7 @@ following:
 The API provides the following functionality:
 
 - New pets can be added to the pet store.
-- Customers can search for a pet by either Id, or PetAvailabilityStatus.
+- Customers can search for a pet by either Pet Id, or PetAvailabilityStatus.
 - Pets can be updated when details change.
 - Customers can purchase a pet.
 - Pet vaccination details are provided via an external API call.
@@ -127,7 +127,7 @@ following Spring Gradle plugins:
 - `org.springframework.boot`
 - `io.spring.dependency-management`
 
-In addition to the dependency management BOM's:
+In addition to the dependency management BOMs (Bill Of Materials):
 
 - `org.springframework.boot:spring-boot-dependencies`
 - `org.junit:junit-bom`
@@ -480,7 +480,7 @@ You will see something like
 There are also automated unit tests to verify various aspects of the software architecture.  
 e.g. All test classes which are not annotation with `@Disabled` should have class names ending in `Test`.
 
-This is has been implemented using `com.tngtech.archunit:archunit-junit5` and examples can be seen
+This has been implemented using `com.tngtech.archunit:archunit-junit5` and examples can be seen
 in [ApplicationArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FApplicationArchitectureTest.java)
 and [TestArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FTestArchitectureTest.java).
 

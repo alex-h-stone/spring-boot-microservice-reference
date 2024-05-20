@@ -1,24 +1,20 @@
 package com.cgi.example.loadtest.memory;
 
-import lombok.Getter;
+import lombok.Value;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-@Getter
+@Value
 public class MemoryUsageMetric {
 
-    private final LocalDateTime collectionTime;
-    private final BigInteger memoryUsedInBytes;
+    LocalDateTime collectionTime;
+    BigInteger memoryUsedInBytes;
 
     public MemoryUsageMetric(String memoryUsedInBytes) {
         this.collectionTime = LocalDateTime.now();
         this.memoryUsedInBytes = new BigDecimal(memoryUsedInBytes).toBigInteger();
-    }
-
-    public BigInteger getMemoryUsedInBytes() {
-        return memoryUsedInBytes;
     }
 
     @Override
@@ -27,9 +23,5 @@ public class MemoryUsageMetric {
                 "collectionTime=" + collectionTime +
                 ", memoryUsedInBytes=" + memoryUsedInBytes +
                 '}';
-    }
-
-    public LocalDateTime getCollectionTime() {
-        return collectionTime;
     }
 }
