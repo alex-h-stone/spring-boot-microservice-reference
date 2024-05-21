@@ -49,6 +49,16 @@ class MappedDiagnosticContextKeyTest {
 
   @ParameterizedTest
   @MethodSource("allMappedDiagnosticContextKeys")
+  void should_NotStoreValueInTheMdc_whenCallingPutWithNullValue(MappedDiagnosticContextKey key) {
+    assertNull(MDC.get(key.getMdcKey()), "Failed precondition for key: " + key);
+
+    key.put(null);
+
+    assertNull(MDC.get(key.getMdcKey()));
+  }
+
+  @ParameterizedTest
+  @MethodSource("allMappedDiagnosticContextKeys")
   void allMdcKeysShouldBeNonNullAndNotEmpty(MappedDiagnosticContextKey key) {
     String actualMdcKey = key.getMdcKey();
 
