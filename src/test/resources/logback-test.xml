@@ -6,9 +6,7 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] requestId:%X{requestId:-} username:%X{username:-} %logger -
-                %msg%n%ex
-            </pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger - %msg [MDC %X]%ex%n</pattern>
         </encoder>
     </appender>
 

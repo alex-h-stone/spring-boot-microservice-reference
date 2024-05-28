@@ -6,11 +6,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-@WebFilter("/api/v1/*")
+import java.io.IOException;
+
+@WebFilter("/*")
 @Component
+@Slf4j
 public class ClearMappedDiagnosticContextWhenDone implements Filter {
 
   @Override
@@ -20,7 +24,8 @@ public class ClearMappedDiagnosticContextWhenDone implements Filter {
     try {
       filterChain.doFilter(request, response);
     } finally {
-      MappedDiagnosticContextKey.clearAll();
+      log.debug("Clearing all MDC keys");
+      MDC.clear();
     }
   }
 }

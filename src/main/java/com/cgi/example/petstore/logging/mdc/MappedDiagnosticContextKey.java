@@ -1,6 +1,5 @@
 package com.cgi.example.petstore.logging.mdc;
 
-import java.util.Arrays;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +19,13 @@ public enum MappedDiagnosticContextKey {
 
   public static void clearAll() {
     log.debug("Clearing all MDC keys");
-    Arrays.stream(values())
-        .forEach(mappedDiagnosticContextKey -> MDC.remove(mappedDiagnosticContextKey.mdcKey));
+    MDC.clear();
   }
 
   public void put(String value) {
     if (Objects.nonNull(value)) {
       MDC.put(mdcKey, value);
-      log.debug("Added the MDC key {} with a value of {}", mdcKey, value);
+      log.debug("Populated the MDC key {} with a value of [{}]", mdcKey, value);
     }
   }
 }
