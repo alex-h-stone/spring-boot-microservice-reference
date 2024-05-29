@@ -112,7 +112,7 @@ public class DynamicApplicationPropertiesRepository {
                     pathToApplicationProperties,
                     dynamicApplicationPropertiesJson,
                     StandardCharsets.UTF_8);
-            log.debug("Successfully saved dynamicApplicationProperties: {}", toClickableUriString.apply(pathToApplicationProperties.toFile()));
+            log.info("Successfully saved dynamicApplicationProperties: {}", toClickableUriString.apply(pathToApplicationProperties.toFile()));
         } catch (JsonProcessingException e) {
             log.warn("Unable to deserialise dynamicApplicationProperties: {}", e.getMessage(), e);
         } catch (IOException e) {
