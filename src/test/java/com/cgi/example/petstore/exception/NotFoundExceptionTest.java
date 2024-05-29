@@ -3,9 +3,11 @@ package com.cgi.example.petstore.exception;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+@Tag("unit")
 class NotFoundExceptionTest {
 
   @Test

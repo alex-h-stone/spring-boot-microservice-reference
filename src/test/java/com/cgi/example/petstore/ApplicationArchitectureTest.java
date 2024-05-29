@@ -10,6 +10,7 @@ import com.tngtech.archunit.lang.ArchRule;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 
 @AnalyzeClasses(
     packages = "com.cgi.example.petstore",
@@ -18,6 +19,7 @@ import java.util.List;
       ImportOption.DoNotIncludeJars.class,
       ImportOption.DoNotIncludeArchives.class
     })
+@Tag("unit")
 public class ApplicationArchitectureTest {
 
   @ArchTest

@@ -24,15 +24,16 @@ Spring Boot 3 based microservice template integrating features which address a m
 18. [Logging of Requests and Responses](#logging-of-requests-and-responses)
 19. [Logging with a Mapped Diagnostic Context (MDC)](#logging-with-a-mapped-diagnostic-context-mdc)
 20. [Structured JSON logging](#structured-json-logging)
-21. [Execute Postman API test Collection as a Gradle task](#execute-postman-api-test-collection-as-a-gradle-task)
-22. [Load Testing](#load-testing)
-23. [Actuator Endpoints](#actuator-endpoints)
-24. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
-25. [Automated Code Style Formatting](#automated-code-style-formatting)
-26. [Check for updates to dependencies](#check-for-updates-to-dependencies)
-27. [Architecture Unit Tests](#architecture-unit-tests)
-28. [Verifiable Git commit id](#verifiable-git-commit-id)
-29. [Notes](#notes)
+21. [Unit testing of Logging](#unit-testing-of-logging)
+22. [Execute Postman API test Collection as a Gradle task](#execute-postman-api-test-collection-as-a-gradle-task)
+23. [Load Testing](#load-testing)
+24. [Actuator Endpoints](#actuator-endpoints)
+25. [Swagger Documentation Endpoints](#swagger-documentation-endpoints)
+26. [Automated Code Style Formatting](#automated-code-style-formatting)
+27. [Check for updates to dependencies](#check-for-updates-to-dependencies)
+28. [Architecture Unit Tests](#architecture-unit-tests)
+29. [Verifiable Git commit id](#verifiable-git-commit-id)
+30. [Notes](#notes)
 
 ---
 
@@ -367,6 +368,24 @@ machine and developer readability.
 
 This is implemented using the dependency `net.logstash.logback:logstash-logback-encoder` and the appropriate config in 
 [logback.xml](src%2Fmain%2Fresources%2Flogback.xml).
+
+---
+
+#### Unit testing of Logging
+
+The JUnit extension
+class [LoggingVerification.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2FLoggingVerification.java)
+can be used to conveniently unit test logging.
+This is done by including the following annotations on the test class:
+
+`@ExtendWith(LoggingVerification.class)`  
+`@TestLoggingTarget(MappedDiagnosticContextKey.class)`
+
+And verifying log statements using the `LoggingVerification` class like below:  
+`LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Clearing all MDC keys"));`
+
+For an example
+see [MappedDiagnosticContextKeyTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKeyTest.java).
 
 ---
 

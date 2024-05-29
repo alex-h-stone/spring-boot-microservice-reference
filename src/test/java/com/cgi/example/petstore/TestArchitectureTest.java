@@ -6,7 +6,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @AnalyzeClasses(
@@ -16,23 +16,16 @@ import org.junit.jupiter.api.Test;
       ImportOption.DoNotIncludeJars.class,
       ImportOption.DoNotIncludeArchives.class
     })
+@Tag("unit")
 public class TestArchitectureTest {
 
   @ArchTest
   public static final ArchRule ARCHITECTURE_TEST_1 =
-      classes()
-          .that()
-          .areNotAnnotatedWith(Disabled.class)
-          .should()
-          .haveSimpleNameEndingWith("Test");
+      classes().that().areNotAnnotatedWith(Tag.class).should().haveSimpleNameNotEndingWith("Test");
 
   @ArchTest
   public static final ArchRule ARCHITECTURE_TEST_2 =
-      classes()
-          .that()
-          .areAnnotatedWith(Disabled.class)
-          .should()
-          .haveSimpleNameNotEndingWith("Test");
+      classes().that().areAnnotatedWith(Tag.class).should().haveSimpleNameEndingWith("Test");
 
   @ArchTest
   public static final ArchRule ARCHITECTURE_TEST_3 =
@@ -42,7 +35,7 @@ public class TestArchitectureTest {
           .and()
           .doNotHaveSimpleName("ProcessManagementTest")
           .should()
-          .beAnnotatedWith(Disabled.class);
+          .notBeAnnotatedWith(Tag.class);
 
   @ArchTest
   public static final ArchRule ARCHITECTURE_TEST_4 =

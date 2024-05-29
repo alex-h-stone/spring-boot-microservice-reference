@@ -27,7 +27,7 @@ public class AddUniqueRequestIdToMappedDiagnosticContextAndResponse implements F
     if (response instanceof HttpServletResponse httpServletResponse) {
       String requestIdHeaderName = MappedDiagnosticContextKey.REQUEST_ID.getMdcKey();
       log.debug(
-          "Adding the Request Id response header {} with a value of [{}]",
+          "Adding the Request Id response header [{}] with a value of [{}]",
           requestIdHeaderName,
           uniqueRequestId);
       httpServletResponse.addHeader(requestIdHeaderName, uniqueRequestId);

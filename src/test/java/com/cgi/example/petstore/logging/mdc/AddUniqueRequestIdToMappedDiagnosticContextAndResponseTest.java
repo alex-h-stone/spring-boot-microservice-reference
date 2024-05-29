@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
+import ch.qos.logback.classic.Level;
+import com.cgi.example.petstore.utils.LoggingVerification;
+import com.cgi.example.petstore.utils.TestLoggingTarget;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +26,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(LoggingVerification.class)
+@TestLoggingTarget(AddUniqueRequestIdToMappedDiagnosticContextAndResponse.class)
 @Tag("unit")
 class AddUniqueRequestIdToMappedDiagnosticContextAndResponseTest {
 
@@ -60,7 +65,12 @@ class AddUniqueRequestIdToMappedDiagnosticContextAndResponseTest {
             verify(mockHttpResponse)
                 .addHeader(
                     ArgumentMatchers.same(MappedDiagnosticContextKey.REQUEST_ID.getMdcKey()),
-                    anyString()));
+                    anyString()),
+        () ->
+            LoggingVerification.assertLog(
+                Level.DEBUG,
+                Matchers.startsWith(
+                    "Adding the Request Id response header [requestId] with a value of")));
   }
 
   private String getRequestIdFromTheMdc() {

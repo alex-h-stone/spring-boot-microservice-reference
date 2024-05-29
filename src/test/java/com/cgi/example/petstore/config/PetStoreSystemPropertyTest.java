@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Arrays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
+@Tag("unit")
 public class PetStoreSystemPropertyTest {
 
   @BeforeEach
