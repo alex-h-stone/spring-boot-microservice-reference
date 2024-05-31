@@ -19,7 +19,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @ExtendWith(MockitoExtension.class)
 @Tag("unit")
-class DynamicLocalConfigurationTest {
+class SetSystemPropertiesForEmbeddedServicesTest {
 
   private static final String VACCINATIONS_URL_SYSTEM_PROPERTY = "VACCINATIONS_URL";
   private static final String MONGO_DB_URI_SYSTEM_PROPERTY = "MONGO_DB_URI";
@@ -29,7 +29,7 @@ class DynamicLocalConfigurationTest {
 
   @Mock private ConfigurableApplicationContext applicationContext;
 
-  @InjectMocks private DynamicLocalConfiguration dynamicConfiguration;
+  @InjectMocks private SetSystemPropertiesForEmbeddedServices dynamicConfiguration;
 
   @BeforeEach
   void setUp() {
