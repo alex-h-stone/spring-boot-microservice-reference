@@ -335,6 +335,15 @@
 									"\r",
 									"pm.test(\"Response contains build.group attribute with value 'com.cgi.example.'\", function () {   \r",
 									"    pm.expect(build.group).to.eql(\"com.cgi.example\");\r",
+									"});\r",
+									"\r",
+									"var git = jsonData.git;\r",
+									"pm.test(\"Response contains non-empty git.branch\", function () {   \r",
+									"    pm.expect(git.branch).to.be.a('string').and.to.have.lengthOf.at.least(2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains a complete git.commit.id of exactly 40 characters e.g. 9db387e800f1ac1c3c16b90fb189538f443da1fc\", function () {   \r",
+									"    pm.expect(git.commit.id).to.be.a('string').and.to.have.lengthOf.at.least(40);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -347,8 +356,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "{{acceptHeader}}",
-								"type": "text"
+								"value": "{{acceptHeader}}"
 							}
 						],
 						"url": {
