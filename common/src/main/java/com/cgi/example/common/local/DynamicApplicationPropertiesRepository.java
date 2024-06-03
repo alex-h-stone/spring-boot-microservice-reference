@@ -15,19 +15,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @Slf4j
 public class DynamicApplicationPropertiesRepository {
 
-    private final ObjectMapper objectMapper;
+    private static final ThreadLocal<ObjectMapper> OBJECT_MAPPER = ThreadLocal.withInitial(() -> {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
+    });
+
     private final ToClickableUriString toClickableUriString = new ToClickableUriString();
     private final Path pathToApplicationProperties;
 
     public DynamicApplicationPropertiesRepository() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         pathToApplicationProperties = Path.of(DynamicApplicationFileProperties.FILE_PATH);
     }
 
@@ -56,33 +60,28 @@ public class DynamicApplicationPropertiesRepository {
     }
 
     public void setApplicationPort(Class<?> modifiedBy, int applicationPortNumber) {
-        DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setApplicationPort(createPort(modifiedBy, applicationPortNumber));
-        save(applicationProperties);
+        Port port = createPort(modifiedBy, applicationPortNumber);
+        save(dynamicApplicationProperties -> dynamicApplicationProperties.setApplicationPort(port));
     }
 
     public void setManagementPort(Class<?> modifiedBy, int managementPortNumber) {
-        DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setManagementPort(createPort(modifiedBy, managementPortNumber));
-        save(applicationProperties);
+        Port port = createPort(modifiedBy, managementPortNumber);
+        save(dynamicApplicationProperties -> dynamicApplicationProperties.setManagementPort(port));
     }
 
     public void setWireMockPort(Class<?> modifiedBy, int wireMockPort) {
-        DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setWireMockPort(createPort(modifiedBy, wireMockPort));
-        save(applicationProperties);
+        Port port = createPort(modifiedBy, wireMockPort);
+        save(dynamicApplicationProperties -> dynamicApplicationProperties.setWireMockPort(port));
     }
 
     public void setMongoDBPort(Class<?> modifiedBy, int mongoDBPort) {
-        DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setMongoDBPort(createPort(modifiedBy, mongoDBPort));
-        save(applicationProperties);
+        Port port = createPort(modifiedBy, mongoDBPort);
+        save(dynamicApplicationProperties -> dynamicApplicationProperties.setMongoDBPort(port));
     }
 
     public void setOAuth2Port(Class<?> modifiedBy, int oAuth2Port) {
-        DynamicApplicationProperties applicationProperties = retrieve();
-        applicationProperties.setOAuth2Port(createPort(modifiedBy, oAuth2Port));
-        save(applicationProperties);
+        Port port = createPort(modifiedBy, oAuth2Port);
+        save(dynamicApplicationProperties -> dynamicApplicationProperties.setOAuth2Port(port));
     }
 
     private Integer portNumberOrNull(Port port) {
@@ -90,7 +89,7 @@ public class DynamicApplicationPropertiesRepository {
     }
 
     @Nonnull
-    private DynamicApplicationProperties retrieve() {
+    private synchronized DynamicApplicationProperties retrieve() {
         File file = pathToApplicationProperties.toFile();
         if (!file.exists()) {
             log.debug("Given the the file path [{}] unable to find: {}", file.getAbsolutePath(), toClickableUriString.apply(file));
@@ -100,10 +99,13 @@ public class DynamicApplicationPropertiesRepository {
         return readApplicationPropertiesFrom(pathToApplicationProperties);
     }
 
-    private void save(DynamicApplicationProperties applicationProperties) {
+    private synchronized void save(Consumer<DynamicApplicationProperties> changesToApply) {
         try {
+            DynamicApplicationProperties applicationProperties = retrieve();
+            changesToApply.accept(applicationProperties);
+
             String dynamicApplicationPropertiesJson =
-                    objectMapper.writeValueAsString(applicationProperties);
+                    OBJECT_MAPPER.get().writeValueAsString(applicationProperties);
             log.debug("About to save dynamicApplicationProperties: {} to: {}",
                     applicationProperties, toClickableUriString.apply(pathToApplicationProperties.toFile()));
 
@@ -126,7 +128,7 @@ public class DynamicApplicationPropertiesRepository {
             String dynamicApplicationPropertiesJson = Files.readString(applicationPropertiesPath);
             log.debug("Retrieved dynamicApplicationProperties: {}", dynamicApplicationPropertiesJson);
 
-            return objectMapper.readValue(dynamicApplicationPropertiesJson, DynamicApplicationProperties.class);
+            return OBJECT_MAPPER.get().readValue(dynamicApplicationPropertiesJson, DynamicApplicationProperties.class);
         } catch (IOException e) {
             log.info("Unable to retrieve dynamicApplicationProperties: {}", e.getMessage(), e);
         }
