@@ -18,6 +18,18 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class should be used in a JUnit test by including the class level annotations:<br>
+ * {@code @ExtendWith(LoggingVerification.class)}<br>
+ * {@code @TestLoggingTarget(MappedDiagnosticContextKey.class)}<br>
+ * Where {@code MappedDiagnosticContextKey.class} is the class under test.
+ *
+ * <p>Verification of logging events can then be done by calling {@code
+ * LoggingVerification.assertLog()}.
+ *
+ * <p>e.g.<br>
+ * {@code LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Clearing all MDC keys")}
+ */
 @Disabled
 public class LoggingVerification implements BeforeEachCallback, AfterEachCallback {
 
@@ -86,7 +98,7 @@ public class LoggingVerification implements BeforeEachCallback, AfterEachCallbac
 
     @Override
     protected void append(ILoggingEvent loggingEvent) {
-      log.info("Appending the Logging Event: [{}]", loggingEvent);
+      log.info("Appending the Logging Event: {}", loggingEvent);
       logEvents.add(loggingEvent);
     }
   }
