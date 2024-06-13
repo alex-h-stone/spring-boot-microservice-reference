@@ -126,7 +126,6 @@ To best manage a large number of Spring dependencies with independent version nu
 following Spring Gradle plugins:
 
 - `org.springframework.boot`
-- `io.spring.dependency-management`
 
 In addition to the dependency management BOMs (Bill Of Materials):
 
