@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ch.qos.logback.classic.Level;
-import com.cgi.example.petstore.utils.LoggingVerification;
-import com.cgi.example.petstore.utils.TestLoggingTarget;
+import com.cgi.example.petstore.utils.logging.LoggingVerification;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationJUnitExtension;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationTarget;
 import java.util.Arrays;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -17,8 +18,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
 @Tag("unit")
-@ExtendWith(LoggingVerification.class)
-@TestLoggingTarget(PetStoreSystemProperty.class)
+@ExtendWith(LoggingVerificationJUnitExtension.class)
+@LoggingVerificationTarget(PetStoreSystemProperty.class)
 public class PetStoreSystemPropertyTest {
 
   @BeforeEach

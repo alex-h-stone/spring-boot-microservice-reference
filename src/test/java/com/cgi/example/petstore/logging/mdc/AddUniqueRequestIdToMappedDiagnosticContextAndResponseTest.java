@@ -7,8 +7,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
-import com.cgi.example.petstore.utils.LoggingVerification;
-import com.cgi.example.petstore.utils.TestLoggingTarget;
+import com.cgi.example.petstore.utils.logging.LoggingVerification;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationJUnitExtension;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationTarget;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.MDC;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(LoggingVerification.class)
-@TestLoggingTarget(AddUniqueRequestIdToMappedDiagnosticContextAndResponse.class)
+@ExtendWith(LoggingVerificationJUnitExtension.class)
+@LoggingVerificationTarget(AddUniqueRequestIdToMappedDiagnosticContextAndResponse.class)
 @Tag("unit")
 class AddUniqueRequestIdToMappedDiagnosticContextAndResponseTest {
 

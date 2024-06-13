@@ -1,7 +1,6 @@
-package com.cgi.example.petstore.utils;
+package com.cgi.example.petstore.utils.logging;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -20,8 +18,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class should be used in a JUnit test by including the class level annotations:<br>
- * {@code @ExtendWith(LoggingVerification.class)}<br>
- * {@code @TestLoggingTarget(MappedDiagnosticContextKey.class)}<br>
+ * {@code @ExtendWith(LoggingVerificationJUnitExtension.class)}<br>
+ * {@code @LoggingVerificationTarget(MappedDiagnosticContextKey.class)}<br>
  * Where {@code MappedDiagnosticContextKey.class} is the class under test.
  *
  * <p>Verification of logging events can then be done by calling {@code
@@ -31,36 +29,10 @@ import org.slf4j.LoggerFactory;
  * {@code LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Clearing all MDC keys")}
  */
 @Disabled
-public class LoggingVerification implements BeforeEachCallback, AfterEachCallback {
+public class LoggingVerificationJUnitExtension implements BeforeEachCallback, AfterEachCallback {
 
   private static LoggingListAppender listAppender;
   private Logger testLogger;
-
-  public static void assertLog(Level expectedLogLevel, Matcher<String> logMessageMatcher) {
-    List<ILoggingEvent> allLogEvents = listAppender.getLogEvents();
-    List<ILoggingEvent> matchingLogLevel =
-        allLogEvents.stream().filter(event -> event.getLevel().equals(expectedLogLevel)).toList();
-
-    List<ILoggingEvent> matchingLogEvents =
-        matchingLogLevel.stream()
-            .filter(event -> logMessageMatcher.matches(event.getFormattedMessage()))
-            .toList();
-
-    if (matchingLogEvents.isEmpty()) {
-      String message =
-          "Unable to find a %s log event with message matching %s in %s"
-              .formatted(expectedLogLevel, logMessageMatcher, allLogEvents);
-      fail(message);
-    }
-
-    if (matchingLogEvents.size() > 1) {
-      String message =
-          "Found %d %s log events with message matching %s, but expected 1, in %s"
-              .formatted(
-                  matchingLogEvents.size(), expectedLogLevel, logMessageMatcher, allLogEvents);
-      fail(message);
-    }
-  }
 
   @Override
   public void afterEach(ExtensionContext context) {
@@ -70,12 +42,12 @@ public class LoggingVerification implements BeforeEachCallback, AfterEachCallbac
 
   @Override
   public void beforeEach(ExtensionContext context) {
-    TestLoggingTarget loggingTarget =
-        context.getRequiredTestClass().getAnnotation(TestLoggingTarget.class);
+    LoggingVerificationTarget loggingTarget =
+        context.getRequiredTestClass().getAnnotation(LoggingVerificationTarget.class);
     assertNotNull(
         loggingTarget,
         "Expected non-null test logging target to be defined by the test class annotation @%s()"
-            .formatted(TestLoggingTarget.class.getSimpleName()));
+            .formatted(LoggingVerificationTarget.class.getSimpleName()));
 
     testLogger = (Logger) LoggerFactory.getLogger(loggingTarget.value());
     testLogger.setLevel(Level.DEBUG);
@@ -84,6 +56,10 @@ public class LoggingVerification implements BeforeEachCallback, AfterEachCallbac
     listAppender.start();
 
     testLogger.addAppender(listAppender);
+  }
+
+  static List<ILoggingEvent> getLogEvents() {
+    return List.copyOf(listAppender.getLogEvents());
   }
 
   @Getter

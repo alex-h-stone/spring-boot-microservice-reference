@@ -1,4 +1,4 @@
-package com.cgi.example.petstore.utils;
+package com.cgi.example.petstore.utils.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface TestLoggingTarget {
+public @interface LoggingVerificationTarget {
 
   Class<?> value();
 }

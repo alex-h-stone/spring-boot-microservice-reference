@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ch.qos.logback.classic.Level;
-import com.cgi.example.petstore.utils.LoggingVerification;
-import com.cgi.example.petstore.utils.TestLoggingTarget;
+import com.cgi.example.petstore.utils.logging.LoggingVerification;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationJUnitExtension;
+import com.cgi.example.petstore.utils.logging.LoggingVerificationTarget;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -21,8 +22,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.MDC;
 
-@ExtendWith(LoggingVerification.class)
-@TestLoggingTarget(MappedDiagnosticContextKey.class)
+@ExtendWith(LoggingVerificationJUnitExtension.class)
+@LoggingVerificationTarget(MappedDiagnosticContextKey.class)
 @Tag("unit")
 class MappedDiagnosticContextKeyTest {
 
