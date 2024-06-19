@@ -7,12 +7,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @WebFilter("/*")
 @Component
-@Slf4j
 public class ClearMappedDiagnosticContextWhenDone implements Filter {
 
   @Override

@@ -88,7 +88,7 @@ class MappedDiagnosticContextKeyTest {
     MappedDiagnosticContextKey.clearAll();
 
     allMappedDiagnosticContextKeys().forEach(ASSERT_MDC_VALUE_IS_NULL);
-    LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Clearing all MDC keys"));
+    LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Removing all MDC keys"));
   }
 
   static Stream<MappedDiagnosticContextKey> allMappedDiagnosticContextKeys() {
