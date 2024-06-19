@@ -7,6 +7,8 @@ import com.cgi.example.petstore.model.PetAvailabilityStatus;
 import com.cgi.example.petstore.model.PetInformationItem;
 import com.cgi.example.petstore.model.PetResponse;
 import com.cgi.example.petstore.model.PetType;
+import com.cgi.example.petstore.service.customer.CustomerAddressPersistenceType;
+import com.cgi.example.petstore.service.customer.CustomerDocument;
 import com.cgi.example.petstore.service.pet.PersistenceStatus;
 import com.cgi.example.petstore.service.pet.PetDocument;
 import java.time.LocalDateTime;
@@ -24,6 +26,14 @@ public class TestData {
   private static final List<String> PHOTO_URLS =
       List.of(
           "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6");
+  private static final String USERNAME = "alex.stone";
+  private static final String FIRST_NAME = "Alex";
+  private static final String LAST_NAME = "Stone";
+  private static final String EMAIL = "alex.stone@cgi.com";
+  private static final String STREET = "40 Princes Street";
+  private static final String CITY = "Edinburgh";
+  private static final String POST_CODE = "EH2 2BY";
+  private static final String COUNTRY = "United Kingdom";
 
   public PetResponse createPetResponse() {
     PetResponse pet = new PetResponse();
@@ -84,10 +94,10 @@ public class TestData {
   public CustomerRequest createCustomerRequest() {
     CustomerRequest customer = new CustomerRequest();
 
-    customer.setUsername("alex.stone");
-    customer.setFirstName("Alex");
-    customer.setLastName("Stone");
-    customer.email("alex.stone@cgi.com");
+    customer.setUsername(USERNAME);
+    customer.setFirstName(FIRST_NAME);
+    customer.setLastName(LAST_NAME);
+    customer.email(EMAIL);
     customer.setAddress(createAddress());
 
     return customer;
@@ -96,11 +106,31 @@ public class TestData {
   private Address createAddress() {
     Address address = new Address();
 
-    address.setStreet("40 Princes Street");
-    address.setCity("Edinburgh");
-    address.setPostCode("EH2 2BY");
-    address.setCountry("United Kingdom");
+    address.setStreet(STREET);
+    address.setCity(CITY);
+    address.setPostCode(POST_CODE);
+    address.setCountry(COUNTRY);
 
     return address;
+  }
+
+  public CustomerDocument createCustomerDocument() {
+    return CustomerDocument.builder()
+        .customerId("6672aa8e398c316a8390fab0")
+        .username(USERNAME)
+        .firstName(FIRST_NAME)
+        .lastName(LAST_NAME)
+        .email(EMAIL)
+        .address(createCustomerAddressPersistenceType())
+        .build();
+  }
+
+  private CustomerAddressPersistenceType createCustomerAddressPersistenceType() {
+    return CustomerAddressPersistenceType.builder()
+        .street(STREET)
+        .city(CITY)
+        .postCode(POST_CODE)
+        .country(COUNTRY)
+        .build();
   }
 }
