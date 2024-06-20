@@ -42,6 +42,7 @@ public enum PetStoreSystemProperty {
   }
 
   public void clear() {
+    log.debug("Clearing the system property {}", systemProperty);
     System.clearProperty(systemProperty);
   }
 }
