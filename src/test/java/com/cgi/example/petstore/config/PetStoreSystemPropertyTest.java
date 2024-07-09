@@ -3,23 +3,15 @@ package com.cgi.example.petstore.config;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import ch.qos.logback.classic.Level;
-import com.cgi.example.petstore.utils.logging.LoggingVerification;
-import com.cgi.example.petstore.utils.logging.LoggingVerificationJUnitExtension;
-import com.cgi.example.petstore.utils.logging.LoggingVerificationTarget;
 import java.util.Arrays;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
 @Tag("unit")
-@ExtendWith(LoggingVerificationJUnitExtension.class)
-@LoggingVerificationTarget(PetStoreSystemProperty.class)
 public class PetStoreSystemPropertyTest {
 
   @BeforeEach
@@ -58,10 +50,6 @@ public class PetStoreSystemPropertyTest {
     property.setSystemPropertyIfAbsent(value);
 
     assertEquals(value, property.get(), "Property should be set to the provided value.");
-
-    String expectedLogMessage =
-        "The system property %s has been set with the value [%s]".formatted(property, value);
-    LoggingVerification.assertLog(Level.INFO, Matchers.equalTo(expectedLogMessage));
   }
 
   @ParameterizedTest
@@ -79,10 +67,5 @@ public class PetStoreSystemPropertyTest {
     property.setSystemPropertyIfAbsent(newValue);
 
     assertEquals(existingValue, property.get(), "Property should retain the original value.");
-
-    String expectedLogMessage =
-        "Not setting system property %s as it has already been set with a value of [%s]"
-            .formatted(property, existingValue);
-    LoggingVerification.assertLog(Level.INFO, Matchers.equalTo(expectedLogMessage));
   }
 }

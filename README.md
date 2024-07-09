@@ -40,7 +40,7 @@ Spring Boot 3 based microservice template integrating features which address a m
 #### Introduction and Purpose
 
 This template is designed to serve as a go-to reference for implementing many Spring Boot microservice features.
-It is _representative_ of a real-life production ready microservice, although clearly depending on your specific 
+It is _representative_ of a real-life production ready microservice, although clearly depending on your specific
 requirements you will likely have to make some modifications to the approaches included in this project.
 
 At a minimum, the template should provide a high quality default starting point for new features.
@@ -126,6 +126,7 @@ To best manage a large number of Spring dependencies with independent version nu
 following Spring Gradle plugins:
 
 - `org.springframework.boot`
+- `io.spring.dependency-management`
 
 In addition to the dependency management BOMs (Bill Of Materials):
 
@@ -138,9 +139,7 @@ With all Gradle dependency and plugin versions defined in one place [gradle.prop
 
 #### OpenAPI/Swagger code generation
 
-See the [`build.gradle`](build.gradle) for an example of using OpenAPI
-schemas ([`pet-store-api.yaml`](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml) and
-[`animal-vaccination-api.yaml`](src%2Fmain%2Fresources%2Fopenapi%2Fexternal%2Fanimal-vaccination-api.yaml))
+See the `build.gradle` for an example of using OpenAPI schemas (`pet-store-api.yaml` and `animal-vaccination-api.yaml`)
 to generate model classes and the Java interfaces for the APIs.  
 By having a controller implement the Java interface derived from the API, when the schema is updated some
 breaking changes will be caught as compile time errors.
@@ -159,8 +158,7 @@ To generate the external Animal Vaccination API classes and interfaces:
 #### Data persistence via MongoDB
 
 This service is integrated with a MongoDB NoSQL database using `spring-boot-starter-data-mongodb`
-and the `MongoRepository` interface. Connection details are defined in
-the [`application.yaml`](src%2Fmain%2Fresources%2Fapplication.yaml) as a connection string
+and the `MongoRepository` interface. Connection details are defined in the `application.yaml` as a connection string
 using the property `spring.data.mongodb.uri`.
 
 For a more lightweight and simpler MongoDB integration consider using
@@ -182,22 +180,20 @@ which allows you to specify both a message and the HTTP status code which should
 #### Request validation via OpenAPI specification
 
 See the `/pets/{petId}` GET endpoint and the `PetId` schema definition
-in [`pet-store-api.yaml`](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)
+in [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)
 and the associated integration test `should_ReturnError_When_CallingGetPetEndpointWithIdLargerThanPermitted`
-in [`ApplicationIntegrationTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FApplicationIntegrationTest.java)
+in [ApplicationIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FApplicationIntegrationTest.java)
 for details of how request validation can be implemented via the Open API yaml.
 
 ---
 
 #### Java Request Validation
 
-See [`PetIdValidator`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fcontroller%2Fvalidation%2FPetIdValidator.java)
-and the integration test
+See [PetIdValidator.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fcontroller%2Fvalidation%2FPetIdValidator.java) and the integration test
 `should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation`  
 for details of how to write custom request validation logic.
 
-Wherever possible, request validation logic should be defined in the OpenAPI definition
-e.g. [`pet-store-api.yaml`](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
+Wherever possible, request validation logic should be defined in the OpenAPI definition e.g. [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
 This has several benefits over custom Java validators, including:
 - Reusable and language agnostic, such that you can use the OpenAPI yaml to rewrite the microservice using another (non-Java) implementation language.
 - The validation is visible by all consumers of the microservice via the OpenAPI yaml.
@@ -208,12 +204,11 @@ This has several benefits over custom Java validators, including:
 #### Mapping between Pet Store API model, external API model and MongoDB Documents
 
 See the below classes for examples of different mappers:
+- [PetMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fpet%2FPetMapper.java)
+- [ExternalVaccinationsMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FExternalVaccinationsMapper.java)
+- [CustomerMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fcustomer%2FCustomerMapper.java)
 
-- [`PetMapper`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fpet%2FPetMapper.java)
-- [`ExternalVaccinationsMapper`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FExternalVaccinationsMapper.java)
-- [`CustomerMapper`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fcustomer%2FCustomerMapper.java)
-
-Depending on the use case [MapStruct](https://mapstruct.org/) is also an option for reducing boilerplate mapping code. 
+Depending on the use case [MapStruct](https://mapstruct.org/) is also an option for reducing boilerplate mapping code.
 This should to be weighed up against the increase in complexity of the mapping implementation.
 
 ---
@@ -236,10 +231,10 @@ All JUnit based integration tests have the annotation `@Tag("integration")` so t
 executed when required.
 
 Typically, integration tests extend the base
-class [`BaseIntegrationTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
+class [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
 and use Wire
-Mock [`WireMockEmbedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
-and `de.flapdoodle.embed.mongo` [`MongoDBEmbedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FMongoDBEmbedded.java)
+Mock [WireMockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWireMockForIntegrationTests.java)
+and `de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)
 to stand-in for external dependencies.
 
 To run only integration tests:  
@@ -253,17 +248,15 @@ or
 
 To improve developer efficiency, when running the microservice and associated dependencies like Wire Mock, MongoDB
 and OAuth2 locally, all port numbers are assigned dynamically and subsequently discovered when needed via the
-[`DynamicApplicationPropertiesRepository`](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
+[DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
 For example, when you start
-the [`WireMockEmbedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
+the [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
 the
 dynamic port number (determined at runtime) which
 it is listening on is persisted
-to [`dynamicApplicationProperties.json`](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
-such that when you start the microservice (with
-the [`application-local.yaml`](src%2Fmain%2Fresources%2Fapplication-local.yaml) profile) it will be automatically
-configured to use the
+to [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json)
+such that when you start the microservice (with the `local` profile) it will be automatically configured to use the
 correct
 Wire Mock port.
 
@@ -280,25 +273,25 @@ Port allocation and discovery includes:
 
 #### OAuth2 Security Integration
 
-See `spring.security.oauth2` in [`application.yaml`](src%2Fmain%2Fresources%2Fapplication.yaml) for the required
+See `spring.security.oauth2` in [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml) for the required
 application configuration changes.
 
 Also
-see [`SecurityConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java)
+see [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java)
 for details of how to configure a `SecurityFilterChain` to allow both unauthenticated endpoints like Swagger,
 and OAuth2 authenticated application API endpoints.
 
-Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [`build.gradle`](build.gradle)) and the embedded
+Testing is facilitated with `no.nav.security:mock-oauth2-server` (see [build.gradle](build.gradle)) and the embedded
 OAuth2
-server [`OAuth2Embedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java).
+server [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java).
 
 **Note**: That Spring OAuth2 configuration properties (e.g. `spring.security.oauth2resource-server.jwt.issuer-uri`)
 are resolved very early in the creation of the application context.  
 To ensure that the system property `OAUTH_HOST` is overridden before the application context is created we
-define [`OAuth2Embedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java)
+define [OAuth2Embedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FOAuth2Embedded.java)
 as
 a `private static final` variable
-in [`BaseIntegrationTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java).
+in [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java).
 So the OAuth2 server is initialised and system properties are set before Spring Security initialises OAuth2.
 
 ---
@@ -312,7 +305,7 @@ See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spri
 
 #### External REST API call with retry via Spring WebFlux
 
-See [`VaccinationsApiClient`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FVaccinationsApiClient.java)
+See [VaccinationsApiClient.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FVaccinationsApiClient.java)
 for an example of making an external REST API call with retry logic using the SpringFlux `WebClient`.
 
 ---
@@ -322,7 +315,7 @@ for an example of making an external REST API call with retry logic using the Sp
 See https://wiremock.org/docs/stubbing/ for additional guidance with Wire Mock.
 
 Also
-see [`WireMockEmbedded`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
+see [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
 for how to run a stand-alone embedded stub server for running a microservice
 locally which has external API dependencies.
 
@@ -332,17 +325,13 @@ Along with the Wire Mock mapping and stub response files in [wiremock](src%2Ftes
 
 #### Logging of requests and responses
 
-See [`RequestLoggingFilterConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2FRequestLoggingFilterConfiguration.java)
+See [RequestLoggingFilterConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2FRequestLoggingFilterConfiguration.java)
 for the required config to log requests using the `org.springframework.web.filter.CommonsRequestLoggingFilter`.
 
 Also consider the use of
-AOP [`LoggingAspects`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Faspects%2FLoggingAspects.java)
-and
-the [`@LogMethodArguments`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Faspects%2FLogMethodArguments.java)
-annotations to log method arguments,
-and
-the [`@LogMethodResponse`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Faspects%2FLogMethodResponse.java)
-to log the method return object.
+AOP [LoggingAspects.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Faspects%2FLoggingAspects.java)
+and the `@LogMethodArguments` annotations to log method arguments,
+and the `@LogMethodResponse` to log the method return object.
 
 ---
 
@@ -350,55 +339,53 @@ to log the method return object.
 
 To improve the traceability of user actions when looking at the microservice logs there is a Mapped Diagnostic Context (MDC).
 All MDC keys are defined in 1 central
-place [`MappedDiagnosticContextKey`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKey.java),
+place [MappedDiagnosticContextKey.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKey.java),
 along with the logic to clear the MDC.  
 Calling `MDC.remove()` for only the required keys has a very slight performance improvement over calling `MDC.clear()`.
 
 The
-class [`ClearMappedDiagnosticContextWhenDone`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FClearMappedDiagnosticContextWhenDone.java)
+class [ClearMappedDiagnosticContextWhenDone.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FClearMappedDiagnosticContextWhenDone.java)
 ensures that the MDC for the thread is cleared down after each request.
 
 The
-class [`AddUniqueRequestIdToMappedDiagnosticContextAndResponse`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUniqueRequestIdToMappedDiagnosticContextAndResponse.java)
+class [AddUniqueRequestIdToMappedDiagnosticContextAndResponse.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUniqueRequestIdToMappedDiagnosticContextAndResponse.java)
 and the associated `addRequestIdToLoggingFilter` configuration
-in [`WebConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
+in [WebConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
 adds a unique `requestId` (UUID) to the MDC for each request and includes the same id as a header in the response.
 
 The
-class [`AddUsernameToMappedDiagnosticContext`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUsernameToMappedDiagnosticContext.java)
+class [AddUsernameToMappedDiagnosticContext.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FAddUsernameToMappedDiagnosticContext.java)
 and the associated `addInterceptors` configuration
-in [`WebConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
+in [WebConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FWebConfiguration.java)
 includes the `username`, which is derived from the `HttpServletRequest Principal`.
 
 ---
 
 #### Structured JSON Logging
 
-To improve the search-ability of application logs they are structured using JSON to provide a balance between both 
+To improve the search-ability of application logs they are structured using JSON to provide a balance between both
 machine and developer readability.
 
 This is implemented using the dependency `net.logstash.logback:logstash-logback-encoder` and the appropriate config in
-[`logback.xml`](src%2Fmain%2Fresources%2Flogback.xml).
+[logback.xml](src%2Fmain%2Fresources%2Flogback.xml).
 
 ---
 
 #### Unit testing of Logging
 
 The JUnit extension
-class [`LoggingVerificationJUnitExtension`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Flogging%2FLoggingVerificationJUnitExtension.java)
+class [LoggingVerification.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2FLoggingVerification.java)
 can be used to conveniently unit test logging.
 This is done by including the following annotations on the test class:
 
-- `@ExtendWith(LoggingVerificationJUnitExtension.class)`
-- `@LoggingVerificationTarget(MappedDiagnosticContextKey.class)`
+`@ExtendWith(LoggingVerification.class)`  
+`@TestLoggingTarget(MappedDiagnosticContextKey.class)`
 
-And verifying log statements using
-the [`LoggingVerification`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Flogging%2FLoggingVerification.java)
-class like below:  
+And verifying log statements using the `LoggingVerification` class like below:  
 `LoggingVerification.assertLog(Level.DEBUG, Matchers.equalTo("Clearing all MDC keys"));`
 
 For an example
-see [`MappedDiagnosticContextKeyTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKeyTest.java).
+see [MappedDiagnosticContextKeyTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKeyTest.java).
 
 ---
 
@@ -408,9 +395,9 @@ The API tests consist of
 a [Postman Collection](api-test%2Fsrc%2Fmain%2Fresources%2Fspring-boot-microservice-template.postman_collection.json)
 and are run using [Newman](https://github.com/postmanlabs/newman).  
 They are executed
-via [`ApiTestApplication`](api-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fapitest%2FApiTestApplication.java)
+via [ApiTestApplication.java](api-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fapitest%2FApiTestApplication.java)
 which obtains the required port numbers
-from [`DynamicApplicationPropertiesRepository`](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java)
+from [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java)
 to execute [Newman](https://github.com/postmanlabs/newman) with the required command line arguments.
 
 To execute the Postman Collection execute the gradle task:  
@@ -420,23 +407,18 @@ To execute the Postman Collection execute the gradle task:
 
 #### Load Testing
 
-Load testing is implemented using `Gatling` for which the dependencies are defined
-in [`load-test/build.gradle`](load-test%2Fbuild.gradle).
-It is executed via
-the [`LoadTestApplication`](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java)
-class.  
-The load test scenarios are defined
-in [`LoadSimulationDefinition`](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadSimulationDefinition.java).
+Load testing is implemented using `Gatling` for which the dependencies are defined in [load-test/build.gradle](load-test%2Fbuild.gradle).
+It is executed via the [LoadTestApplication.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java) class.  
+The load test scenarios are defined in [LoadSimulationDefinition.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadSimulationDefinition.java).
 
 There is also a metrics collection feature, which polls the JVM memory usage using the actuator metrics endpoint.
-The metrics are recorded and reported on following the load test.
-See [`MemoryUsageMetrics`](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java)
+The metrics are recorded and reported on following the load test. See [MemoryUsageMetrics.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java)
 for implementation details.
 
 All required port numbers are configured dynamically
-in [`HttpProtocolBuilders`](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Futil%2FHttpProtocolBuilders.java)
+in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java)
 using
-the [`DynamicApplicationPropertiesRepository`](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
+the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
 See [docs.gatling.io](https://docs.gatling.io/reference/script/core/simulation/) for additional information about
 `Gatling`.
@@ -445,10 +427,9 @@ See [docs.gatling.io](https://docs.gatling.io/reference/script/core/simulation/)
 
 #### Actuator Endpoints
 
-Determined by the "OpenAPI/Swagger docs" dependencies in the [`build.gradle`](build.gradle),  
-application config [`application.yaml`](src%2Fmain%2Fresources%2Fapplication.yaml)  
-and security
-config [`SecurityConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java).
+Determined by the "OpenAPI/Swagger docs" dependencies in the [build.gradle](build.gradle),  
+application config [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml)  
+and security config [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java).
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 
@@ -461,14 +442,13 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#act
 
 Where `8099` is the Management Server Port `management.server.port`
 If running with the `local` profile all dynamic port numbers are recorded
-in [`dynamicApplicationProperties.json`](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
+in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
 
 ---
 
 #### Swagger Documentation Endpoints
 
-With
-the [`OpenApiConfiguration`](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FOpenApiConfiguration.java)
+With the [OpenApiConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FOpenApiConfiguration.java)
 endpoints are provided to provide live up-to-date API documentation.
 
 - http://localhost:8080/swagger-ui.html
@@ -479,7 +459,7 @@ endpoints are provided to provide live up-to-date API documentation.
 
 Where `8080` is the Application Server Port `server.port`.  
 If running with the `local` profile all dynamic port numbers are recorded
-in [`dynamicApplicationProperties.json`](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
+in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApplicationProperties.json).
 
 ---
 
@@ -505,12 +485,14 @@ plugin https://github.com/ben-manes/gradle-versions-plugin.
 To execute it run the Gradle task and verify the output.  
 `./gradlew dependencyUpdates`
 
-You will see something like
+You will see something like:
 
 `The following dependencies have later milestone versions:`  
 `com.fasterxml.jackson.core:jackson-databind [2.17.0 -> 2.17.1]`  
-`jakarta.validation:jakarta.validation-api [3.0.2 -> 3.1.0-M2]`  
 `no.nav.security:mock-oauth2-server [2.0.0 -> 2.1.5]`
+
+It is configured via `dependencyUpdates` in [build.gradle](build.gradle) to ignore non-final release candidates
+e.g. `ALPHA` and `BETA` releases.
 
 ---
 
@@ -520,8 +502,8 @@ There are also automated unit tests to verify various aspects of the software ar
 e.g. All test classes which are not annotation with `@Disabled` should have class names ending in `Test`.
 
 This has been implemented using `com.tngtech.archunit:archunit-junit5` and examples can be seen
-in [`ApplicationArchitectureTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FApplicationArchitectureTest.java)
-and [`TestArchitectureTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FTestArchitectureTest.java).
+in [ApplicationArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FApplicationArchitectureTest.java)
+and [TestArchitectureTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2FTestArchitectureTest.java).
 
 ---
 
@@ -531,12 +513,12 @@ It is often useful to be able to verify which version of a service is running on
 By utilising the `com.gorylenko.gradle-git-properties` plugin the Git commit id, branch and build tags are
 included in the Spring `/info` actuator endpoint.
 
-The Git attributes included are determined by the `gitProperties` attribute in the [`build.gradle`](build.gradle)
+The Git attributes included are determined by the `gitProperties` attribute in the [build.gradle](build.gradle)
 and the `management.info.git.mode: full` application configuration in
-the [`application.yaml`](src%2Fmain%2Fresources%2Fapplication.yaml).
+the [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml).
 
 This is tested by `actuatorInfoEndpointShouldIncludeArtifactAndGitDetails`
-in [`ActuatorAndDocsIntegrationTest`](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FActuatorAndDocsIntegrationTest.java).
+in [ActuatorAndDocsIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FActuatorAndDocsIntegrationTest.java).
 
 e.g.
 

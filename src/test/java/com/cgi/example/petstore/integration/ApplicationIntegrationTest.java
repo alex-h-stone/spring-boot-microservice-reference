@@ -62,7 +62,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                           }
                                         ]
                                       }
-                """;
+                              """;
 
     String actualJsonBody = response.getBody();
     String actualGeneratedPetId = JsonPath.read(actualJsonBody, "$.petId");
@@ -98,7 +98,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                         "petType": "Dog",
                         "availabilityStatus": "Available For Purchase"
                                       }
-                """;
+                                """;
 
     String actualJsonBody = response.getBody();
 
@@ -237,7 +237,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                       }
                                     ]
                                   }
-                """;
+                              """;
 
     String actualJsonBody = response.getBody();
 
@@ -283,7 +283,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                         }
                                       ]
                                     }
-                """;
+                                """;
 
     String actualJsonBody = response.getBody();
 
@@ -325,7 +325,7 @@ class ApplicationIntegrationTest extends BaseIntegrationTest {
                                         "https://www.freepik.com/free-photo/isolated-happy-smiling-dog-white-background-portrait-4_39994000.htm#uuid=4f38a524-aa89-430d-8041-1de9ffb631c6"
                                       ]
                                     }
-                """;
+                                """;
 
     String actualJsonBody = response.getBody();
     String actualCustomerId = JsonPath.read(response.getBody(), "$.owner.customerId");

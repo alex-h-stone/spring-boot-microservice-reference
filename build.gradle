@@ -12,6 +12,9 @@ plugins {
     id 'com.gorylenko.gradle-git-properties' version "$gitPropertiesPluginVersion"
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.openapi.generator'
+
 group = 'com.cgi.example'
 description = 'Spring Boot Template Service modeled on an online Pet Store.'
 version = '1.0.0-SNAPSHOT'
@@ -38,13 +41,14 @@ allprojects {
 }
 
 dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     implementation project(':common')
 
     implementation platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
     implementation platform("org.junit:junit-bom:$junitJupiterVersion")
 
     // Spring Boot
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -135,6 +139,7 @@ tasks.register('generateAllOpenAPI') {
 }
 
 def generatedOpenApiSourcesDir = "${layout.buildDirectory.get()}/generated/sources/openapi"
+
 def openApiConfigOptions = [
         skipDefaultInterface          : 'true',
         requestMappingMode            : 'api_interface',
@@ -144,6 +149,7 @@ def openApiConfigOptions = [
         useEnumCaseInsensitive        : 'true',
         additionalModelTypeAnnotations: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)'
 ]
+
 tasks.register('generatePetStoreClasses', GenerateTask) {
     description = 'Generate Java classes for this microservice (Pet Store) from the Open API yaml definition.'
     group = 'build'
@@ -155,6 +161,7 @@ tasks.register('generatePetStoreClasses', GenerateTask) {
     configOptions.set(openApiConfigOptions)
     validateSpec = true
 }
+
 tasks.register('generateExternalAnimalVaccinationClasses', GenerateTask) {
     description = 'Generate Java classes from the external animal vaccination Open API yaml definition.'
     group = 'build'
@@ -192,6 +199,17 @@ sourceSets {
                        "${generatedOpenApiSourcesDir}/petstore/src/main/java",
                        "${generatedOpenApiSourcesDir}/external/animalvaccination/src/main/java"]
         }
+    }
+}
+
+// com.github.ben-manes.versions - Ignore non-stable formal release versions
+dependencyUpdates {
+    def isUnstable = { String version ->
+        def unstableVersionIdentifiers = ['ALPHA', 'BETA', '-M', '-RC']
+        return unstableVersionIdentifiers.any(qualifier -> version.toUpperCase().contains(qualifier))
+    }
+    rejectVersionIf { selection ->
+        return isUnstable(selection.candidate.version)
     }
 }
 

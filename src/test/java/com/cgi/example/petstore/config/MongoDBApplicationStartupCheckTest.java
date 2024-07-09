@@ -36,7 +36,10 @@ class MongoDBApplicationStartupCheckTest {
     when(mockMongoTemplate.executeCommand("{ serverStatus: 1 }"))
         .thenReturn(new Document("ok", StringUtils.EMPTY));
 
-    assertDoesNotThrow(() -> startupCheck.onApplicationEvent(mockApplicationReadyEvent));
+    assertDoesNotThrow(
+        () -> {
+          startupCheck.onApplicationEvent(mockApplicationReadyEvent);
+        });
   }
 
   @Test

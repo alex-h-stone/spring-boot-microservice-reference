@@ -16,13 +16,10 @@ class RecordApplicationPortNumbersOnStartupTest {
   }
 
   @AfterEach
-  void tearDown() {
-    // TODO complete this
-  }
+  void tearDown() {}
 
   @Test
   void onApplicationEvent() {
-    // TODO complete this
     // recordPortNumbers.onApplicationEvent();
   }
 }

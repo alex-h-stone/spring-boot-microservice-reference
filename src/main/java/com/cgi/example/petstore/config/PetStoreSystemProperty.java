@@ -35,14 +35,9 @@ public enum PetStoreSystemProperty {
 
   private void set(String newSystemPropertyValue) {
     System.setProperty(systemProperty, newSystemPropertyValue);
-    log.info(
-        "The system property {} has been set with the value [{}]",
-        systemProperty,
-        newSystemPropertyValue);
   }
 
   public void clear() {
-    log.debug("Clearing the system property {}", systemProperty);
     System.clearProperty(systemProperty);
   }
 }
