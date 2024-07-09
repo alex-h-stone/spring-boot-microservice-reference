@@ -3,6 +3,7 @@ package com.cgi.example.common.local;
 import com.cgi.example.common.DynamicApplicationFileProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Nonnull;
@@ -25,6 +26,7 @@ public class DynamicApplicationPropertiesRepository {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
         return objectMapper;
     });
 
@@ -106,8 +108,8 @@ public class DynamicApplicationPropertiesRepository {
 
             String dynamicApplicationPropertiesJson =
                     OBJECT_MAPPER.get().writeValueAsString(applicationProperties);
-            log.debug("About to save dynamicApplicationProperties: {} to: {}",
-                    applicationProperties, toClickableUriString.apply(pathToApplicationProperties.toFile()));
+            log.warn("About to save dynamicApplicationProperties JSON: [{}] to: {}",
+                    dynamicApplicationPropertiesJson, toClickableUriString.apply(pathToApplicationProperties.toFile()));
 
             Files.createDirectories(pathToApplicationProperties.getParent());
             Files.writeString(

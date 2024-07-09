@@ -6,18 +6,18 @@ import lombok.Data;
 @Data
 class DynamicApplicationProperties {
 
-    @JsonProperty
+    @JsonProperty("applicationPort")
     private Port applicationPort;
 
-    @JsonProperty
+    @JsonProperty("managementPort")
     private Port managementPort;
 
-    @JsonProperty
+    @JsonProperty("wireMockPort")
     private Port wireMockPort;
 
-    @JsonProperty
+    @JsonProperty("mongoDBPort")
     private Port mongoDBPort;
 
-    @JsonProperty
+    @JsonProperty("oAuth2Port")
     private Port oAuth2Port;
 }

@@ -45,7 +45,7 @@ requirements you will likely have to make some modifications to the approaches i
 
 At a minimum, the template should provide a high quality default starting point for new features.
 
-The API is defined by the OpenAPI specification `pet-store-api.yaml` and can be viewed in the Swagger
+The API is defined by the OpenAPI specification [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml) and can be viewed in the Swagger
 Editor https://editor.swagger.io/
 
 The microservice is structured with Controller and Service layers.
@@ -76,7 +76,7 @@ Requirements to run locally:
   Sandbox](https://ensemble.ent.cgi.com/business/305832/serviceexcellence/Service%20Excellence%20Wiki%20Library/Sandbox.aspx))
 * Node.js and Newman, see [Installing Node.js and Newman](#installing-nodejs-and-newman)
 
-When the above requirements have been satisfied, to start the Pet Store microservice:
+When the above requirements have been satisfied, to start the Pet Store Microservice:
 
 1. Start the Wire Mock stub server:  
    `./gradlew startWireMockEmbedded`
