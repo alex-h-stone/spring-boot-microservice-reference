@@ -39,5 +39,5 @@ dependencies {
     implementation "io.gatling.highcharts:gatling-charts-highcharts:$gatlingLoadTestVersion"
     implementation "io.gatling:gatling-test-framework:$gatlingLoadTestVersion"
     implementation "org.apache.commons:commons-math3:$commonsMathVersion"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$fasterXmlJacksonDatabindVersion"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
 }

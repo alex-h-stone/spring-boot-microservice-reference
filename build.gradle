@@ -64,7 +64,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:$springDocUiVersion"
     implementation 'jakarta.validation:jakarta.validation-api'
     implementation "javax.annotation:javax.annotation-api:$javaxAnnotationVersion"
-    implementation "org.openapitools:jackson-databind-nullable:$jacksonDatabindVersion"
+    implementation "org.openapitools:jackson-databind-nullable:$jacksonDatabindNullableVersion"
 
     // Metrics
     implementation 'io.micrometer:micrometer-registry-prometheus'
