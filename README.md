@@ -2,6 +2,8 @@
 
 Spring Boot 3 based microservice template integrating features which address a majority of common business requirements.
 
+Contact: Alex Stone (alex.stone@cgi.com)
+
 # Table of Contents
 
 1. [Introduction and Purpose](#introduction-and-purpose)
@@ -251,7 +253,7 @@ and OAuth2 locally, all port numbers are assigned dynamically and subsequently d
 [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
 For example, when you start
-the [WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
+[WireMockEmbedded.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Futils%2Fembedded%2FWireMockEmbedded.java)
 the
 dynamic port number (determined at runtime) which
 it is listening on is persisted
@@ -416,7 +418,7 @@ The metrics are recorded and reported on following the load test. See [MemoryUsa
 for implementation details.
 
 All required port numbers are configured dynamically
-in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FHttpProtocolBuilders.java)
+in [HttpProtocolBuilders.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Futil%2FHttpProtocolBuilders.java)
 using
 the [DynamicApplicationPropertiesRepository.java](common%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fcommon%2Flocal%2FDynamicApplicationPropertiesRepository.java).
 
