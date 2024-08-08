@@ -11,12 +11,14 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class ApiTestApplication {
 
-    private static final String POSTMAN_COLLECTION = "src/main/resources/spring-boot-microservice-template.postman_collection.json";
-    private static final String POSTMAN_ENVIRONMENT = "src/main/resources/local.postman_environment.json";
+    private static final String POSTMAN_COLLECTION = Paths.get("src", "main", "resources", "spring-boot-microservice-template.postman_collection.json").toString();
+    private static final String POSTMAN_ENVIRONMENT = Paths.get("src", "main", "resources", "local.postman_environment.json").toString();
 
     private final DynamicApplicationPropertiesRepository propertiesRepository = new DynamicApplicationPropertiesRepository();
     private final ToClickableUriString toClickableUriString = new ToClickableUriString();
@@ -52,10 +54,14 @@ public class ApiTestApplication {
     }
 
     private ProcessBuilder createProcessBuilder(File htmlReport, File jsonReport) {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.redirectErrorStream(true);
+        List<String> command = new ArrayList<>();
 
-        processBuilder.command("cmd", "/c", "newman",
+        if (isRunningOnWindows()) {
+            command.add("cmd");
+            command.add("/c");
+        }
+
+        command.addAll(List.of("newman",
                 "run", POSTMAN_COLLECTION,
                 "--reporters", "cli,htmlextra,json",
                 "--reporter-htmlextra-export", htmlReport.getAbsolutePath(),
@@ -64,9 +70,20 @@ public class ApiTestApplication {
                 "--env-var", "applicationPort=" + propertiesRepository.getApplicationPort(),
                 "--env-var", "managementPort=" + propertiesRepository.getManagementPort(),
                 "--env-var", "wireMockPort=" + propertiesRepository.getWireMockPort(),
-                "--env-var", "oAuth2Port=" + propertiesRepository.getOAuth2Port());
+                "--env-var", "oAuth2Port=" + propertiesRepository.getOAuth2Port()));
+
+        log.info("About to execute the command: {}", String.join(" ", command));
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
 
         return processBuilder;
+    }
+
+    private boolean isRunningOnWindows() {
+        String operatingSystemName = System.getProperty("os.name");
+
+        return operatingSystemName.toLowerCase().contains("win");
     }
 
 

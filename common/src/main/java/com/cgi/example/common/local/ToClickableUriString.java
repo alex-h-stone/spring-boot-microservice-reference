@@ -12,6 +12,6 @@ public class ToClickableUriString implements Function<File, String> {
     @Override
     public String apply(File file) {
         String rawUri = file.toURI().toString();
-        return rawUri.replaceAll("^file:/(?=[a-zA-Z]:)", "file:///");
+        return rawUri.replace("file:/", "file:///");
     }
 }
