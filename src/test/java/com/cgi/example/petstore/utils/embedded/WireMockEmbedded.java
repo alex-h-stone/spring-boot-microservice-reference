@@ -3,7 +3,7 @@ package com.cgi.example.petstore.utils.embedded;
 import com.cgi.example.common.local.DynamicApplicationPropertiesRepository;
 import com.cgi.example.petstore.utils.ProcessManagement;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
+import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.http.trafficlistener.ConsoleNotifyingWiremockNetworkTrafficListener;
 import java.nio.file.Paths;
@@ -34,7 +34,7 @@ public class WireMockEmbedded {
             .dynamicPort()
             .usingFilesUnderClasspath(Paths.get("src", "test", "resources", "wiremock").toString())
             .globalTemplating(true)
-            .notifier(new ConsoleNotifier("WireMockConsoleLog", true))
+            .notifier(new Slf4jNotifier(true))
             .maxRequestJournalEntries(100)
             .networkTrafficListener(new ConsoleNotifyingWiremockNetworkTrafficListener());
     wireMockServer = new WireMockServer(wireMockConfiguration);
