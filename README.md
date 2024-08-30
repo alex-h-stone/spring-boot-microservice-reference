@@ -1,6 +1,9 @@
-# Spring Boot Microservice Template
+# Spring Boot Microservice Reference Template
 
-Spring Boot 3 based microservice template integrating features which address a majority of common business requirements.
+Spring Boot 3 based microservice reference template project integrating features which address a majority of common
+business requirements along with thorough unit and integration tests.
+
+This project is licensed under the terms of the MIT license.
 
 Contact: Alex Stone (alex.stone AT cgi.com)
 
@@ -47,7 +50,9 @@ requirements you will likely have to make some modifications to the approaches i
 
 At a minimum, the template should provide a high quality default starting point for new features.
 
-The API is defined by the OpenAPI specification [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml) and can be viewed in the Swagger
+The API is defined by the OpenAPI
+specification [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml) and can be viewed in the
+Swagger
 Editor https://editor.swagger.io/
 
 The microservice is structured with Controller and Service layers.
@@ -70,6 +75,7 @@ The API provides the following functionality:
 ---
 
 #### Run the Pet Store microservice
+
 Requirements to run locally:
 
 * Java 22 e.g. https://jdk.java.net/22/
@@ -191,13 +197,17 @@ for details of how request validation can be implemented via the Open API yaml.
 
 #### Java Request Validation
 
-See [PetIdValidator.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fcontroller%2Fvalidation%2FPetIdValidator.java) and the integration test
+See [PetIdValidator.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fcontroller%2Fvalidation%2FPetIdValidator.java)
+and the integration test
 `should_ReturnError_When_CallingGetPetEndpointWithInvalidIdFailingValidation`  
 for details of how to write custom request validation logic.
 
-Wherever possible, request validation logic should be defined in the OpenAPI definition e.g. [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
+Wherever possible, request validation logic should be defined in the OpenAPI definition
+e.g. [pet-store-api.yaml](src%2Fmain%2Fresources%2Fopenapi%2Fpet-store-api.yaml)  
 This has several benefits over custom Java validators, including:
-- Reusable and language agnostic, such that you can use the OpenAPI yaml to rewrite the microservice using another (non-Java) implementation language.
+
+- Reusable and language agnostic, such that you can use the OpenAPI yaml to rewrite the microservice using another (
+  non-Java) implementation language.
 - The validation is visible by all consumers of the microservice via the OpenAPI yaml.
 - The API documentation will always be up-to-date with the validation implementation.
 
@@ -206,6 +216,7 @@ This has several benefits over custom Java validators, including:
 #### Mapping between Pet Store API model, external API model and MongoDB Documents
 
 See the below classes for examples of different mappers:
+
 - [PetMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fpet%2FPetMapper.java)
 - [ExternalVaccinationsMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fexternal%2Fvaccinations%2FExternalVaccinationsMapper.java)
 - [CustomerMapper.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fservice%2Fcustomer%2FCustomerMapper.java)
@@ -236,7 +247,8 @@ Typically, integration tests extend the base
 class [BaseIntegrationTest.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2FBaseIntegrationTest.java)
 and use Wire
 Mock [WireMockForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FWireMockForIntegrationTests.java)
-and `de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)
+and
+`de.flapdoodle.embed.mongo` [MongoDbForIntegrationTests.java](src%2Ftest%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fintegration%2Futils%2FMongoDbForIntegrationTests.java)
 to stand-in for external dependencies.
 
 To run only integration tests:  
@@ -300,7 +312,9 @@ So the OAuth2 server is initialised and system properties are set before Spring 
 
 #### Metrics Endpoint
 
-See the metrics endpoint provided by Spring Actuator https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
+See the metrics endpoint provided by Spring
+Actuator https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
+
 - GET http://localhost:8099/actuator/metrics
 
 ---
@@ -339,7 +353,8 @@ and the `@LogMethodResponse` to log the method return object.
 
 #### Logging with a Mapped Diagnostic Context (MDC)
 
-To improve the traceability of user actions when looking at the microservice logs there is a Mapped Diagnostic Context (MDC).
+To improve the traceability of user actions when looking at the microservice logs there is a Mapped Diagnostic Context (
+MDC).
 All MDC keys are defined in 1 central
 place [MappedDiagnosticContextKey.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Flogging%2Fmdc%2FMappedDiagnosticContextKey.java),
 along with the logic to clear the MDC.  
@@ -409,12 +424,17 @@ To execute the Postman Collection execute the gradle task:
 
 #### Load Testing
 
-Load testing is implemented using `Gatling` for which the dependencies are defined in [load-test/build.gradle](load-test%2Fbuild.gradle).
-It is executed via the [LoadTestApplication.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java) class.  
-The load test scenarios are defined in [LoadSimulationDefinition.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadSimulationDefinition.java).
+Load testing is implemented using `Gatling` for which the dependencies are defined
+in [load-test/build.gradle](load-test%2Fbuild.gradle).
+It is executed via
+the [LoadTestApplication.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadTestApplication.java)
+class.  
+The load test scenarios are defined
+in [LoadSimulationDefinition.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2FLoadSimulationDefinition.java).
 
 There is also a metrics collection feature, which polls the JVM memory usage using the actuator metrics endpoint.
-The metrics are recorded and reported on following the load test. See [MemoryUsageMetrics.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java)
+The metrics are recorded and reported on following the load test.
+See [MemoryUsageMetrics.java](load-test%2Fsrc%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Floadtest%2Fmemory%2FMemoryUsageMetrics.java)
 for implementation details.
 
 All required port numbers are configured dynamically
@@ -431,7 +451,8 @@ See [docs.gatling.io](https://docs.gatling.io/reference/script/core/simulation/)
 
 Determined by the "OpenAPI/Swagger docs" dependencies in the [build.gradle](build.gradle),  
 application config [application.yaml](src%2Fmain%2Fresources%2Fapplication.yaml)  
-and security config [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java).
+and security
+config [SecurityConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FSecurityConfiguration.java).
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
 
@@ -450,7 +471,8 @@ in [dynamicApplicationProperties.json](common%2Fbuild%2Ftmp%2Flocal%2FdynamicApp
 
 #### Swagger Documentation Endpoints
 
-With the [OpenApiConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FOpenApiConfiguration.java)
+With
+the [OpenApiConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fcgi%2Fexample%2Fpetstore%2Fconfig%2FOpenApiConfiguration.java)
 endpoints are provided to provide live up-to-date API documentation.
 
 - http://localhost:8080/swagger-ui.html
@@ -526,21 +548,21 @@ e.g.
 
 ```json
 {
-   "git": {
-      "branch": "master",
-      "tags": "0.9.0",
-      "commit": {
-         "id": "fcdd60b6c2fa16fb4b3fe31e39084815a5284692"
-      },
-      "build": {
-         "version": "1.0.0-SNAPSHOT"
-      },
-      "remote": {
-         "origin": {
-            "url": "https://pauksource.ent.cgi.com/gitlab/uka/SBUDCDADA/dsc-ds-development-best-practice/spring-boot-microservice-template.git"
-         }
+  "git": {
+    "branch": "master",
+    "tags": "0.9.0",
+    "commit": {
+      "id": "fcdd60b6c2fa16fb4b3fe31e39084815a5284692"
+    },
+    "build": {
+      "version": "1.0.0-SNAPSHOT"
+    },
+    "remote": {
+      "origin": {
+        "url": "https://pauksource.ent.cgi.com/gitlab/uka/SBUDCDADA/dsc-ds-development-best-practice/spring-boot-microservice-template.git"
       }
-   }
+    }
+  }
 }
 ```
 
