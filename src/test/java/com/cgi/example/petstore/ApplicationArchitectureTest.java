@@ -68,14 +68,15 @@ public class ApplicationArchitectureTest {
     List<String> externalPackages =
         new LinkedList<>(
             List.of(
-                "org.springframework..",
-                "java.lang..",
+                "jakarta.servlet..",
                 "java.io..",
-                "java.util..",
+                "java.lang..",
                 "java.security..",
-                "org.slf4j..",
+                "java.util..",
+                "lombok..",
                 "org.aspectj..",
-                "jakarta.servlet.."));
+                "org.slf4j..",
+                "org.springframework.."));
 
     Collections.addAll(externalPackages, packages);
     return externalPackages.toArray(new String[] {});

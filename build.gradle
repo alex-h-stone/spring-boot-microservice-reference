@@ -196,8 +196,9 @@ sourceSets {
     main {
         java {
             srcDirs = ['src/main/java',
-                       "${generatedOpenApiSourcesDir}/petstore/src/main/java",
-                       "${generatedOpenApiSourcesDir}/external/animalvaccination/src/main/java"]
+                       generatePetStoreClasses.outputDir,
+                       generateExternalAnimalVaccinationClasses.outputDir
+            ]
         }
     }
 }
